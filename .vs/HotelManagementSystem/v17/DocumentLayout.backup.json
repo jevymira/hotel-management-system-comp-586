@@ -1,0 +1,157 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\dynamodb\\dynamodbconnectionconfigfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|solutionrelative:dynamodb\\dynamodbconnectionconfigfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\dynamodb\\dynamodbclientfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|solutionrelative:dynamodb\\dynamodbclientfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|solutionrelative:domain\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\dynamodb\\dynamodb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|solutionrelative:dynamodb\\dynamodb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC71BDD3-9883-4D65-AACC-4CE158903135}|Abstractions\\Abstractions.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\abstractions\\idbconnectionconfigfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC71BDD3-9883-4D65-AACC-4CE158903135}|Abstractions\\Abstractions.csproj|solutionrelative:abstractions\\idbconnectionconfigfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC71BDD3-9883-4D65-AACC-4CE158903135}|Abstractions\\Abstractions.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\abstractions\\idbclientfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC71BDD3-9883-4D65-AACC-4CE158903135}|Abstractions\\Abstractions.csproj|solutionrelative:abstractions\\idbclientfactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAEAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:32:55.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "LambdaEntryPoint.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
+              "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
+              "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:30:29.995Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DynamoDBConnectionConfigFactory.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDBConnectionConfigFactory.cs",
+              "RelativeDocumentMoniker": "DynamoDB\\DynamoDBConnectionConfigFactory.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDBConnectionConfigFactory.cs",
+              "RelativeToolTip": "DynamoDB\\DynamoDBConnectionConfigFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:30:15.635Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DynamoDBClientFactory.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDBClientFactory.cs",
+              "RelativeDocumentMoniker": "DynamoDB\\DynamoDBClientFactory.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDBClientFactory.cs",
+              "RelativeToolTip": "DynamoDB\\DynamoDBClientFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:30:14.08Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Booking.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Booking.cs",
+              "RelativeDocumentMoniker": "Domain\\Booking.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Booking.cs",
+              "RelativeToolTip": "Domain\\Booking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:25:18.122Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DynamoDB.csproj",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDB.csproj",
+              "RelativeDocumentMoniker": "DynamoDB\\DynamoDB.csproj",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDB.csproj",
+              "RelativeToolTip": "DynamoDB\\DynamoDB.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-10-20T01:30:10.818Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IDBConnectionConfigFactory.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Abstractions\\IDBConnectionConfigFactory.cs",
+              "RelativeDocumentMoniker": "Abstractions\\IDBConnectionConfigFactory.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Abstractions\\IDBConnectionConfigFactory.cs",
+              "RelativeToolTip": "Abstractions\\IDBConnectionConfigFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:28:20.388Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IDBClientFactory.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Abstractions\\IDBClientFactory.cs",
+              "RelativeDocumentMoniker": "Abstractions\\IDBClientFactory.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Abstractions\\IDBClientFactory.cs",
+              "RelativeToolTip": "Abstractions\\IDBClientFactory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:28:18.484Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

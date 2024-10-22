@@ -41,3 +41,4 @@ C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaA
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\LambdaASP.NETCore.pdb
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\LambdaASP.NETCore.genruntimeconfig.cache
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\ref\LambdaASP.NETCore.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\LambdaASP.NETCore.sourcelink.json

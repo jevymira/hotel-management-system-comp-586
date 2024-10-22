@@ -15,27 +15,27 @@ using System.Globalization;
 namespace LambdaASP.NETCore.Controllers;
 
 [Route("api/[controller]")]
-public class BookingsController : ControllerBase
+public class ReservationsController : ControllerBase
 {
     AmazonDynamoDBClient _client;
     Random _random;
 
-    public BookingsController(IDBClientFactory<AmazonDynamoDBClient> factory)
+    public ReservationsController(IDBClientFactory<AmazonDynamoDBClient> factory)
     {
         _client = factory.GetClient();
         _random = new Random();
     }
 
-    // GET api/bookings (start defaults to current date, end default to a month after)
-    // GET api/bookings?start=2024-12-01
-    // GET api/bookings?start=2024-12-01&end=2024-12-30
-    // GET api/bookings?end=2024-12-30
+    // GET api/reservations (start defaults to current date, end defaults to a month after)
+    // GET api/reservations?start=2024-12-01
+    // GET api/reservations?start=2024-12-01&end=2024-12-30
+    // GET api/reservations?end=2024-12-30
     [HttpGet]
     public async Task<IActionResult> QueryByDate(string start, string end) // [FromQuery] string date)
     {
         DynamoDBContext dbContext = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_PK", "BOOKING");
+        expressionAttributeValues.Add(":v_PK", "RESERVATION");
         // expressionAttributeValues.Add(":v_StartDate", HttpContext.Request.Query["StartDate"].ToString());
         // expressionAttributeValues.Add(":v_EndDate", HttpContext.Request.Query["EndDate"].ToString());
 
@@ -59,10 +59,10 @@ public class BookingsController : ControllerBase
 
         var queryOperationConfig = new QueryOperationConfig
         {
-            IndexName = "PK-EndDate-index",
+            IndexName = "PK-CheckOutDate-index",
             KeyExpression = new Expression
             {
-                ExpressionStatement = "PK = :v_PK AND EndDate BETWEEN :v_start AND :v_end",
+                ExpressionStatement = "PK = :v_PK AND CheckOutDate BETWEEN :v_start AND :v_end",
                 ExpressionAttributeValues = expressionAttributeValues
             },
             /* FilterExpression = new Expression
@@ -72,37 +72,44 @@ public class BookingsController : ControllerBase
             }*/
         };
         return Ok(await dbContext
-                        .FromQueryAsync<Booking>(queryOperationConfig)
+                        .FromQueryAsync<Reservation>(queryOperationConfig)
                         .GetRemainingAsync());
     }
 
     // PUT api/bookings
     // request Body
     // {
-    //     "StartDate": "2024-12-01",
-    //     "EndDate": "2024-12-03",
-    //     "RoomType": "Double",
-    //     "Name": "John Doe",
-    //     "Email": "jdoe@email.com",
-    //     "PhoneNumber": "(555) 555-5555"
+    //    "CheckInDate": "2024-12-01",
+    //    "CheckOutDate": "2024-12-03",
+    //    "NumberOfGuests": 2,
+    //    "TotalPrice" : 75.00,
+    //    "GuestFullName": "John Doe",
+    //    "GuestEmail": "jdoe@email.com",
+    //    "GuestPhoneNumber": "(555) 555-5555",
+    //    "GuestDateOfBirth": "1980-01-01",
+    //    "UpdatedBy": ""
     // }
-    [HttpPut()]
-    public async Task<bool> CreateBooking([FromBody] Booking newBooking)
+[HttpPut()]
+    public async Task<bool> CreateReservation([FromBody] Reservation reservation)
     {
         var item = new Dictionary<string, AttributeValue>
         {
-            ["PK"] = new AttributeValue { S = "BOOKING" },
+            ["PK"] = new AttributeValue { S = "RESERVATION" },
             ["SK"] = new AttributeValue
-                { S = $"BOOKING#{System.Guid.NewGuid().ToString("D").ToUpper()}" },
-            ["RoomType"] = new AttributeValue { S = newBooking.RoomType },
-            ["StartDate"] = new AttributeValue { S = newBooking.StartDate },
-            ["EndDate"] = new AttributeValue { S = newBooking.EndDate },
-            ["Name"] = new AttributeValue { S = newBooking.Name },
-            ["Email"] = new AttributeValue { S = newBooking.Email },
-            ["PhoneNumber"] = new AttributeValue { S = newBooking.PhoneNumber },
-            ["ConfirmationNumber"] = new AttributeValue
-                { S = _random.Next(10000000,99999999).ToString().PadLeft(8, '0')},
-            ["Status"] = new AttributeValue { S = "Confirmed" },
+                { S = $"RESERVATION#{System.Guid.NewGuid().ToString("D").ToUpper()}" },
+            ["RoomID"] = new AttributeValue { S = "" },
+            ["CheckInDate"] = new AttributeValue { S = reservation.CheckInDate },
+            ["CheckOutDate"] = new AttributeValue { S = reservation.CheckOutDate },
+            ["NumberOfGuests"] = new AttributeValue { N = reservation.NumberOfGuests.ToString() },
+            ["TotalPrice"] = new AttributeValue { N = reservation.TotalPrice.ToString() },
+            ["BookingStatus"] = new AttributeValue { S = "Confirmed" },
+            ["GuestFullName"] = new AttributeValue { S = reservation.GuestFullName },
+            ["GuestEmail"] = new AttributeValue { S = reservation.GuestEmail },
+            ["GuestPhoneNumber"] = new AttributeValue { S = reservation.GuestPhoneNumber },
+            ["GuestDateOfBirth"] = new AttributeValue { S = reservation.GuestDateOfBirth },
+            ["UpdatedBy"] = new AttributeValue { S = reservation.UpdatedBy },
+            // ["ConfirmationNumber"] = new AttributeValue
+            //     { S = _random.Next(10000000,99999999).ToString().PadLeft(8, '0')},
         };
         var putRequest = new PutItemRequest
         {

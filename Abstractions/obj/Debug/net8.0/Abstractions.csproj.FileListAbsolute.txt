@@ -1,0 +1,12 @@
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\bin\Debug\net8.0\Abstractions.deps.json
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\bin\Debug\net8.0\Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\bin\Debug\net8.0\Abstractions.pdb
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.AssemblyInfoInputs.cache
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.AssemblyInfo.cs
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.csproj.CoreCompileInputs.cache
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.sourcelink.json
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\refint\Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\Abstractions.pdb
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Debug\net8.0\ref\Abstractions.dll

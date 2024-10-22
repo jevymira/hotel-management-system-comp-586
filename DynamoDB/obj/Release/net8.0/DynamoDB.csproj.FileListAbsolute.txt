@@ -15,3 +15,4 @@ C:\Users\AD MIN\source\repos\HotelManagementSystem\DynamoDB\obj\Release\net8.0\r
 C:\Users\AD MIN\source\repos\HotelManagementSystem\DynamoDB\obj\Release\net8.0\DynamoDB.pdb
 C:\Users\AD MIN\source\repos\HotelManagementSystem\DynamoDB\obj\Release\net8.0\DynamoDB.genruntimeconfig.cache
 C:\Users\AD MIN\source\repos\HotelManagementSystem\DynamoDB\obj\Release\net8.0\ref\DynamoDB.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\DynamoDB\obj\Release\net8.0\DynamoDB.sourcelink.json

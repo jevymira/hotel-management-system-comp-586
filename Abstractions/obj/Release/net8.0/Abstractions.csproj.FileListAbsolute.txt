@@ -11,3 +11,4 @@ C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Release\net8
 C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Release\net8.0\Abstractions.pdb
 C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Release\net8.0\Abstractions.genruntimeconfig.cache
 C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Release\net8.0\ref\Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\Abstractions\obj\Release\net8.0\Abstractions.sourcelink.json

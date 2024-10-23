@@ -3,8 +3,17 @@
   "WorkspaceRootPath": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\",
   "Documents": [
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|solutionrelative:domain\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> origin/dev
     },
     {
       "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,8 +24,13 @@
       "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+<<<<<<< HEAD
       "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\lambdaentrypoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
+      "AbsoluteMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\dynamodb\\dynamodb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2C83FAA2-ED27-4151-9330-1D6863FBA189}|DynamoDB\\DynamoDB.csproj|solutionrelative:dynamodb\\dynamodb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+>>>>>>> origin/dev
     }
   ],
   "DocumentGroupContainers": [
@@ -39,6 +53,7 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+<<<<<<< HEAD
               "Title": "Room.cs",
               "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Room.cs",
               "RelativeDocumentMoniker": "Domain\\Room.cs",
@@ -65,19 +80,31 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
+=======
+>>>>>>> origin/dev
               "Title": "ReservationsController.cs",
               "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
+<<<<<<< HEAD
               "ViewState": "AgIAAFEAAAAAAAAAAAAYwFgAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-22T02:46:42.143Z",
+=======
+              "ViewState": "AgIAAFoAAAAAAAAAAAAYwHcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-23T02:29:00.11Z",
+>>>>>>> origin/dev
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
               "DocumentIndex": 3,
+=======
+              "DocumentIndex": 1,
+>>>>>>> origin/dev
               "Title": "LambdaEntryPoint.cs",
               "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
               "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
@@ -85,7 +112,50 @@
               "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaEntryPoint.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+<<<<<<< HEAD
               "WhenOpened": "2024-10-20T01:30:29.995Z"
+=======
+              "WhenOpened": "2024-10-20T01:30:29.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ValuesController.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ValuesController.cs",
+              "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ValuesController.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ValuesController.cs",
+              "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ValuesController.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAsAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T17:53:20.742Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Startup.cs",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Startup.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-20T01:32:55.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DynamoDB.csproj",
+              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDB.csproj",
+              "RelativeDocumentMoniker": "DynamoDB\\DynamoDB.csproj",
+              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\DynamoDB\\DynamoDB.csproj",
+              "RelativeToolTip": "DynamoDB\\DynamoDB.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-10-20T01:30:10.818Z"
+>>>>>>> origin/dev
             }
           ]
         }

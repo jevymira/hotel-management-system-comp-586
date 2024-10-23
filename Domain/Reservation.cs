@@ -13,9 +13,9 @@ public class Reservation
 
     public string RoomID { get; set; }
 
+    [DynamoDBGlobalSecondaryIndexRangeKey("PK-CheckInDate-index")]
     public string CheckInDate { get ; set; }
 
-    [DynamoDBGlobalSecondaryIndexRangeKey("PK-CheckOutDate-index")]
     public string CheckOutDate { get; set; }
 
     public int NumberOfGuests { get; set; }

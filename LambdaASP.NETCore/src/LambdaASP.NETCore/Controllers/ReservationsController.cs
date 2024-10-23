@@ -7,9 +7,6 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using System.Text.Json;
 using System.Globalization;
 
 namespace LambdaASP.NETCore.Controllers;
@@ -59,10 +56,10 @@ public class ReservationsController : ControllerBase
 
         var queryOperationConfig = new QueryOperationConfig
         {
-            IndexName = "PK-CheckOutDate-index",
+            IndexName = "PK-CheckInDate-index",
             KeyExpression = new Expression
             {
-                ExpressionStatement = "PK = :v_PK AND CheckOutDate BETWEEN :v_start AND :v_end",
+                ExpressionStatement = "PK = :v_PK AND CheckInDate BETWEEN :v_start AND :v_end",
                 ExpressionAttributeValues = expressionAttributeValues
             },
             /* FilterExpression = new Expression

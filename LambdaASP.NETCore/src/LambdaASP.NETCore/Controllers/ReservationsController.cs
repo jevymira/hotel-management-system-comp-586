@@ -90,13 +90,13 @@ public class ReservationsController : ControllerBase
     //    "UpdatedBy": ""
     // }
 [HttpPut()]
-    public async Task<bool> CreateReservation([FromBody] Reservation reservation)
+    public async Task<string> CreateReservation([FromBody] Reservation reservation)
     {
+        string guid = $"RESERVATION#{System.Guid.NewGuid().ToString("D").ToUpper()}";
         var item = new Dictionary<string, AttributeValue>
         {
             ["PK"] = new AttributeValue { S = "RESERVATION" },
-            ["SK"] = new AttributeValue
-                { S = $"RESERVATION#{System.Guid.NewGuid().ToString("D").ToUpper()}" },
+            ["SK"] = new AttributeValue { S = guid },
             ["RoomID"] = new AttributeValue { S = "" },
             ["CheckInDate"] = new AttributeValue { S = reservation.CheckInDate },
             ["CheckOutDate"] = new AttributeValue { S = reservation.CheckOutDate },
@@ -107,7 +107,7 @@ public class ReservationsController : ControllerBase
             ["GuestEmail"] = new AttributeValue { S = reservation.GuestEmail },
             ["GuestPhoneNumber"] = new AttributeValue { S = reservation.GuestPhoneNumber },
             ["GuestDateOfBirth"] = new AttributeValue { S = reservation.GuestDateOfBirth },
-            ["UpdatedBy"] = new AttributeValue { S = reservation.UpdatedBy },
+            ["UpdatedBy"] = new AttributeValue { S = String.Empty },
             // ["ConfirmationNumber"] = new AttributeValue
             //     { S = _random.Next(10000000,99999999).ToString().PadLeft(8, '0')},
         };
@@ -117,7 +117,10 @@ public class ReservationsController : ControllerBase
             Item = item
         };
 
-        var response = await _client.PutItemAsync(putRequest);
-        return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+        await _client.PutItemAsync(putRequest);
+        // return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+        return guid.Substring(12, 8); // confirmation number a substring of the guid
+        // begins_with query condition allows searching
+        // by name & confirmation number combination
     }
 }

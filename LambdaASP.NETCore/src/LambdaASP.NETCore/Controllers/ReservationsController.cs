@@ -84,7 +84,6 @@ public class ReservationsController : ControllerBase
     //    "GuestEmail": "jdoe@email.com",
     //    "GuestPhoneNumber": "(555) 555-5555",
     //    "GuestDateOfBirth": "1980-01-01",
-    //    "UpdatedBy": ""
     // }
 [HttpPut()]
     public async Task<string> CreateReservation([FromBody] Reservation reservation)

@@ -40,6 +40,20 @@ public class RoomsController : ControllerBase
                         .GetRemainingAsync());
     }
 
+    // sample body:
+    /*
+    {
+        "roomTypeID": "Double",
+        "roomNumber": "3",
+        "pricePerNight": 150,
+        "maxOccupancy": 3,
+        "roomSize": "215 ft^2",
+        "imageUrls": [
+            "foo.bar",
+            "bar.foo"
+        ]
+    }
+    */
     [HttpPut]
     public async Task<IActionResult> Put([FromBody] Room room)
     {
@@ -52,7 +66,7 @@ public class RoomsController : ControllerBase
             ["RoomNumber"] = new AttributeValue { S = room.RoomNumber },
             ["PricePerNight"] = new AttributeValue { N = room.PricePerNight.ToString() },
             ["MaxOccupancy"] = new AttributeValue { N = room.MaxOccupancy.ToString() },
-            ["Status"] = new AttributeValue { S = room.Status },
+            ["Status"] = new AttributeValue { S = "Empty" },
             ["RoomSize"] = new AttributeValue { S = room.RoomSize },
             ["ImageUrls"] = new AttributeValue { SS = room.ImageUrls },
             ["UpdatedBy"] = new AttributeValue { S = String.Empty }
@@ -67,6 +81,20 @@ public class RoomsController : ControllerBase
         return Ok(await _client.PutItemAsync(putRequest));
     }
 
+    // sample body:
+    /*
+    {
+        "roomTypeID": "Double",
+        "pricePerNight": 150,
+        "maxOccupancy": 3,
+        "roomNumber": "1",
+        "imageUrls": [
+            "foo",
+            "bar"
+        ],
+        "updatedBy": ""
+    }
+    */
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(string id, [FromBody] Room room)
     {

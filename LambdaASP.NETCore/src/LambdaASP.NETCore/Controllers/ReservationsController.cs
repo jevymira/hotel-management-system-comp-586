@@ -15,12 +15,10 @@ namespace LambdaASP.NETCore.Controllers;
 public class ReservationsController : ControllerBase
 {
     AmazonDynamoDBClient _client;
-    Random _random;
 
     public ReservationsController(IDBClientFactory<AmazonDynamoDBClient> factory)
     {
         _client = factory.GetClient();
-        _random = new Random();
     }
 
     // GET api/reservations (start defaults to current date, end defaults to a month after)
@@ -85,7 +83,7 @@ public class ReservationsController : ControllerBase
     //    "GuestPhoneNumber": "(555) 555-5555",
     //    "GuestDateOfBirth": "1980-01-01",
     // }
-[HttpPut()]
+    [HttpPut()]
     public async Task<string> CreateReservation([FromBody] Reservation reservation)
     {
         string guid = $"RESERVATION#{System.Guid.NewGuid().ToString("D").ToUpper()}";
@@ -119,4 +117,23 @@ public class ReservationsController : ControllerBase
         // begins_with query condition allows searching
         // by name & confirmation number combination
     }
+
+    /*
+    public async Task<IActionResult> CheckReservation()
+    {
+        var request = new TransactWriteItemsRequest()
+        {
+            TransactItems = new List<TransactWriteItem>() 
+            { 
+                new TransactWriteItem()
+                {
+                    Update = new Update ()
+                    {
+
+                    }
+                }
+            }
+        };
+    }
+    */
 }

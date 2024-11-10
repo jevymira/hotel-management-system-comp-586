@@ -1,16 +1,12 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
 
 namespace Domain;
 
-[DynamoDBTable("Hotel")]
+[DynamoDBTable("Rooms")]
 public class Room
 {
     [DynamoDBHashKey]
-    public string? PK { get; set; } // EntityType (ROOM)
-
-    [DynamoDBRangeKey]
-    public string? SK { get; set; } // GUID (ROOM#GUID)
+    public string? RoomID { get; set; }
 
     public string? RoomTypeID { get; set; }
 

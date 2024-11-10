@@ -19,29 +19,13 @@ public class RoomsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<List<Room>> Get()
     {
-        DynamoDBContext dbContext = new DynamoDBContext(_client);
-        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_PK", "ROOM");
-
-        var queryOperationConfig = new QueryOperationConfig
-        {
-            // IndexName = ,
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "PK = :v_PK",
-                ExpressionAttributeValues = expressionAttributeValues
-            },
-        };
-
-        return Ok(await dbContext
-                        .FromQueryAsync<Room>(queryOperationConfig)
-                        .GetRemainingAsync());
+        DynamoDBContext context = new DynamoDBContext(_client);
+        return await context.ScanAsync<Room>(default).GetRemainingAsync();
     }
 
-    // sample body:
-    /*
+    /* sample body:
     {
         "roomTypeID": "Double",
         "roomNumber": "3",
@@ -57,32 +41,30 @@ public class RoomsController : ControllerBase
     [HttpPut]
     public async Task<IActionResult> Put([FromBody] Room room)
     {
-        string guid = $"ROOM#{System.Guid.NewGuid().ToString("D").ToUpper()}";
+        Random random = new Random();
         var item = new Dictionary<string, AttributeValue>
         {
-            ["PK"] = new AttributeValue { S = "ROOM" },
-            ["SK"] = new AttributeValue { S = guid },
-            ["RoomTypeID"] = new AttributeValue { S = room.RoomTypeID },
-            ["RoomNumber"] = new AttributeValue { S = room.RoomNumber },
-            ["PricePerNight"] = new AttributeValue { N = room.PricePerNight.ToString() },
-            ["MaxOccupancy"] = new AttributeValue { N = room.MaxOccupancy.ToString() },
-            ["Status"] = new AttributeValue { S = "Empty" },
-            ["RoomSize"] = new AttributeValue { S = room.RoomSize },
-            ["ImageUrls"] = new AttributeValue { SS = room.ImageUrls },
-            ["UpdatedBy"] = new AttributeValue { S = String.Empty }
+            { "RoomID", new AttributeValue(random.Next(100000000, 2147483647).ToString()) },
+            {"RoomTypeID", new AttributeValue(room.RoomTypeID) },
+            {"RoomNumber", new AttributeValue(room.RoomNumber) },
+            {"PricePerNight", new AttributeValue(room.PricePerNight.ToString()) },
+            {"MaxOccupancy", new AttributeValue(room.MaxOccupancy.ToString()) },
+            {"Status", new AttributeValue("Empty") },
+            {"RoomSize", new AttributeValue(room.RoomSize) },
+            {"ImageUrls", new AttributeValue(room.ImageUrls) },
+            {"UpdatedBy", new AttributeValue(String.Empty) }
         };
 
         var putRequest = new PutItemRequest
         {
-            TableName = "Hotel",
+            TableName = "Rooms",
             Item = item
         };
 
         return Ok(await _client.PutItemAsync(putRequest));
     }
 
-    // sample body:
-    /*
+    /* sample body:
     {
         "roomTypeID": "Double",
         "pricePerNight": 150,
@@ -100,11 +82,10 @@ public class RoomsController : ControllerBase
     {
         var request = new UpdateItemRequest
         {
-            TableName = "Hotel",
+            TableName = "Rooms",
             Key = new Dictionary<string, AttributeValue>()
             {
-                { "PK", new AttributeValue { S = "ROOM" } },
-                { "SK", new AttributeValue { S = "ROOM#" + id } }
+                { "RoomID", new AttributeValue(id) }
             },
             UpdateExpression = "SET RoomTypeID = :room_type_id, " +
                                    "PricePerNight = :price_per_night, " +

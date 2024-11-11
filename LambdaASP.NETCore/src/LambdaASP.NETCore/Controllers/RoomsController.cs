@@ -44,7 +44,7 @@ public class RoomsController : ControllerBase
         Random random = new Random();
         var item = new Dictionary<string, AttributeValue>
         {
-            { "RoomID", new AttributeValue(random.Next(100000000, 2147483647).ToString()) },
+            { "RoomID", new AttributeValue(random.Next(100000000, 2147483647).ToString().PadLeft(8, '0')) },
             {"RoomTypeID", new AttributeValue(room.RoomTypeID) },
             {"RoomNumber", new AttributeValue(room.RoomNumber) },
             {"PricePerNight", new AttributeValue(room.PricePerNight.ToString()) },

@@ -21,119 +21,196 @@ public class ReservationsController : ControllerBase
         _client = factory.GetClient();
     }
 
-    // GET api/reservations (start defaults to current date, end defaults to a month after)
-    // GET api/reservations?start=2024-12-01
-    // GET api/reservations?start=2024-12-01&end=2024-12-30
-    // GET api/reservations?end=2024-12-30
-    [HttpGet]
-    public async Task<IActionResult> QueryByDate(string start, string end) // [FromQuery] string date)
+    [HttpGet("by-id/{id}")] // GET api/reservations/by-id/0123456789
+    public async Task<IActionResult> Get(string id)
     {
-        DynamoDBContext dbContext = new DynamoDBContext(_client);
+        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_PK", "RESERVATION");
-        // expressionAttributeValues.Add(":v_StartDate", HttpContext.Request.Query["StartDate"].ToString());
-        // expressionAttributeValues.Add(":v_EndDate", HttpContext.Request.Query["EndDate"].ToString());
-
-        string date = start;
-
-        if (start != null)
-            expressionAttributeValues.Add(":v_start", date);
-        else
-        {
-            date = DateTime.Now.ToString("yyyy-MM-dd");
-            expressionAttributeValues.Add(":v_start", date);
-        }
-        
-        if (end != null)
-            expressionAttributeValues.Add(":v_end", end);
-        else
-            expressionAttributeValues.Add(":v_end", DateTime
-                                                    .ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-                                                    .AddMonths(1).ToString("yyyy-MM-dd")
-            );
-
+        expressionAttributeValues.Add(":v_reservation_id", id);
         var queryOperationConfig = new QueryOperationConfig
         {
-            IndexName = "PK-CheckInDate-index",
             KeyExpression = new Expression
             {
-                ExpressionStatement = "PK = :v_PK AND CheckInDate BETWEEN :v_start AND :v_end",
+                ExpressionStatement = "ReservationID = :v_reservation_id",
                 ExpressionAttributeValues = expressionAttributeValues
-            },
-            /* FilterExpression = new Expression
-            {
-                ExpressionStatement = "StartDate >= :v_StartDate",
-                ExpressionAttributeValues = filterAttributes
-            }*/
+            }
         };
-        return Ok(await dbContext
-                        .FromQueryAsync<Reservation>(queryOperationConfig)
-                        .GetRemainingAsync());
+
+        return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
     }
 
-    // PUT api/bookings
-    // request Body
-    // {
-    //    "CheckInDate": "2024-12-01",
-    //    "CheckOutDate": "2024-12-03",
-    //    "NumberOfGuests": 2,
-    //    "TotalPrice" : 75.00,
-    //    "GuestFullName": "John Doe",
-    //    "GuestEmail": "jdoe@email.com",
-    //    "GuestPhoneNumber": "(555) 555-5555",
-    //    "GuestDateOfBirth": "1980-01-01",
-    // }
-    [HttpPut()]
+    [HttpGet("by-name/{name}")] // GET api/reservations/by-name/John%20Doe
+    public async Task<IActionResult> GetByName(string name)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_name", name);
+        var queryOperationConfig = new QueryOperationConfig
+        {
+            IndexName = "GuestFullName-ReservationID-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "GuestFullName = :v_name",
+                ExpressionAttributeValues = expressionAttributeValues
+            }
+        };
+
+        return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
+    }
+
+    // TODO: refactor into a transaction
+    // returns in order of:
+    // all due in reservations
+    // all checked in reservations
+    // those checked out reservations of the current date
+    // those confirmed reservations with a check in date from the current date onward
+    [HttpGet]
+    public async Task<List<Reservation>> QueryByDate()
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
+
+        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_status", "Due In");
+        // expressionAttributeValues.Add(":v_date", date);
+        
+
+        var query = new QueryOperationConfig
+        {
+            IndexName = "BookingStatus-CheckInDate-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "BookingStatus = :v_status", // AND CheckInDate >= :v_date",
+                ExpressionAttributeValues = expressionAttributeValues
+            }
+        };
+
+        var data = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+
+        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_status", "Checked In");
+
+        query = new QueryOperationConfig
+        {
+            IndexName = "BookingStatus-CheckOutDate-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "BookingStatus = :v_status",
+                ExpressionAttributeValues = expressionAttributeValues
+            }
+        };
+
+        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
+
+        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_status", "Checked Out");
+        expressionAttributeValues.Add(":v_date", date);
+
+        query = new QueryOperationConfig
+        {
+            IndexName = "BookingStatus-CheckOutDate-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "BookingStatus = :v_status AND CheckOutDate = :v_date",
+                ExpressionAttributeValues = expressionAttributeValues
+            }
+        };
+
+        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
+
+        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_status", "Confirmed");
+        expressionAttributeValues.Add(":v_date", date);
+
+        query = new QueryOperationConfig
+        {
+            IndexName = "BookingStatus-CheckInDate-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "BookingStatus = :v_status AND CheckInDate >= :v_date",
+                ExpressionAttributeValues = expressionAttributeValues
+            }
+        };
+
+        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
+
+        return data;
+    }
+
+    /* request Body
+    {
+        "CheckInDate": "2024-12-01",
+        "CheckOutDate": "2024-12-03",
+        "NumberOfGuests": 2,
+        "TotalPrice" : 150.00,
+        "GuestFullName": "John Doe",
+        "GuestEmail": "jdoe@email.com",
+        "GuestPhoneNumber": "(555) 555-5555",
+        "GuestDateOfBirth": "1980-01-01",
+    } 
+    */
+
+    [HttpPut] // PUT api/bookings
     public async Task<string> CreateReservation([FromBody] Reservation reservation)
     {
-        string guid = $"RESERVATION#{System.Guid.NewGuid().ToString("D").ToUpper()}";
+        Random random = new Random();
+        string id = random.Next(100000000, 2147483647).ToString().PadLeft(8, '0');
+
         var item = new Dictionary<string, AttributeValue>
         {
-            ["PK"] = new AttributeValue { S = "RESERVATION" },
-            ["SK"] = new AttributeValue { S = guid },
-            ["RoomID"] = new AttributeValue { S = "" },
-            ["CheckInDate"] = new AttributeValue { S = reservation.CheckInDate },
-            ["CheckOutDate"] = new AttributeValue { S = reservation.CheckOutDate },
-            ["NumberOfGuests"] = new AttributeValue { N = reservation.NumberOfGuests.ToString() },
-            ["TotalPrice"] = new AttributeValue { N = reservation.TotalPrice.ToString() },
-            ["BookingStatus"] = new AttributeValue { S = "Confirmed" },
-            ["GuestFullName"] = new AttributeValue { S = reservation.GuestFullName },
-            ["GuestEmail"] = new AttributeValue { S = reservation.GuestEmail },
-            ["GuestPhoneNumber"] = new AttributeValue { S = reservation.GuestPhoneNumber },
-            ["GuestDateOfBirth"] = new AttributeValue { S = reservation.GuestDateOfBirth },
-            ["UpdatedBy"] = new AttributeValue { S = String.Empty },
-            // ["ConfirmationNumber"] = new AttributeValue
-            //     { S = _random.Next(10000000,99999999).ToString().PadLeft(8, '0')},
+            { "ReservationID", new AttributeValue(id) },
+            { "RoomID", new AttributeValue(String.Empty) },
+            { "CheckInDate", new AttributeValue(reservation.CheckInDate) },
+            { "CheckOutDate", new AttributeValue(reservation.CheckOutDate) },
+            { "NumberOfGuests", new AttributeValue(reservation.NumberOfGuests.ToString()) },
+            { "TotalPrice", new AttributeValue(reservation.TotalPrice.ToString()) },
+            { "BookingStatus", new AttributeValue("Confirmed") },
+            { "GuestFullName", new AttributeValue(reservation.GuestFullName) },
+            { "GuestEmail", new AttributeValue(reservation.GuestEmail) },
+            { "GuestPhoneNumber", new AttributeValue(reservation.GuestPhoneNumber) },
+            { "GuestDateOfBirth", new AttributeValue(reservation.GuestDateOfBirth) },
+            { "UpdatedBy", new AttributeValue(String.Empty) }
         };
+
         var putRequest = new PutItemRequest
         {
-            TableName = "Hotel",
+            TableName = "Reservations",
             Item = item
         };
 
         await _client.PutItemAsync(putRequest);
-        // return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
-        return guid.Substring(12, 8); // confirmation number a substring of the guid
-        // begins_with query condition allows searching
-        // by name & confirmation number combination
+
+        return id;
     }
 
-    /*
-    public async Task<IActionResult> CheckReservation()
+    /* [HttpPatch("{id}")]
+    public async Task<IActionResult> CheckReservation(
+        string id, [FromBody] string status, List<string> roomIDs)
     {
         var request = new TransactWriteItemsRequest()
         {
-            TransactItems = new List<TransactWriteItem>() 
-            { 
+            TransactItems = new List<TransactWriteItem>()
+            {
                 new TransactWriteItem()
                 {
                     Update = new Update ()
                     {
-
+                        TableName = "Reservations",
+                        Key = new Dictionary<string, AttributeValue>
+                        {
+                            { "ReservationID", new AttributeValue(id) }
+                        },
+                        UpdateExpression = "SET BookingStatus = :status",
+                        ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                        {
+                            { ":status", new AttributeValue(status) },
+                        },
                     }
                 }
             }
         };
-    }
-    */
+
+        return Ok(await _client.TransactWriteItemsAsync(request));
+    } */
 }

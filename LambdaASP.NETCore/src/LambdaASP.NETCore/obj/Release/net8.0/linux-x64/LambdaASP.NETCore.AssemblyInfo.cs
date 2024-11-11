@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e60009d8bbe1c85a768465cfdd3f38d0e0cbff12")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b51e1e1020406ef31a44b772e3fe7640ba154434")]
 [assembly: System.Reflection.AssemblyProductAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

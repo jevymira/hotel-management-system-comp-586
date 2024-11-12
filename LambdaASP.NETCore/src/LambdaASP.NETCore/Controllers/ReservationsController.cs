@@ -155,7 +155,7 @@ public class ReservationsController : ControllerBase
     public async Task<string> CreateReservation([FromBody] Reservation reservation)
     {
         Random random = new Random();
-        string id = random.Next(100000000, 2147483647).ToString().PadLeft(8, '0');
+        string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
 
         var item = new Dictionary<string, AttributeValue>
         {

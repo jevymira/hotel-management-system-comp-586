@@ -12,6 +12,12 @@
     <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Auth\**" />
+    <Content Remove="Auth\**" />
+    <EmbeddedResource Remove="Auth\**" />
+    <None Remove="Auth\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.0" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.402" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
@@ -22,8 +28,5 @@
     <ProjectReference Include="..\..\..\Abstractions\Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\..\DynamoDB\DynamoDB.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Auth\" />
   </ItemGroup>
 </Project>

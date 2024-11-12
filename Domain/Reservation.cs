@@ -6,12 +6,12 @@ namespace Domain;
 public class Reservation
 {
     [DynamoDBHashKey]
-    [DynamoDBGlobalSecondaryIndexRangeKey("GuestFullName-ReservationID-index")]
+    // [DynamoDBGlobalSecondaryIndexRangeKey("GuestFullName-ReservationID-index")]
     public string? ReservationID { get; set; }
 
     public List<string>? RoomID { get; set; }
 
-    [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
+    // [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
     public string? CheckInDate { get ; set; }
 
     public string? CheckOutDate { get; set; }
@@ -20,10 +20,10 @@ public class Reservation
 
     public decimal? TotalPrice { get; set; }
 
-    [DynamoDBGlobalSecondaryIndexHashKey("BookingStatus-CheckInDate-index")]
+    // [DynamoDBGlobalSecondaryIndexHashKey("BookingStatus-CheckInDate-index")]
     public string? BookingStatus { get; set; }
 
-    [DynamoDBGlobalSecondaryIndexHashKey("GuestFullName-ReservationID-index")]
+    // [DynamoDBGlobalSecondaryIndexHashKey("GuestFullName-ReservationID-index")]
     public string? GuestFullName { get; set; }
 
     public string? GuestEmail { get; set; }

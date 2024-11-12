@@ -59,7 +59,6 @@ public class ReservationsController : ControllerBase
         return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
     }
 
-    // TODO: refactor into a transaction
     // returns in order of:
     // all due in reservations
     // all checked in reservations

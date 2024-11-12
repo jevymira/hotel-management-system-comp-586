@@ -17,7 +17,16 @@ C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaA
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Amazon.Lambda.Serialization.SystemTextJson.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\AWSSDK.Core.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\AWSSDK.DynamoDBv2.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.Bcl.TimeProvider.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.Logging.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.Protocols.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Microsoft.IdentityModel.Tokens.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Newtonsoft.Json.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\Domain.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\DynamoDB.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\publish\LambdaASP.NETCore.dll

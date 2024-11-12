@@ -23,4 +23,7 @@
     <ProjectReference Include="..\..\..\Domain\Domain.csproj" />
     <ProjectReference Include="..\..\..\DynamoDB\DynamoDB.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Auth\" />
+  </ItemGroup>
 </Project>

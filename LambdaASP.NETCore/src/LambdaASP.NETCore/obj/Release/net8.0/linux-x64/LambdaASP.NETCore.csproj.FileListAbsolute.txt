@@ -42,3 +42,12 @@ C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaA
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\LambdaASP.NETCore.genruntimeconfig.cache
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\ref\LambdaASP.NETCore.dll
 C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\obj\Release\net8.0\linux-x64\LambdaASP.NETCore.sourcelink.json
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.Bcl.TimeProvider.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.Logging.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.Protocols.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\Microsoft.IdentityModel.Tokens.dll
+C:\Users\AD MIN\source\repos\HotelManagementSystem\LambdaASP.NETCore\src\LambdaASP.NETCore\bin\Release\net8.0\linux-x64\System.IdentityModel.Tokens.Jwt.dll

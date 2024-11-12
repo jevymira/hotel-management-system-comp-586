@@ -31,37 +31,6 @@
           }
         }
       }
-    },
-    "net8.0/linux-x64": {
-      "AWSSDK.Core/3.7.400.36": {
-        "type": "package",
-        "compile": {
-          "lib/net8.0/AWSSDK.Core.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/AWSSDK.Core.dll": {
-            "related": ".pdb;.xml"
-          }
-        }
-      },
-      "AWSSDK.DynamoDBv2/3.7.402": {
-        "type": "package",
-        "dependencies": {
-          "AWSSDK.Core": "[3.7.400.36, 4.0.0)"
-        },
-        "compile": {
-          "lib/net8.0/AWSSDK.DynamoDBv2.dll": {
-            "related": ".pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net8.0/AWSSDK.DynamoDBv2.dll": {
-            "related": ".pdb;.xml"
-          }
-        }
-      }
     }
   },
   "libraries": {
@@ -205,11 +174,6 @@
           }
         },
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "linux-x64": {
-        "#import": []
       }
     }
   }

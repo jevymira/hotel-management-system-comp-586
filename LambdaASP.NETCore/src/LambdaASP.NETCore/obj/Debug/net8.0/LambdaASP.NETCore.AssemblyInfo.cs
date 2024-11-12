@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8029b44d1fe3dbfda7bd5cb9e732aab63f8bff1e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4640b4e31aa33ee4503d2dd359696d95ac551fc2")]
 [assembly: System.Reflection.AssemblyProductAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LambdaASP.NETCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -41,12 +41,13 @@ public class AdminAccountsController : ControllerBase
         AmazonDynamoDBClient client = new AmazonDynamoDBClient();
         DynamoDBContext context = new DynamoDBContext(client);
 
+        // check for account with matching Email and Password AND which is Active
         var request = new QueryRequest
         {
             TableName = "AdminAccounts",
             IndexName = "Email-PasswordHash-index",
             KeyConditionExpression = "Email = :email AND PasswordHash = :password_hash",
-            FilterExpression = "AccountStatus = :status", // check if account is active
+            FilterExpression = "AccountStatus = :status",
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
                 { ":email", new AttributeValue(loginRequest.Email) },
@@ -75,7 +76,7 @@ public class AdminAccountsController : ControllerBase
         }
     }
 
-    // Scan possible because there is a singular Item type in the table
+    // Scan viable because there is a singular Item type in the table
     [HttpGet] // GET api/admin-accounts
     public async Task<IActionResult> Get()
     {
@@ -109,7 +110,6 @@ public class AdminAccountsController : ControllerBase
             return BadRequest("Email already used.");
         else
         {
-
             Random random = new Random();
             string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
             string temp = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("temp")));

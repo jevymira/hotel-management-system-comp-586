@@ -9,9 +9,13 @@ using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using System.Globalization;
 using LambdaASP.NETCore.Models;
+using Microsoft.Extensions.Logging;
+using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LambdaASP.NETCore.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 public class ReservationsController : ControllerBase
 {
@@ -22,22 +26,13 @@ public class ReservationsController : ControllerBase
         _client = factory.GetClient();
     }
 
+    [AllowAnonymous]
     [HttpGet("by-id/{id}")] // GET api/reservations/by-id/0123456789
     public async Task<IActionResult> Get(string id)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
-        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_reservation_id", id);
-        var queryOperationConfig = new QueryOperationConfig
-        {
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "ReservationID = :v_reservation_id",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
+        var context = new DynamoDBContext(_client);
+        Reservation res = await context.LoadAsync<Reservation>(id);
+        return Ok(res);
     }
 
     [HttpGet("by-name/{name}")] // GET api/reservations/by-name/John%20Doe
@@ -59,6 +54,7 @@ public class ReservationsController : ControllerBase
         return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
     }
 
+    // TODO: refactor
     // returns in order of:
     // all due in reservations
     // all checked in reservations
@@ -73,8 +69,6 @@ public class ReservationsController : ControllerBase
 
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Due In");
-        // expressionAttributeValues.Add(":v_date", date);
-        
 
         var query = new QueryOperationConfig
         {
@@ -87,6 +81,7 @@ public class ReservationsController : ControllerBase
         };
 
         var data = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+
 
         expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Checked In");
@@ -103,6 +98,7 @@ public class ReservationsController : ControllerBase
 
         data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
 
+
         expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Checked Out");
         expressionAttributeValues.Add(":v_date", date);
@@ -118,6 +114,7 @@ public class ReservationsController : ControllerBase
         };
 
         data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
+
 
         expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Confirmed");
@@ -138,7 +135,7 @@ public class ReservationsController : ControllerBase
         return data;
     }
 
-    /* request Body
+    /* sample request body
     {
         "CheckInDate": "2024-12-01",
         "CheckOutDate": "2024-12-03",
@@ -147,10 +144,9 @@ public class ReservationsController : ControllerBase
         "GuestFullName": "John Doe",
         "GuestEmail": "jdoe@email.com",
         "GuestPhoneNumber": "(555) 555-5555",
-        "GuestDateOfBirth": "1980-01-01",
+        "GuestDateOfBirth": "1980-01-01"
     } 
     */
-
     [HttpPut] // PUT api/bookings
     public async Task<string> CreateReservation([FromBody] Reservation reservation)
     {
@@ -184,6 +180,16 @@ public class ReservationsController : ControllerBase
         return id;
     }
 
+    /* sample request body
+    {
+        "bookingStatus": "Checked In",
+        "RoomID": [
+            "MOCK1",
+            "MOCK2"
+        ],
+        "RoomStatus": "Occupied"
+    }
+    */
     [HttpPatch("{id}")]
     public async Task<IActionResult> CheckReservation(
         string id, [FromBody] CheckInOutDTO model)
@@ -218,18 +224,18 @@ public class ReservationsController : ControllerBase
                 {
                     TableName = "Rooms",
                     Key = new Dictionary<string, AttributeValue>
-                        {
-                            { "RoomID", new AttributeValue(model.RoomID[i]) }
-                        },
+                    {
+                        { "RoomID", new AttributeValue(model.RoomID[i]) }
+                    },
                     UpdateExpression = "SET #s = :status",
                     ExpressionAttributeNames = new Dictionary<string, string>
-                        {
-                            { "#s", "Status" },
-                        },
+                    {
+                        { "#s", "Status" }, // alias, status is a reserved word
+                    },
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                        {
-                            { ":status", new AttributeValue(model.RoomStatus) },
-                        }
+                    {
+                        { ":status", new AttributeValue(model.RoomStatus) },
+                    }
                 }
             });
         }

@@ -43,7 +43,6 @@ public class Startup
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
-
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -54,25 +53,16 @@ public class Startup
             app.UseDeveloperExceptionPage();
         }
 
-        app.UseHttpsRedirection();
-
-        app.UseRouting();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
         app.UseCors(builder => builder
             .AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
         );
-        //.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader()
-
+        app.UseHttpsRedirection();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            //endpoints.MapGet("/", async context =>
-            //{
-            //    await context.Response.WriteAsync("Welcome to running ASP.NET Core on AWS Lambda");
-            //});
         });
     }
 }

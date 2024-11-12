@@ -10,44 +10,56 @@ using System.Text;
 using LambdaASP.NETCore.Models;
 using Domain;
 using Abstractions;
+using Microsoft.AspNetCore.Authorization;
 
-namespace LambdaASP.NETCore.Controllers
+namespace LambdaASP.NETCore.Controllers;
+
+[Authorize]
+[Route("api/admin-accounts")]
+public class AdminAccountsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    public class AdminAccountsController : ControllerBase
+    private IConfiguration _config;
+    AmazonDynamoDBClient _client;
+
+    public AdminAccountsController(IConfiguration config, IDBClientFactory<AmazonDynamoDBClient> factory)
     {
-        private IConfiguration _config;
-        AmazonDynamoDBClient _client;
+        _config = config;
+        _client = factory.GetClient();
+    }
 
-        public AdminAccountsController(IConfiguration config, IDBClientFactory<AmazonDynamoDBClient> factory)
+    /*
+    {
+        "email": "apierce@travelersinn.com",
+        "password": "{SHA-256 hash}" // see AdminAccounts table in DynamoDB us-east-1
+    }
+    */
+    // SHA-256 for password
+    [AllowAnonymous]
+    [HttpPost("login")] // POST api/admin-accounts/login
+    public async Task<IActionResult> Post([FromBody] LoginRequest loginRequest)
+    {
+        AmazonDynamoDBClient client = new AmazonDynamoDBClient();
+        DynamoDBContext context = new DynamoDBContext(client);
+
+        var request = new QueryRequest
         {
-            _config = config;
-            _client = factory.GetClient();
-        }
-
-        // SHA-256
-        [HttpPost("login")]
-        public async Task<IActionResult> Post([FromBody] LoginRequest loginRequest)
-        {
-            AmazonDynamoDBClient client = new AmazonDynamoDBClient();
-            DynamoDBContext context = new DynamoDBContext(client);
-
-            var request = new QueryRequest
+            TableName = "AdminAccounts",
+            IndexName = "Email-PasswordHash-index",
+            KeyConditionExpression = "Email = :email AND PasswordHash = :password_hash",
+            FilterExpression = "AccountStatus = :status", // check if account is active
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
-                TableName = "AdminAccounts",
-                IndexName = "Email-PasswordHash-index",
-                KeyConditionExpression = "Email = :email AND PasswordHash = :password_hash",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    { ":email", new AttributeValue(loginRequest.Email) },
-                    { ":password_hash", new AttributeValue(loginRequest.Password) }
-                },
-            };
+                { ":email", new AttributeValue(loginRequest.Email) },
+                { ":password_hash", new AttributeValue(loginRequest.Password) },
+                { ":status", new AttributeValue("Active") }
+            },
+        };
 
-            var data = await client.QueryAsync(request);
-            if (data.Count == 0) // if query returns no account with with email+password combination
-                return StatusCode(401);
-
+        var data = await client.QueryAsync(request);
+        if (data.Count == 0) // if query returns no account with with email+password combination
+            return StatusCode(401);
+        else
+        {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -61,58 +73,65 @@ namespace LambdaASP.NETCore.Controllers
 
             return Ok(token);
         }
+    }
 
-        // because there is a singular Item type in the table, the Scan operation works
-        [HttpGet]
-        public async Task<List<AdminAccount>> Get()
-        {
-            DynamoDBContext context = new DynamoDBContext(_client);
-            return await context.ScanAsync<AdminAccount>(default).GetRemainingAsync();
-        }
+    // Scan possible because there is a singular Item type in the table
+    [HttpGet] // GET api/admin-accounts
+    public async Task<IActionResult> Get()
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        return Ok(await context.ScanAsync<AdminAccount>(default).GetRemainingAsync());
+    }
 
-        // not a transaction, query may execute without the subsequent write
-        // conditional: if the email is already used, then returns BadRequest
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] CreateAccountDTO model)
+    /* sample request body
+    {
+        "name": "Aiden Pierce",
+        "email": "apierce@travelersinn.com"
+    }
+    */
+    // conditional: if the email is already used, then returns BadRequest
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] CreateAccountDTO model)
+    {
+        var request = new QueryRequest
         {
-            var request = new QueryRequest
+            TableName = "AdminAccounts",
+            IndexName = "Email-PasswordHash-index",
+            KeyConditionExpression = "Email = :email",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
-                TableName = "AdminAccounts",
-                IndexName = "Email-PasswordHash-index",
-                KeyConditionExpression = "Email = :email",
-                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                {
-                    { ":email", new AttributeValue(model.Email) }
-                },
+                { ":email", new AttributeValue(model.Email) }
+            },
+        };
+
+        var data = await _client.QueryAsync(request);
+        if (data.Count >= 1) // if query returns an account with this email
+            return BadRequest("Email already used.");
+        else
+        {
+
+            Random random = new Random();
+            string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
+            string temp = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("temp")));
+
+            var item = new Dictionary<string, AttributeValue>
+            {
+                { "AdminID", new AttributeValue(id) },
+                { "FullName", new AttributeValue(model.Name) },
+                { "Email", new AttributeValue(model.Email) },
+                { "PasswordHash", new AttributeValue(temp) },
+                { "AccountStatus", new AttributeValue("Active") }
             };
 
-            var data = await _client.QueryAsync(request);
-            if (data.Count >= 1) // if query returns an account with this password
-                return BadRequest("Email already used.");
-            else
+            var putRequest = new PutItemRequest
             {
+                TableName = "AdminAccounts",
+                Item = item
+            };
 
-                Random random = new Random();
-                string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
-                string temp = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("temp")));
-
-                var item = new Dictionary<string, AttributeValue>
-                {
-                    { "AdminID", new AttributeValue(id) },
-                    { "FullName", new AttributeValue(model.Name) },
-                    { "Email", new AttributeValue(model.Email) },
-                    { "PasswordHash", new AttributeValue(temp) },
-                    { "AccountStatus", new AttributeValue("Active") }
-                };
-
-                var putRequest = new PutItemRequest
-                {
-                    TableName = "AdminAccounts",
-                    Item = item
-                };
-
-                return Ok(await _client.PutItemAsync(putRequest));
-            }
+            return Ok(await _client.PutItemAsync(putRequest));
         }
     }
+
+    // TODO: endpoint to change password from temporary password
 }

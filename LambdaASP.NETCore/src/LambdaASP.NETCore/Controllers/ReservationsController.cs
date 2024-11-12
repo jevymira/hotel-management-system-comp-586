@@ -8,6 +8,7 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using System.Globalization;
+using LambdaASP.NETCore.Models;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -184,33 +185,61 @@ public class ReservationsController : ControllerBase
         return id;
     }
 
-    /* [HttpPatch("{id}")]
+    [HttpPatch("{id}")]
     public async Task<IActionResult> CheckReservation(
-        string id, [FromBody] string status, List<string> roomIDs)
+        string id, [FromBody] CheckInOutDTO model)
     {
+        List<TransactWriteItem> list = new List<TransactWriteItem>()
+        {
+            new TransactWriteItem()
+            {
+                Update = new Update()
+                {
+                    TableName = "Reservations",
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { "ReservationID", new AttributeValue(id) }
+                    },
+                    UpdateExpression = "SET BookingStatus = :status, " +
+                                            "RoomID = :rooms",
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":status", new AttributeValue(model.BookingStatus) },
+                        { ":rooms", new AttributeValue(model.RoomID) }
+                    },
+                }
+            },
+        };
+
+        for (int i = 0; i < model.RoomID.Count(); i++)
+        {
+            list.Add(new TransactWriteItem()
+            {
+                Update = new Update()
+                {
+                    TableName = "Rooms",
+                    Key = new Dictionary<string, AttributeValue>
+                        {
+                            { "RoomID", new AttributeValue(model.RoomID[i]) }
+                        },
+                    UpdateExpression = "SET #s = :status",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+                        {
+                            { "#s", "Status" },
+                        },
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                        {
+                            { ":status", new AttributeValue(model.RoomStatus) },
+                        }
+                }
+            });
+        }
+
         var request = new TransactWriteItemsRequest()
         {
-            TransactItems = new List<TransactWriteItem>()
-            {
-                new TransactWriteItem()
-                {
-                    Update = new Update ()
-                    {
-                        TableName = "Reservations",
-                        Key = new Dictionary<string, AttributeValue>
-                        {
-                            { "ReservationID", new AttributeValue(id) }
-                        },
-                        UpdateExpression = "SET BookingStatus = :status",
-                        ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                        {
-                            { ":status", new AttributeValue(status) },
-                        },
-                    }
-                }
-            }
+            TransactItems = list
         };
 
         return Ok(await _client.TransactWriteItemsAsync(request));
-    } */
+    }
 }

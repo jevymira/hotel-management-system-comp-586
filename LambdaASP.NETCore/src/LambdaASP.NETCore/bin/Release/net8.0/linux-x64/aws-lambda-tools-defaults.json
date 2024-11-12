@@ -12,6 +12,6 @@
     "s3-prefix"     : "LambdaASP.NETCore/",
     "template"      : "serverless.template",
     "template-parameters" : "",
-    "s3-bucket"           : "hotel-mangement-system-group-4",
-    "stack-name"          : "HotelManagementSystem"
+    "s3-bucket"           : "hms-group-4",
+    "stack-name"          : "HMS"
 }

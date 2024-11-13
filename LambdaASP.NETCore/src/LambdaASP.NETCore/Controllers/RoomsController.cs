@@ -23,7 +23,7 @@ public class RoomsController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("{id}")] // GET api/rooms/5XS34AD1LE
+    [HttpGet("{id}")] // GET api/rooms/0123456789
     public async Task<IActionResult> Get(string id)
     {
         var context = new DynamoDBContext(_client);

@@ -41,20 +41,13 @@ public class AdminAccountsController : ControllerBase
         AmazonDynamoDBClient client = new AmazonDynamoDBClient();
         DynamoDBContext context = new DynamoDBContext(client);
 
-<<<<<<< HEAD
         // check for account with matching Email and Password AND which is Active
-=======
->>>>>>> f5135ff (feat(room-controller): enforce RoomNumber uniqueness)
         var request = new QueryRequest
         {
             TableName = "AdminAccounts",
             IndexName = "Email-PasswordHash-index",
             KeyConditionExpression = "Email = :email AND PasswordHash = :password_hash",
-<<<<<<< HEAD
             FilterExpression = "AccountStatus = :status",
-=======
-            FilterExpression = "AccountStatus = :status", // check if account is active
->>>>>>> f5135ff (feat(room-controller): enforce RoomNumber uniqueness)
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
                 { ":email", new AttributeValue(loginRequest.Email) },
@@ -83,11 +76,7 @@ public class AdminAccountsController : ControllerBase
         }
     }
 
-<<<<<<< HEAD
     // Scan viable because there is a singular Item type in the table
-=======
-    // Scan possible because there is a singular Item type in the table
->>>>>>> f5135ff (feat(room-controller): enforce RoomNumber uniqueness)
     [HttpGet] // GET api/admin-accounts
     public async Task<IActionResult> Get()
     {
@@ -121,10 +110,6 @@ public class AdminAccountsController : ControllerBase
             return BadRequest("Email already used.");
         else
         {
-<<<<<<< HEAD
-=======
-
->>>>>>> f5135ff (feat(room-controller): enforce RoomNumber uniqueness)
             Random random = new Random();
             string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
             string temp = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("temp")));

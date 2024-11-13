@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Abstractions")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4640b4e31aa33ee4503d2dd359696d95ac551fc2")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8029b44d1fe3dbfda7bd5cb9e732aab63f8bff1e")]
->>>>>>> f5135ff (feat(room-controller): enforce RoomNumber uniqueness)
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed980241f509f5b766adb883909c4ef1c3699f83")]
 [assembly: System.Reflection.AssemblyProductAttribute("Abstractions")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Abstractions")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -3,28 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|solutionrelative:domain\\room.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\adminaccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\adminaccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\adminaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|solutionrelative:domain\\adminaccount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\domain\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B3046321-C788-4681-B914-2F49F01C7CDA}|Domain\\Domain.csproj|solutionrelative:domain\\reservation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\roomscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|c:\\users\\ad min\\source\\repos\\hotelmanagementsystem\\lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\adminaccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}|LambdaASP.NETCore\\src\\LambdaASP.NETCore\\LambdaASP.NETCore.csproj|solutionrelative:lambdaasp.netcore\\src\\lambdaasp.netcore\\controllers\\adminaccountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,16 +22,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -52,72 +32,47 @@
               "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\AdminAccountsController.cs",
               "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\AdminAccountsController.cs",
               "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\AdminAccountsController.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAADwvysAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAACYAAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-11T23:43:10.317Z",
+              "IsPinned": true,
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "AdminAccount.cs",
-              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\AdminAccount.cs",
-              "RelativeDocumentMoniker": "Domain\\AdminAccount.cs",
-              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\AdminAccount.cs",
-              "RelativeToolTip": "Domain\\AdminAccount.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-11T23:43:42.289Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Room.cs",
-              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Room.cs",
-              "RelativeDocumentMoniker": "Domain\\Room.cs",
-              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Room.cs",
-              "RelativeToolTip": "Domain\\Room.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-23T02:13:09.343Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "RoomsController.cs",
               "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\RoomsController.cs",
               "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\RoomsController.cs",
               "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\RoomsController.cs",
               "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\RoomsController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABkAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAABAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-11T03:31:34.791Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Reservation.cs",
-              "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Reservation.cs",
-              "RelativeDocumentMoniker": "Domain\\Reservation.cs",
-              "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\Domain\\Reservation.cs",
-              "RelativeToolTip": "Domain\\Reservation.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-22T03:45:32.343Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "ReservationsController.cs",
               "DocumentMoniker": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "RelativeDocumentMoniker": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "ToolTip": "C:\\Users\\AD MIN\\source\\repos\\HotelManagementSystem\\LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
               "RelativeToolTip": "LambdaASP.NETCore\\src\\LambdaASP.NETCore\\Controllers\\ReservationsController.cs",
-              "ViewState": "AgIAANcAAAAAAAAAAAAAAOsAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAAwC0AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-22T02:46:42.143Z"
+              "WhenOpened": "2024-10-22T02:46:42.143Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             }
           ]
         }

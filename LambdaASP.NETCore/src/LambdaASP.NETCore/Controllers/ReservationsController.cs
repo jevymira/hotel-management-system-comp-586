@@ -5,12 +5,7 @@ using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
-using Amazon.Lambda.APIGatewayEvents;
-using Amazon.Lambda.Core;
-using System.Globalization;
 using LambdaASP.NETCore.Models;
-using Microsoft.Extensions.Logging;
-using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 
 namespace LambdaASP.NETCore.Controllers;
@@ -20,10 +15,12 @@ namespace LambdaASP.NETCore.Controllers;
 public class ReservationsController : ControllerBase
 {
     AmazonDynamoDBClient _client;
+    Random _random;
 
     public ReservationsController(IDBClientFactory<AmazonDynamoDBClient> factory)
     {
         _client = factory.GetClient();
+        _random = new Random();
     }
 
     [AllowAnonymous]
@@ -60,7 +57,7 @@ public class ReservationsController : ControllerBase
     // all checked in reservations
     // those checked out reservations of the current date
     // those confirmed reservations with a check in date from the current date onward
-    [HttpGet]
+    [HttpGet] // GET api/reservations
     public async Task<List<Reservation>> QueryByDate()
     {
         DynamoDBContext context = new DynamoDBContext(_client);
@@ -137,6 +134,8 @@ public class ReservationsController : ControllerBase
 
     /* sample request body
     {
+        "RoomType": "Double",
+        "OrderQuantity": 1,
         "CheckInDate": "2024-12-01",
         "CheckOutDate": "2024-12-03",
         "NumberOfGuests": 2,
@@ -145,39 +144,43 @@ public class ReservationsController : ControllerBase
         "GuestEmail": "jdoe@email.com",
         "GuestPhoneNumber": "(555) 555-5555",
         "GuestDateOfBirth": "1980-01-01"
-    } 
+    }  
     */
-    [HttpPut] // PUT api/bookings
-    public async Task<string> CreateReservation([FromBody] Reservation reservation)
+    [HttpPut] // PUT api/reservations
+    [ProducesResponseType(StatusCodes.Status201Created)] // instead of 200, because only id returned
+    public async Task<IActionResult> CreateReservation([FromBody] Reservation model)
     {
-        Random random = new Random();
-        string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
-
-        var item = new Dictionary<string, AttributeValue>
+        try
         {
-            { "ReservationID", new AttributeValue(id) },
-            { "RoomID", new AttributeValue(String.Empty) },
-            { "CheckInDate", new AttributeValue(reservation.CheckInDate) },
-            { "CheckOutDate", new AttributeValue(reservation.CheckOutDate) },
-            { "NumberOfGuests", new AttributeValue(reservation.NumberOfGuests.ToString()) },
-            { "TotalPrice", new AttributeValue(reservation.TotalPrice.ToString()) },
-            { "BookingStatus", new AttributeValue("Confirmed") },
-            { "GuestFullName", new AttributeValue(reservation.GuestFullName) },
-            { "GuestEmail", new AttributeValue(reservation.GuestEmail) },
-            { "GuestPhoneNumber", new AttributeValue(reservation.GuestPhoneNumber) },
-            { "GuestDateOfBirth", new AttributeValue(reservation.GuestDateOfBirth) },
-            { "UpdatedBy", new AttributeValue(String.Empty) }
-        };
+            DynamoDBContext context = new DynamoDBContext(_client);
+            Reservation reservation = new Reservation
+            {
+                ReservationID = _random.Next(100000000, 2147483647).ToString().PadLeft(10, '0'),
+                RoomType = model.RoomType,
+                OrderQuantity = model.OrderQuantity,
+                // string set in DynamoDB cannot be empty,
+                // therefore RoomIDs null (rather than an empty []) when queried
+                RoomIDs = null,
+                CheckInDate = model.CheckInDate,
+                CheckOutDate = model.CheckOutDate,
+                NumberOfGuests = model.NumberOfGuests,
+                TotalPrice = model.TotalPrice,
+                BookingStatus = "Confirmed",
+                GuestFullName = model.GuestFullName,
+                GuestEmail = model.GuestEmail,
+                GuestPhoneNumber = model.GuestPhoneNumber,
+                GuestDateOfBirth = model.GuestDateOfBirth,
+                UpdatedBy = String.Empty,
+            };
 
-        var putRequest = new PutItemRequest
+            await context.SaveAsync(reservation);
+            return CreatedAtAction(nameof(CreateReservation), 
+                                   new { confirmationNumber = reservation.ReservationID });
+        }
+        catch
         {
-            TableName = "Reservations",
-            Item = item
-        };
-
-        await _client.PutItemAsync(putRequest);
-
-        return id;
+            return StatusCode(500);
+        }
     }
 
     /* sample request body
@@ -247,4 +250,5 @@ public class ReservationsController : ControllerBase
 
         return Ok(await _client.TransactWriteItemsAsync(request));
     }
+
 }

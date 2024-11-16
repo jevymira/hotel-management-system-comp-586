@@ -9,7 +9,11 @@ public class Reservation
     // [DynamoDBGlobalSecondaryIndexRangeKey("GuestFullName-ReservationID-index")]
     public string? ReservationID { get; set; }
 
-    public List<string>? RoomID { get; set; }
+    public string? RoomType { get; set; }
+
+    public int? OrderQuantity { get; set; }
+
+    public List<string>? RoomIDs { get; set; }
 
     // [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
     public string? CheckInDate { get ; set; }

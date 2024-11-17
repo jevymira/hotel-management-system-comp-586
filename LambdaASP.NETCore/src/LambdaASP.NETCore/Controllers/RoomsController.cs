@@ -41,20 +41,13 @@ public class RoomsController : ControllerBase
         return Ok(await context.ScanAsync<Room>(default).GetRemainingAsync());
     }
 
-    /* sample body:
-    {
-        "roomTypeID": "Double",
-        "roomNumber": "3",
-        "pricePerNight": 150,
-        "maxOccupancy": 2, // cannot be already in use
-        "roomSize": "215 ft^2",
-        "imageUrls": [ // sample, not final
-            "https://h-images-group-4.s3.us-east-1.amazonaws.com/double-all.png",
-            "https://h-images-group-4.s3.us-east-1.amazonaws.com/double-alt.png"
-        ]
-    }
-    */
-    [HttpPost] // (not idempotent) POST api/rooms
+    // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
+    // request Body:
+    //   form-data for content-type: application/json
+    //     RoomDTO[roomType], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber]
+    //   form-data for content-type: multipart/form-data
+    //     images
+    [HttpPost] // POST api/rooms
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> Put([FromForm] PostRoomDTO roomDTO,

@@ -44,7 +44,7 @@ public class RoomsController : ControllerBase
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
     // request Body:
     //   form-data for content-type: application/json
-    //     RoomDTO[roomType], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber]
+    //     RoomDTO[roomTypeID], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber]
     //   form-data for content-type: multipart/form-data
     //     images
     [HttpPost] // POST api/rooms

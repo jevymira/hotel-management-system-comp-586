@@ -146,8 +146,8 @@ public class ReservationsController : ControllerBase
         "GuestDateOfBirth": "1980-01-01"
     }  
     */
-    [HttpPut] // PUT api/reservations
-    [ProducesResponseType(StatusCodes.Status201Created)] // instead of 200, because only id returned
+    [HttpPost] // POST api/reservations
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateReservation([FromBody] Reservation model)
     {
         try

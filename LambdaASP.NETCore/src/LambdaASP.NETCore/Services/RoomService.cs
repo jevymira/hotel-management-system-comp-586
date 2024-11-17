@@ -29,7 +29,7 @@ public class RoomService : IRoomService
         Room room = new Room
         {
             RoomID = id,
-            RoomTypeID = roomDTO.RoomType,
+            RoomTypeID = roomDTO.RoomTypeID,
             RoomNumber = roomDTO.RoomNumber,
             PricePerNight = roomDTO.PricePerNight,
             MaxOccupancy = roomDTO.MaxOccupancy,

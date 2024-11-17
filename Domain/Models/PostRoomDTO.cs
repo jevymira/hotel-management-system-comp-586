@@ -2,8 +2,7 @@
 
 public class PostRoomDTO
 {
-    // public required string RoomID { get; set; }
-    public required string RoomType { get; set; }
+    public required string RoomTypeID { get; set; }
     public required decimal PricePerNight { get; set; }
     public required int MaxOccupancy { get; set; }
     public required string RoomNumber { get; set; }

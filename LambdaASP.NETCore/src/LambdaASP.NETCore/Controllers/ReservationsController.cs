@@ -1,12 +1,12 @@
 ﻿using Abstractions;
-using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
-using LambdaASP.NETCore.Models;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Entities;
+using Domain.Models;
 
 namespace LambdaASP.NETCore.Controllers;
 

@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using LambdaASP.NETCore.Services;
+using Domain.Abstractions.Services;
+using Domain.Abstractions.Repositories;
+using LambdaASP.NETCore.Repositories;
 
 namespace LambdaASP.NETCore;
 
@@ -29,6 +33,9 @@ public class Startup
                           DynamoDBConnectionConfigFactory>();
         services.AddScoped<IDBClientFactory<AmazonDynamoDBClient>,
                            DynamoDBClientFactory>();
+        services.AddScoped<IRoomService, RoomService>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddTransient<IImageService, ImageService>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

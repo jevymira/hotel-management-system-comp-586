@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 
-namespace Domain;
+namespace Domain.Entities;
 
 [DynamoDBTable("Reservations")]
 public class Reservation
@@ -16,7 +16,7 @@ public class Reservation
     public List<string>? RoomIDs { get; set; }
 
     // [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
-    public string? CheckInDate { get ; set; }
+    public string? CheckInDate { get; set; }
 
     public string? CheckOutDate { get; set; }
 

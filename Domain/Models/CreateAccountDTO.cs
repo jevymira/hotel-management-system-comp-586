@@ -1,4 +1,4 @@
-﻿namespace LambdaASP.NETCore.Models;
+﻿namespace Domain.Models;
 
 public class CreateAccountDTO
 {

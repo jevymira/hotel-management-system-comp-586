@@ -1,14 +1,12 @@
 ﻿using Abstractions;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
-using Domain;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Domain.Abstractions.Services;
+using Domain.Entities;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Reflection;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -16,10 +14,15 @@ namespace LambdaASP.NETCore.Controllers;
 [Route("api/[controller]")]
 public class RoomsController : ControllerBase
 {
-    AmazonDynamoDBClient _client;
-    public RoomsController(IDBClientFactory<AmazonDynamoDBClient> factory)
+    private readonly AmazonDynamoDBClient _client;
+    private readonly IRoomService _roomService;
+    private readonly IImageService _imageService;
+    public RoomsController(IDBClientFactory<AmazonDynamoDBClient> factory, 
+        IRoomService roomService, IImageService imageService)
     {
         _client = factory.GetClient();
+        _roomService = roomService;
+        _imageService = imageService;
     }
 
     [AllowAnonymous]
@@ -51,50 +54,24 @@ public class RoomsController : ControllerBase
         ]
     }
     */
-    [HttpPut] // PUT api/rooms
-    public async Task<IActionResult> Put([FromBody] Room room)
+    [HttpPost] // (not idempotent) POST api/rooms
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> Put([FromForm] PostRoomDTO roomDTO,
+        [FromForm(Name = "images")] List<IFormFile> images)
     {
-        // check if RoomNumber (separate from RoomID) is unique
-        // (DynamoDB cannot enforce uniqueness on non-key attributes)
-        var request = new QueryRequest
+        Room room;
+
+        try
         {
-            TableName = "Rooms",
-            IndexName = "RoomNumber-index",
-            KeyConditionExpression = "RoomNumber = :room_number",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                { ":room_number", new AttributeValue(room.RoomNumber) }
-            },
-        };
-        // query instead of get, because RoomNumber is a non-key attribute
-        var data = await _client.QueryAsync(request);
-
-        if (data.Count >= 1)
-            return BadRequest("Room number already in use by another room.");
-        else
-        {
-            Random random = new Random();
-            var item = new Dictionary<string, AttributeValue>
-            {
-                {"RoomID", new AttributeValue(random.Next(100000000, 2147483647).ToString().PadLeft(10, '0')) },
-                {"RoomTypeID", new AttributeValue(room.RoomTypeID) },
-                {"RoomNumber", new AttributeValue(room.RoomNumber) },
-                {"PricePerNight", new AttributeValue(room.PricePerNight.ToString()) },
-                {"MaxOccupancy", new AttributeValue(room.MaxOccupancy.ToString()) },
-                {"Status", new AttributeValue("Empty") },
-                {"RoomSize", new AttributeValue(room.RoomSize) },
-                {"ImageUrls", new AttributeValue(room.ImageUrls) },
-                {"UpdatedBy", new AttributeValue(String.Empty) }
-            };
-
-            var putRequest = new PutItemRequest
-                {
-                    TableName = "Rooms",
-                    Item = item
-                };
-
-            return Ok(await _client.PutItemAsync(putRequest));
+            room = await _roomService.CreateAsync(roomDTO, images);
         }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
+        }
+
+        return CreatedAtAction(nameof(Get), new { id = room.RoomID }, value: room);
     }
 
     /* sample body:
@@ -164,4 +141,5 @@ public class RoomsController : ControllerBase
             return Ok(await _client.UpdateItemAsync(updateRequest));
         }
     }
+
 }

@@ -7,10 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text;
-using LambdaASP.NETCore.Models;
-using Domain;
 using Abstractions;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Entities;
+using Domain.Models;
 
 namespace LambdaASP.NETCore.Controllers;
 

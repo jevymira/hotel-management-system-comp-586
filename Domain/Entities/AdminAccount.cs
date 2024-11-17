@@ -1,6 +1,6 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 
-namespace Domain;
+namespace Domain.Entities;
 
 [DynamoDBTable("AdminAccounts")]
 public class AdminAccount

@@ -16,15 +16,19 @@ public class RoomService : IRoomService
         _repository = repository;
         _imageService = imageService;
     }
+
     public async Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
     {
+        // check if RoomNumber (separate from RoomID) is unique
         if (await _repository.RoomNumberExistsAsync(roomDTO.RoomNumber))
         {
+            // service-level exception, separate from controller layer,
+            // which catches it and returns an HTTP status code
             throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use.");
         }
 
         string id = IdGenerator.Get6CharBase62();
-        List<string> urls = await _imageService.UploadImagesAsync(images, id);
+        List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
 
         Room room = new Room
         {
@@ -43,8 +47,26 @@ public class RoomService : IRoomService
         return room;
     }
 
-    //public Task RoomNumberTakenAsync(string roomNumber)
-    //{
-    //    return _repository.RoomNumberExistsAsync(roomNumber);
-    //}
+    public async Task<Room> ReadRoomAsync(string id)
+    {
+        return await _repository.LoadAsync(id);
+    }
+
+    public async Task<List<Room>> ReadRoomsAsync()
+    {
+        return await _repository.ScanAsync();
+    }
+
+    public async Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images)
+    {
+        if (!(await _repository.RoomIdExistsAsync(id)))
+            throw new KeyNotFoundException($"No room exists with Room ID {id}.");
+
+        // check if RoomNumber (separate from RoomID) is unique
+        if (await _repository.RoomNumberExistsElsewhereAsync(roomDTO.RoomNumber, id))
+            throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
+
+        List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
+        await _repository.UpdateAsync(id, roomDTO, urls);
+    }
 }

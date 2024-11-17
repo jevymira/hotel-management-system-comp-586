@@ -7,7 +7,7 @@ namespace LambdaASP.NETCore.Services;
 
 public class ImageService : IImageService
 {
-    public async Task<List<string>> UploadImagesAsync(List<IFormFile> images, string id)
+    public async Task<List<string>> UploadRoomImagesAsync(List<IFormFile> images, string id)
     {
         var client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1);
 

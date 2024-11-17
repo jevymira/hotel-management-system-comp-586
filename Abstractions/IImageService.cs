@@ -4,5 +4,5 @@ namespace Abstractions;
 
 public interface IImageService
 {
-    public Task<List<string>> UploadImagesAsync(List<IFormFile> images, string id);
+    public Task<List<string>> UploadRoomImagesAsync(List<IFormFile> images, string id);
 }

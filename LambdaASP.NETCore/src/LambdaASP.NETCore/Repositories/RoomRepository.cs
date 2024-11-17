@@ -2,7 +2,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
@@ -20,13 +19,74 @@ public class RoomRepository : IRoomRepository
 
     public async Task<Room> SaveAsync(Room room)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
+        var context = new DynamoDBContext(_client);
         await context.SaveAsync(room);
         return room;
     }
-
-    public async Task<bool> RoomNumberExistsAsync(string id)
+    public async Task<Room> LoadAsync(string id)
     {
+        var context = new DynamoDBContext(_client);
+        return await context.LoadAsync<Room>(id);
+    }
+
+    public async Task<List<Room>> ScanAsync()
+    {
+        var context = new DynamoDBContext(_client);
+        return await context.ScanAsync<Room>(default).GetRemainingAsync();
+    }
+
+    public async Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<string> urls)
+    {
+        var request = new UpdateItemRequest
+        {
+            TableName = "Rooms",
+            Key = new Dictionary<string, AttributeValue>()
+            {
+                { "RoomID", new AttributeValue(id) }
+            },
+            UpdateExpression =
+            (
+                "SET RoomTypeID = :room_type_id, " +
+                    "PricePerNight = :price_per_night, " +
+                    "MaxOccupancy = :max_occupancy, " +
+                    "RoomNumber = :room_number, " +
+                    "ImageUrls = :image_urls, " +
+                    "UpdatedBy = :updated_by"
+            ),
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
+            {
+                { ":room_type_id", new AttributeValue(roomDTO.RoomTypeID) },
+                { ":price_per_night", new AttributeValue(roomDTO.PricePerNight.ToString()) },
+                { ":max_occupancy", new AttributeValue(roomDTO.MaxOccupancy.ToString()) },
+                { ":room_number", new AttributeValue(roomDTO.RoomNumber) },
+                { ":image_urls", new AttributeValue(urls) },
+                { ":updated_by", new AttributeValue(roomDTO.UpdatedBy) }
+            },
+        };
+
+        await _client.UpdateItemAsync(request);
+
+    }
+
+    public async Task<bool> RoomIdExistsAsync(string id)
+    {
+        var request = new QueryRequest
+        {
+            TableName = "Rooms",
+            KeyConditionExpression = "RoomID = :room_id",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":room_id", new AttributeValue(id) }
+            },
+        };
+        var response = await _client.QueryAsync(request);
+
+        return (response.Count > 0);
+    }
+
+    public async Task<bool> RoomNumberExistsAsync(string num)
+    {
+        // (DynamoDB cannot enforce uniqueness on non-key attributes)
         var request = new QueryRequest
         {
             TableName = "Rooms",
@@ -34,14 +94,35 @@ public class RoomRepository : IRoomRepository
             KeyConditionExpression = "RoomNumber = :room_number",
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>
             {
-                { ":room_number", new AttributeValue(id) }
+                { ":room_number", new AttributeValue(num) }
             },
         };
-        var data = await _client.QueryAsync(request);
+        // query because GetItem cannot be performed on a non-key attribute
+        var response = await _client.QueryAsync(request);
 
-        if (data.Count >= 1)
-            return true;
+        return (response.Count > 0);
+    }
 
-        return false;
+    public async Task<bool> RoomNumberExistsElsewhereAsync(string num, string id)
+    {
+        // (DynamoDB cannot enforce uniqueness on non-key attributes)
+        var request = new QueryRequest
+        {
+            TableName = "Rooms",
+            IndexName = "RoomNumber-index",
+            KeyConditionExpression = "RoomNumber = :room_number",
+            FilterExpression = "RoomID <> :room_id",
+            // disqualifies the Item to-be-updated for the count
+            // (not equals operator not available for KeyConditionExpression)
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":room_number", new AttributeValue(num) },
+                { ":room_id", new AttributeValue(id) }
+            },
+        };
+        // query because GetItem cannot be performed on a non-key attribute
+        var response = await _client.QueryAsync(request);
+
+        return (response.Count > 0);
     }
 }

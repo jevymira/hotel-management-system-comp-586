@@ -1,16 +1,9 @@
 ﻿using Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DocumentModel;
-using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Authorization;
-using Domain.Entities;
 using Domain.Models;
 using Domain.Abstractions.Services;
-using LambdaASP.NETCore.Services;
-using System;
-using System.Collections.Concurrent;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -18,16 +11,10 @@ namespace LambdaASP.NETCore.Controllers;
 [Route("api/[controller]")]
 public class ReservationsController : ControllerBase
 {
-    AmazonDynamoDBClient _client;
-    Random _random;
     IReservationService _reservationService;
 
-    public ReservationsController(
-        IDBClientFactory<AmazonDynamoDBClient> factory,
-        IReservationService reservationService)
+    public ReservationsController(IReservationService reservationService)
     {
-        _client = factory.GetClient();
-        _random = new Random();
         _reservationService = reservationService;
     }
 
@@ -39,7 +26,7 @@ public class ReservationsController : ControllerBase
     {
         try
         {
-            return Ok(await _reservationService.ReadReservationAsync(id));
+            return Ok(await _reservationService.GetAsync(id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -51,7 +38,7 @@ public class ReservationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByName(string name)
     {
-        return Ok(await _reservationService.ReadReservationsByNameAsync(name));
+        return Ok(await _reservationService.GetByGuestNameAsync(name));
     }
 
     // returns in order of:
@@ -63,7 +50,7 @@ public class ReservationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> QueryByDate()
     {
-        return Ok(await _reservationService.ReadReservationsForCurrentDay());
+        return Ok(await _reservationService.GetForDeskAsync());
     }
 
     /* sample request body
@@ -84,7 +71,7 @@ public class ReservationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateReservation([FromBody] PostReservationDTO reservationDTO)
     {
-        var reservation = await _reservationService.CreateAsync(reservationDTO);
+        var reservation = await _reservationService.AddAsync(reservationDTO);
         return CreatedAtAction(nameof(GetReservationAsync), new { id = reservation.ReservationID }, value: reservation);
     }
 
@@ -109,7 +96,7 @@ public class ReservationsController : ControllerBase
     public async Task<IActionResult> PatchCheckReservation(
         string id, [FromBody] CheckInOutDTO model)
     {
-        await _reservationService.CheckReservationInOutAsync(id, model);
+        await _reservationService.UpdateCheckInOutAsync(id, model);
         return NoContent();
     }
 

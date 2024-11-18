@@ -19,7 +19,7 @@ public class ReservationService : IReservationService
         _roomRepository = roomRepository;
     }
 
-    public async Task<Reservation> CreateAsync(PostReservationDTO reservationDTO)
+    public async Task<Reservation> AddAsync(PostReservationDTO reservationDTO)
     {
         Reservation reservation = new Reservation
         {
@@ -42,17 +42,17 @@ public class ReservationService : IReservationService
         return reservation;
     }
 
-    public async Task<Reservation> ReadReservationAsync(string id)
+    public async Task<Reservation> GetAsync(string id)
     {
         return await _reservationRepository.LoadReservationAsync(id);
     }
 
-    public async Task<List<Reservation>> ReadReservationsByNameAsync(string name)
+    public async Task<List<Reservation>> GetByGuestNameAsync(string name)
     {
         return await _reservationRepository.QueryByNameAsync(name);
     }
 
-    public async Task<List<Reservation>> ReadReservationsForCurrentDay()
+    public async Task<List<Reservation>> GetForDeskAsync()
     {
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
         string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
@@ -66,7 +66,7 @@ public class ReservationService : IReservationService
         return reservations;
     }
 
-    public async Task CheckReservationInOutAsync(string id, CheckInOutDTO dto)
+    public async Task UpdateCheckInOutAsync(string id, CheckInOutDTO dto)
     {
         List<string> roomIDs = new List<string>();
         if (dto.ReservationStatus.Equals("Checked In"))

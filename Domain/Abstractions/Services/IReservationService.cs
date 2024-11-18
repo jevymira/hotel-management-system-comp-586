@@ -5,9 +5,9 @@ namespace Domain.Abstractions.Services;
 
 public interface IReservationService
 {
-    public Task<Reservation> CreateAsync(PostReservationDTO reservationDTO);
-    public Task<Reservation> ReadReservationAsync(string id);
-    public Task<List<Reservation>> ReadReservationsByNameAsync(string name);
-    public Task<List<Reservation>> ReadReservationsForCurrentDay();
-    public Task CheckReservationInOutAsync(string id, CheckInOutDTO dto);
+    public Task<Reservation> AddAsync(PostReservationDTO reservationDTO);
+    public Task<Reservation> GetAsync(string id);
+    public Task<List<Reservation>> GetByGuestNameAsync(string name);
+    public Task<List<Reservation>> GetForDeskAsync();
+    public Task UpdateCheckInOutAsync(string id, CheckInOutDTO dto);
 }

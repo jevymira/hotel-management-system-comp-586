@@ -47,7 +47,7 @@ public class RoomService : IRoomService
         return room;
     }
 
-    public async Task<Room> ReadRoomAsync(string id)
+    public async Task<Room> GetRoomAsync(string id)
     {
         var room = await _repository.LoadRoomAsync(id);
         if (room == null)
@@ -55,12 +55,12 @@ public class RoomService : IRoomService
         return room;
     }
 
-    public async Task<List<Room>> ReadRoomsAsync()
+    public async Task<List<Room>> GetAllAsync()
     {
         return await _repository.ScanAsync();
     }
 
-    public async Task<List<Room>> QueryEmptyRoomsByType(string type)
+    public async Task<List<Room>> GetEmptyRoomsByType(string type)
     {
         return await _repository.QueryEmptyByRoomTypeAsync(type);
     }

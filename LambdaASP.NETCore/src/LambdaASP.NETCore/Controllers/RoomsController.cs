@@ -29,7 +29,7 @@ public class RoomsController : ControllerBase
     {
         try
         {
-            return Ok(await _roomService.ReadRoomAsync(id));
+            return Ok(await _roomService.GetRoomAsync(id));
         }
         catch (KeyNotFoundException ex)
         {
@@ -41,7 +41,7 @@ public class RoomsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoomsAsync()
     {
-        return Ok(await _roomService.ReadRoomsAsync());
+        return Ok(await _roomService.GetAllAsync());
     }
 
     // query string: CASE SENSITIVE (Double != double)
@@ -52,7 +52,7 @@ public class RoomsController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            return Ok(await _roomService.QueryEmptyRoomsByType(type));
+            return Ok(await _roomService.GetEmptyRoomsByType(type));
         }
         return BadRequest("Room Type required in request query string.");
     }

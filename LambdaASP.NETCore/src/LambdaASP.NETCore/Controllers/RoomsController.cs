@@ -64,7 +64,7 @@ public class RoomsController : ControllerBase
     //   form-data for content-type: multipart/form-data
     //     images
     [HttpPost] // POST api/rooms
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostRoomAsync(
         [FromForm] PostRoomDTO roomDTO,
@@ -92,7 +92,7 @@ public class RoomsController : ControllerBase
     //     images
     [HttpPatch("{id}")] // PATCH api/rooms/0123456789
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)] // when room number already in use
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchRoomAsync(
         [FromRoute] string id,

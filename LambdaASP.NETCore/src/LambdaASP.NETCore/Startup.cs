@@ -37,6 +37,8 @@ public class Startup
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IReservationService, ReservationService>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
+        services.AddScoped<IAdminAccountService, AdminAccountService>();
+        services.AddScoped<IAdminAccountRepository, AdminAccountRepository>();
         services.AddTransient<IImageService, ImageService>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

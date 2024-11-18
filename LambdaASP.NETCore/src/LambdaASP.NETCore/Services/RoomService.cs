@@ -50,8 +50,6 @@ public class RoomService : IRoomService
     public async Task<Room> GetRoomAsync(string id)
     {
         var room = await _repository.LoadRoomAsync(id);
-        if (room == null)
-            throw new KeyNotFoundException($"No room exists with Room ID {id}.");
         return room;
     }
 

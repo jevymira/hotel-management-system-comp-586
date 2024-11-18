@@ -1,6 +1,4 @@
-﻿using Abstractions;
-using Microsoft.AspNetCore.Mvc;
-using Amazon.DynamoDBv2;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Models;
 using Domain.Abstractions.Services;
@@ -18,41 +16,41 @@ public class ReservationsController : ControllerBase
         _reservationService = reservationService;
     }
 
+    // use case: Admin Desk page, search by booking number
     [HttpGet("by-id/{id}")] // GET api/reservations/by-id/0123456789
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ActionName(nameof(GetReservationAsync))] // CreatedAtAction and .NET Async suffixing
     public async Task<IActionResult> GetReservationAsync(string id)
     {
-        try
-        {
-            return Ok(await _reservationService.GetAsync(id));
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var reservation = await _reservationService.GetAsync(id);
+        if (reservation == null)
+            return NotFound($"No reservation exists with Reservation ID {id}.");
+        return Ok(reservation);
     }
 
+    // use case: Admin Desk page, search by Guest
     [HttpGet("by-name/{name}")] // GET api/reservations/by-name/John%20Doe
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetByName(string name)
+    public async Task<IActionResult> GetByNameAsync(string name)
     {
         return Ok(await _reservationService.GetByGuestNameAsync(name));
     }
 
-    // returns in order of:
+    // use case: Admin Reservations page, Reservations
+    // returns:
     // all due in reservations
     // all checked in reservations
     // checked out reservations of the current date
     // confirmed reservations with a check in date from the current date onward
     [HttpGet] // GET api/reservations
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> QueryByDate()
+    public async Task<IActionResult> GetByDateAsync()
     {
         return Ok(await _reservationService.GetForDeskAsync());
     }
 
+    // use case: Booking Page, Booking Confirmation Page
     /* sample request body
     {
         "RoomType": "Double",
@@ -69,12 +67,13 @@ public class ReservationsController : ControllerBase
     */
     [HttpPost] // POST api/reservations
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateReservation([FromBody] PostReservationDTO reservationDTO)
+    public async Task<IActionResult> PostAsync([FromBody] PostReservationDTO reservationDTO)
     {
         var reservation = await _reservationService.AddAsync(reservationDTO);
         return CreatedAtAction(nameof(GetReservationAsync), new { id = reservation.ReservationID }, value: reservation);
     }
 
+    // use case: Admin Desk page, Save reservation changes at check in/out
     /* sample request body
     {
         "reservationStatus": "Checked In",
@@ -82,19 +81,21 @@ public class ReservationsController : ControllerBase
             "MO",
             "CK"
         ],
-        "roomStatus": "Occupied"
+        "roomStatus": "Occupied",
+        "updatedBy": "TEST"
     }
     // alternative sample body
     {
         "reservationStatus": "Checked Out",
         // omit room numbers
-        "roomStatus": "Empty"
+        "roomStatus": "Empty",
+        "updatedBy": "TEST"
     }
     */
     [HttpPatch("by-id/{id}")] // PATCH api/reservations/by-id/0123456789
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PatchCheckReservation(
+    public async Task<IActionResult> PatchCheckInOut(
         string id, [FromBody] CheckInOutDTO model)
     {
         try

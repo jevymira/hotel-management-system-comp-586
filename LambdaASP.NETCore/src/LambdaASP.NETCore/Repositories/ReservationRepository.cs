@@ -141,11 +141,13 @@ public class ReservationRepository : IReservationRepository
                         { "ReservationID", new AttributeValue(id) }
                     },
                     UpdateExpression = "SET BookingStatus = :status, " +
-                                            "RoomIDs = :rooms",
+                                            "RoomIDs = :rooms, " +
+                                            "UpdatedBy = :updated_by",
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
                         { ":status", new AttributeValue(dto.ReservationStatus) },
-                        { ":rooms", new AttributeValue(roomIDs) }
+                        { ":rooms", new AttributeValue(roomIDs) },
+                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
                     },
                 }
             },
@@ -162,7 +164,8 @@ public class ReservationRepository : IReservationRepository
                     {
                         { "RoomID", new AttributeValue(roomIDs[i]) }
                     },
-                    UpdateExpression = "SET #s = :status",
+                    UpdateExpression = "SET #s = :status, " +
+                                            "UpdatedBy = :updated_by",
                     ExpressionAttributeNames = new Dictionary<string, string>
                     {
                         { "#s", "Status" }, // alias, status is a reserved word
@@ -170,6 +173,7 @@ public class ReservationRepository : IReservationRepository
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
                         { ":status", new AttributeValue(dto.RoomStatus) },
+                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
                     }
                 }
             });

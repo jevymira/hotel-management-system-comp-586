@@ -2,9 +2,6 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
-using System.Reflection;
-using System;
-using Amazon.DynamoDBv2.DataModel;
 
 namespace LambdaASP.NETCore.Services;
 
@@ -52,6 +49,11 @@ public class ReservationService : IReservationService
         return await _reservationRepository.QueryByNameAsync(name);
     }
 
+    // returns in order of:
+    // all due in reservations
+    // all checked in reservations
+    // checked out reservations of the current date
+    // confirmed reservations with a check in date from the current date onward
     public async Task<List<Reservation>> GetForDeskAsync()
     {
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");

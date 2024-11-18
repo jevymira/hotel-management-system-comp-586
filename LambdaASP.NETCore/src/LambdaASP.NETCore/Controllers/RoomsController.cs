@@ -27,16 +27,14 @@ public class RoomsController : ControllerBase
     [ActionName(nameof(GetRoomAsync))] // CreatedAtAction and .NET Async suffixing
     public async Task<IActionResult> GetRoomAsync(string id)
     {
-        try
-        {
-            return Ok(await _roomService.GetRoomAsync(id));
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var room = await _roomService.GetRoomAsync(id);
+        if (room == null)
+            return NotFound($"No room exists with Room ID {id}.");
+        else
+            return Ok(room);
     }
 
+    // use case: Admin Rooms page, Rooms
     [HttpGet] // GET api/rooms
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoomsAsync()
@@ -44,6 +42,7 @@ public class RoomsController : ControllerBase
         return Ok(await _roomService.GetAllAsync());
     }
 
+    // use case: Admin Desk page, Assign Room(s) (of selected type, empty)
     // query string: CASE SENSITIVE (Double != double)
     [HttpGet("empty")] // GET api/rooms/empty?type=Double
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -57,6 +56,7 @@ public class RoomsController : ControllerBase
         return BadRequest("Room Type required in request query string.");
     }
 
+    // use case: Admin Rooms page, Add Room
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
     // request Body:
     //   form-data for content-type: application/json
@@ -84,6 +84,7 @@ public class RoomsController : ControllerBase
         return CreatedAtAction(nameof(GetRoomAsync), new { id = room.RoomID }, value: room);
     }
 
+    // use case: Admin Rooms page, Edit Room
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
     // request Body:
     //   form-data for content-type: application/json

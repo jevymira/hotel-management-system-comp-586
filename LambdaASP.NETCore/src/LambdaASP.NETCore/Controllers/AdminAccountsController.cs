@@ -33,7 +33,7 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Login page
-    /*
+    /* sample request body:
     {
         "email": "apierce@travelersinn.com",
         "password": "{SHA-256 hash}" // see AdminAccounts table in DynamoDB us-east-1
@@ -107,7 +107,7 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Admin Accounts page, Create Account 
-    /* sample request body
+    /* sample request body:
     {
         "fullName": "Aiden Pierce",
         "email": "apierce@travelersinn.com",
@@ -161,7 +161,7 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Change Password page
-    /* sample request body
+    /* sample request body:
     {
         "email": "apierce@travelersinn.com",
         "oldPasswordHash": "{SHA-256}", // see DynamoDB table on us-east-1

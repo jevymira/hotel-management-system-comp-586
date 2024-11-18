@@ -9,4 +9,5 @@ public interface IAdminAccountService
     public Task<GetAdminAccountDTO> GetAsync(string id);
     public Task<List<GetAdminAccountDTO>> GetAllAsync();
     public Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO);
+    public Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO);
 }

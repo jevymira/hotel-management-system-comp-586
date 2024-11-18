@@ -5,15 +5,12 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using System.Text;
 using Abstractions;
 using Microsoft.AspNetCore.Authorization;
-using Domain.Entities;
 using Domain.Models;
 using Domain.Abstractions.Services;
-using LambdaASP.NETCore.Services;
-using static System.Net.Mime.MediaTypeNames;
+using System.Security.Authentication;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -35,6 +32,7 @@ public class AdminAccountsController : ControllerBase
         _adminAccountService = adminAccountService;
     }
 
+    // use case: Login page
     /*
     {
         "email": "apierce@travelersinn.com",
@@ -100,6 +98,7 @@ public class AdminAccountsController : ControllerBase
         }
     }
 
+    // use case: Admin Accounts page, Accounts
     [HttpGet] // GET /api/admin-accounts
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync()
@@ -107,6 +106,7 @@ public class AdminAccountsController : ControllerBase
         return Ok(await _adminAccountService.GetAllAsync());
     }
 
+    // use case: Admin Accounts page, Create Account 
     /* sample request body
     {
         "fullName": "Aiden Pierce",
@@ -114,9 +114,8 @@ public class AdminAccountsController : ControllerBase
         "passwordHash": "{SHA-256}"
     }
     */
-    // conditional: if the email is already used, then returns BadRequest
     [HttpPost] // POST /api/admin-accounts
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostAsync([FromBody] CreateAccountDTO dto)
     {
@@ -131,10 +130,11 @@ public class AdminAccountsController : ControllerBase
         }
     }
 
+    // use case: Admin Accounts page, Edit Account 
     /* sample request body
     {
         "fullName": "Aiden Pierce",
-        "email": "apierce@travelersinn.com",
+        "email": "apierce@travelersinn.com", // already in use
         "accountStatus": "Active"
     }
     */
@@ -160,5 +160,29 @@ public class AdminAccountsController : ControllerBase
         return NoContent();
     }
 
-    // TODO: endpoint to change password from temporary password
+    // use case: Change Password page
+    /* sample request body
+    {
+        "email": "apierce@travelersinn.com",
+        "oldPasswordHash": "{SHA-256}", // see DynamoDB table on us-east-1
+        "newPasswordHash": "{SHA-256}"
+    }
+    */
+    [AllowAnonymous]
+    [HttpPatch("reset")]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)] // not 401, no auth header
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchPasswordAsync([FromBody] UpdatePasswordDTO dto)
+    {
+        try
+        {
+            await _adminAccountService.UpdatePasswordAsync(dto);
+        }
+        catch (InvalidCredentialException ex)
+        {
+            return UnprocessableEntity(ex.Message);
+        }
+
+        return NoContent();
+    }
 }

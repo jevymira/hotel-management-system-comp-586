@@ -2,6 +2,8 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
+using System.Linq.Expressions;
+using System.Security.Authentication;
 
 namespace LambdaASP.NETCore.Services;
 
@@ -59,5 +61,19 @@ public class AdminAccountService : IAdminAccountService
             throw new ArgumentException($"Email {updateDTO.Email} is already in use.");
 
         await _adminAccountRepository.UpdateDetailsAsync(id, updateDTO);
+    }
+
+    public async Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
+    {
+        AdminAccount account;
+        try
+        {
+            account = await _adminAccountRepository.QueryAccountByCredentials(credentialsDTO);
+        }
+        catch (InvalidOperationException) // sequence contains no elements
+        {
+            throw new InvalidCredentialException("Email or password invalid.");
+        }
+        await _adminAccountRepository.UpdatePasswordAsync(account.AdminID, credentialsDTO.NewPasswordHash);
     }
 }

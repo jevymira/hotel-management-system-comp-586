@@ -9,5 +9,7 @@ public interface IAdminAccountRepository
     public Task<GetAdminAccountDTO> LoadAsync(string id);
     public Task<List<GetAdminAccountDTO>> LoadAllAsync();
     public Task<bool> QueryIfEmailExists(string email);
+    public Task<AdminAccount> QueryAccountByCredentials(UpdatePasswordDTO updatePasswordDTO); 
     public Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto);
+    public Task UpdatePasswordAsync(string id, string newPasswordHash);
 }

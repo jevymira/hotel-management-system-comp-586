@@ -1,14 +1,11 @@
 ﻿using Abstractions;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
-using DynamoDB;
-using System;
-using System.Reflection;
 
 namespace LambdaASP.NETCore.Repositories;
 
@@ -52,8 +49,23 @@ public class AdminAccountRepository : IAdminAccountRepository
             },
         };
         // query because GetItem cannot be performed on a non-key attribute
-        var data = await _client.QueryAsync(request);
-        return (data.Count > 0);
+        var result = await _client.QueryAsync(request);
+        return (result.Count > 0);
+    }
+
+    public async Task<AdminAccount> QueryAccountByCredentials(UpdatePasswordDTO dto)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var cfg = new DynamoDBOperationConfig
+        {
+            IndexName = "Email-PasswordHash-index",
+            QueryFilter = new List<ScanCondition>() 
+            {
+                new ScanCondition("PasswordHash", ScanOperator.Equal, dto.OldPasswordHash)
+            }
+        };
+        var result = await context.QueryAsync<AdminAccount>(dto.Email, cfg).GetRemainingAsync();
+        return result.Single(); // uniqueness enforced in application, but cannot in DynamoDB
     }
 
     public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto)
@@ -76,9 +88,29 @@ public class AdminAccountRepository : IAdminAccountRepository
                 { ":full_name", new AttributeValue(dto.FullName) },
                 { ":email", new AttributeValue(dto.Email) },
                 { ":account_status", new AttributeValue(dto.AccountStatus) }
-            },
+            }
         };
+        await _client.UpdateItemAsync(request);
+    }
 
+    public async Task UpdatePasswordAsync(string id, string newPasswordHash)
+    {
+        var request = new UpdateItemRequest
+        {
+            TableName = "AdminAccounts",
+            Key = new Dictionary<string, AttributeValue>()
+            {
+                { "AdminID", new AttributeValue(id) }
+            },
+            UpdateExpression =
+            (
+                "SET PasswordHash = :password_hash"
+            ),
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
+            {
+                { ":password_hash", new AttributeValue(newPasswordHash) },
+            }
+        };
         await _client.UpdateItemAsync(request);
     }
 }

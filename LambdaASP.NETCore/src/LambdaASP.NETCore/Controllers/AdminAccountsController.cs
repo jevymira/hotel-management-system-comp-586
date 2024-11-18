@@ -11,6 +11,9 @@ using Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Entities;
 using Domain.Models;
+using Domain.Abstractions.Services;
+using LambdaASP.NETCore.Services;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -20,11 +23,16 @@ public class AdminAccountsController : ControllerBase
 {
     private IConfiguration _config;
     AmazonDynamoDBClient _client;
+    IAdminAccountService _adminAccountService;
 
-    public AdminAccountsController(IConfiguration config, IDBClientFactory<AmazonDynamoDBClient> factory)
+    public AdminAccountsController(
+        IConfiguration config, 
+        IDBClientFactory<AmazonDynamoDBClient> factory,
+        IAdminAccountService adminAccountService)
     {
         _config = config;
         _client = factory.GetClient();
+        _adminAccountService = adminAccountService;
     }
 
     /*
@@ -35,7 +43,7 @@ public class AdminAccountsController : ControllerBase
     */
     // SHA-256 for password
     [AllowAnonymous]
-    [HttpPost("login")] // POST api/admin-accounts/login
+    [HttpPost("login")] // POST /api/admin-accounts/login
     public async Task<IActionResult> Post([FromBody] LoginRequest loginRequest)
     {
         AmazonDynamoDBClient client = new AmazonDynamoDBClient();
@@ -76,61 +84,80 @@ public class AdminAccountsController : ControllerBase
         }
     }
 
-    // Scan viable because there is a singular Item type in the table
-    [HttpGet] // GET api/admin-accounts
-    public async Task<IActionResult> Get()
+    [HttpGet("{id}")] // GET /api/admin-accounts/{id}
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ActionName(nameof(GetAsync))] // CreatedAtAction and .NET Async suffixing
+    public async Task<IActionResult> GetAsync(string id)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
-        return Ok(await context.ScanAsync<AdminAccount>(default).GetRemainingAsync());
+        try
+        {
+            return Ok(await _adminAccountService.GetAsync(id));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet] // GET /api/admin-accounts
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllAsync()
+    {
+        return Ok(await _adminAccountService.GetAllAsync());
     }
 
     /* sample request body
     {
-        "name": "Aiden Pierce",
-        "email": "apierce@travelersinn.com"
+        "fullName": "Aiden Pierce",
+        "email": "apierce@travelersinn.com",
+        "passwordHash": "{SHA-256}"
     }
     */
     // conditional: if the email is already used, then returns BadRequest
-    [HttpPut]
-    public async Task<IActionResult> Put([FromBody] CreateAccountDTO model)
+    [HttpPost] // POST /api/admin-accounts
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> PostAsync([FromBody] CreateAccountDTO dto)
     {
-        var request = new QueryRequest
+        try
         {
-            TableName = "AdminAccounts",
-            IndexName = "Email-PasswordHash-index",
-            KeyConditionExpression = "Email = :email",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                { ":email", new AttributeValue(model.Email) }
-            },
-        };
-
-        var data = await _client.QueryAsync(request);
-        if (data.Count >= 1) // if query returns an account with this email
-            return BadRequest("Email already used.");
-        else
-        {
-            Random random = new Random();
-            string id = random.Next(100000000, 2147483647).ToString().PadLeft(10, '0');
-            string temp = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("temp")));
-
-            var item = new Dictionary<string, AttributeValue>
-            {
-                { "AdminID", new AttributeValue(id) },
-                { "FullName", new AttributeValue(model.Name) },
-                { "Email", new AttributeValue(model.Email) },
-                { "PasswordHash", new AttributeValue(temp) },
-                { "AccountStatus", new AttributeValue("Active") }
-            };
-
-            var putRequest = new PutItemRequest
-            {
-                TableName = "AdminAccounts",
-                Item = item
-            };
-
-            return Ok(await _client.PutItemAsync(putRequest));
+            var account = await _adminAccountService.AddAsync(dto);
+            return CreatedAtAction(nameof(GetAsync), new { id = account.AdminID }, value: account);
         }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
+        }
+    }
+
+    /* sample request body
+    {
+        "fullName": "Aiden Pierce",
+        "email": "apierce@travelersinn.com",
+        "accountStatus": "Active"
+    }
+    */
+    [HttpPatch("{id}")] // PATCH /api/admin-accounts/{id}
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchAsync([FromRoute] string id, [FromBody] UpdateAdminAccountDTO dto)
+    {
+        try
+        {
+            await _adminAccountService.UpdateDetailsAsync(id, dto);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
+        }
+
+        return NoContent();
     }
 
     // TODO: endpoint to change password from temporary password

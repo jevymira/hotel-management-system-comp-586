@@ -7,6 +7,10 @@ using Amazon.DynamoDBv2.Model;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Entities;
 using Domain.Models;
+using Domain.Abstractions.Services;
+using LambdaASP.NETCore.Services;
+using System;
+using System.Collections.Concurrent;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -16,239 +20,97 @@ public class ReservationsController : ControllerBase
 {
     AmazonDynamoDBClient _client;
     Random _random;
+    IReservationService _reservationService;
 
-    public ReservationsController(IDBClientFactory<AmazonDynamoDBClient> factory)
+    public ReservationsController(
+        IDBClientFactory<AmazonDynamoDBClient> factory,
+        IReservationService reservationService)
     {
         _client = factory.GetClient();
         _random = new Random();
+        _reservationService = reservationService;
     }
 
-    [AllowAnonymous]
     [HttpGet("by-id/{id}")] // GET api/reservations/by-id/0123456789
-    public async Task<IActionResult> Get(string id)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ActionName(nameof(GetReservationAsync))] // CreatedAtAction and .NET Async suffixing
+    public async Task<IActionResult> GetReservationAsync(string id)
     {
-        var context = new DynamoDBContext(_client);
-        Reservation res = await context.LoadAsync<Reservation>(id);
-        return Ok(res);
+        try
+        {
+            return Ok(await _reservationService.ReadReservationAsync(id));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet("by-name/{name}")] // GET api/reservations/by-name/John%20Doe
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByName(string name)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
-        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_name", name);
-        var queryOperationConfig = new QueryOperationConfig
-        {
-            IndexName = "GuestFullName-ReservationID-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "GuestFullName = :v_name",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        return Ok(await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync());
+        return Ok(await _reservationService.ReadReservationsByNameAsync(name));
     }
 
-    // TODO: refactor
     // returns in order of:
     // all due in reservations
     // all checked in reservations
-    // those checked out reservations of the current date
-    // those confirmed reservations with a check in date from the current date onward
+    // checked out reservations of the current date
+    // confirmed reservations with a check in date from the current date onward
     [HttpGet] // GET api/reservations
-    public async Task<List<Reservation>> QueryByDate()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> QueryByDate()
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
-        TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-        string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
-
-        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_status", "Due In");
-
-        var query = new QueryOperationConfig
-        {
-            IndexName = "BookingStatus-CheckInDate-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "BookingStatus = :v_status", // AND CheckInDate >= :v_date",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        var data = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
-
-
-        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_status", "Checked In");
-
-        query = new QueryOperationConfig
-        {
-            IndexName = "BookingStatus-CheckOutDate-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "BookingStatus = :v_status",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
-
-
-        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_status", "Checked Out");
-        expressionAttributeValues.Add(":v_date", date);
-
-        query = new QueryOperationConfig
-        {
-            IndexName = "BookingStatus-CheckOutDate-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "BookingStatus = :v_status AND CheckOutDate = :v_date",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
-
-
-        expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_status", "Confirmed");
-        expressionAttributeValues.Add(":v_date", date);
-
-        query = new QueryOperationConfig
-        {
-            IndexName = "BookingStatus-CheckInDate-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "BookingStatus = :v_status AND CheckInDate >= :v_date",
-                ExpressionAttributeValues = expressionAttributeValues
-            }
-        };
-
-        data.AddRange(await context.FromQueryAsync<Reservation>(query).GetRemainingAsync());
-
-        return data;
+        return Ok(await _reservationService.ReadReservationsForCurrentDay());
     }
 
     /* sample request body
     {
         "RoomType": "Double",
         "OrderQuantity": 1,
+        "TotalPrice" : 100.00,
         "CheckInDate": "2024-12-01",
         "CheckOutDate": "2024-12-03",
         "NumberOfGuests": 2,
-        "TotalPrice" : 150.00,
         "GuestFullName": "John Doe",
         "GuestEmail": "jdoe@email.com",
-        "GuestPhoneNumber": "(555) 555-5555",
         "GuestDateOfBirth": "1980-01-01"
+        // "GuestPhoneNumber": "(555) 555-5555" // (optional)
     }  
     */
     [HttpPost] // POST api/reservations
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> CreateReservation([FromBody] Reservation model)
+    public async Task<IActionResult> CreateReservation([FromBody] PostReservationDTO reservationDTO)
     {
-        try
-        {
-            DynamoDBContext context = new DynamoDBContext(_client);
-            Reservation reservation = new Reservation
-            {
-                ReservationID = _random.Next(100000000, 2147483647).ToString().PadLeft(10, '0'),
-                RoomType = model.RoomType,
-                OrderQuantity = model.OrderQuantity,
-                // string set in DynamoDB cannot be empty,
-                // therefore RoomIDs null (rather than an empty []) when queried
-                RoomIDs = null,
-                CheckInDate = model.CheckInDate,
-                CheckOutDate = model.CheckOutDate,
-                NumberOfGuests = model.NumberOfGuests,
-                TotalPrice = model.TotalPrice,
-                BookingStatus = "Confirmed",
-                GuestFullName = model.GuestFullName,
-                GuestEmail = model.GuestEmail,
-                GuestPhoneNumber = model.GuestPhoneNumber,
-                GuestDateOfBirth = model.GuestDateOfBirth,
-                UpdatedBy = String.Empty,
-            };
-
-            await context.SaveAsync(reservation);
-            return CreatedAtAction(nameof(CreateReservation), 
-                                   new { confirmationNumber = reservation.ReservationID });
-        }
-        catch
-        {
-            return StatusCode(500);
-        }
+        var reservation = await _reservationService.CreateAsync(reservationDTO);
+        return CreatedAtAction(nameof(GetReservationAsync), new { id = reservation.ReservationID }, value: reservation);
     }
 
     /* sample request body
     {
-        "bookingStatus": "Checked In",
-        "RoomID": [
-            "MOCK1",
-            "MOCK2"
+        "reservationStatus": "Checked In",
+        "roomNumbers": [ // not room ids
+            "MO",
+            "CK"
         ],
-        "RoomStatus": "Occupied"
+        "roomStatus": "Occupied"
+    }
+    // alternative sample body
+    {
+        "reservationStatus": "Checked Out",
+        // omit room numbers
+        "roomStatus": "Empty"
     }
     */
-    [HttpPatch("{id}")]
-    public async Task<IActionResult> CheckReservation(
+    [HttpPatch("by-id/{id}")] // PATCH api/reservations/by-id/0123456789
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchCheckReservation(
         string id, [FromBody] CheckInOutDTO model)
     {
-        List<TransactWriteItem> list = new List<TransactWriteItem>()
-        {
-            new TransactWriteItem()
-            {
-                Update = new Update()
-                {
-                    TableName = "Reservations",
-                    Key = new Dictionary<string, AttributeValue>
-                    {
-                        { "ReservationID", new AttributeValue(id) }
-                    },
-                    UpdateExpression = "SET BookingStatus = :status, " +
-                                            "RoomID = :rooms",
-                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                    {
-                        { ":status", new AttributeValue(model.BookingStatus) },
-                        { ":rooms", new AttributeValue(model.RoomID) }
-                    },
-                }
-            },
-        };
-
-        for (int i = 0; i < model.RoomID.Count(); i++)
-        {
-            list.Add(new TransactWriteItem()
-            {
-                Update = new Update()
-                {
-                    TableName = "Rooms",
-                    Key = new Dictionary<string, AttributeValue>
-                    {
-                        { "RoomID", new AttributeValue(model.RoomID[i]) }
-                    },
-                    UpdateExpression = "SET #s = :status",
-                    ExpressionAttributeNames = new Dictionary<string, string>
-                    {
-                        { "#s", "Status" }, // alias, status is a reserved word
-                    },
-                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                    {
-                        { ":status", new AttributeValue(model.RoomStatus) },
-                    }
-                }
-            });
-        }
-
-        var request = new TransactWriteItemsRequest()
-        {
-            TransactItems = list
-        };
-
-        return Ok(await _client.TransactWriteItemsAsync(request));
+        await _reservationService.CheckReservationInOutAsync(id, model);
+        return NoContent();
     }
 
 }

@@ -5,6 +5,7 @@ using Amazon.DynamoDBv2.Model;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
+using System.Reflection;
 
 namespace LambdaASP.NETCore.Repositories;
 
@@ -23,7 +24,7 @@ public class RoomRepository : IRoomRepository
         await context.SaveAsync(room);
         return room;
     }
-    public async Task<Room> LoadAsync(string id)
+    public async Task<Room> LoadRoomAsync(string id)
     {
         var context = new DynamoDBContext(_client);
         return await context.LoadAsync<Room>(id);
@@ -124,5 +125,13 @@ public class RoomRepository : IRoomRepository
         var response = await _client.QueryAsync(request);
 
         return (response.Count > 0);
+    }
+
+    public async Task<Room> QueryByRoomNumberAsync(string num)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var cfg = new DynamoDBOperationConfig { IndexName = "RoomNumber-index" };
+        var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
+        return room.Single();
     }
 }

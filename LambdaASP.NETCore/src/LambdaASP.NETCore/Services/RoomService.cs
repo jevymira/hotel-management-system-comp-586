@@ -49,7 +49,10 @@ public class RoomService : IRoomService
 
     public async Task<Room> ReadRoomAsync(string id)
     {
-        return await _repository.LoadAsync(id);
+        var room = await _repository.LoadRoomAsync(id);
+        if (room == null)
+            throw new KeyNotFoundException($"No room exists with Room ID {id}.");
+        return room;
     }
 
     public async Task<List<Room>> ReadRoomsAsync()

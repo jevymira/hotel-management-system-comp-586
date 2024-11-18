@@ -1,11 +1,12 @@
-﻿using Amazon.DynamoDBv2.DataModel;
+﻿using Abstractions;
+using Amazon.DynamoDBv2.DataModel;
 
 namespace Domain.Entities;
 
 [DynamoDBTable("Reservations")]
 public class Reservation
 {
-    [DynamoDBHashKey]
+    [DynamoDBHashKey("ReservationID")]
     // [DynamoDBGlobalSecondaryIndexRangeKey("GuestFullName-ReservationID-index")]
     public string? ReservationID { get; set; }
 
@@ -13,7 +14,7 @@ public class Reservation
 
     public int? OrderQuantity { get; set; }
 
-    public List<string>? RoomIDs { get; set; }
+    public List<string> RoomIDs { get; set; } = new List<string>();
 
     // [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
     public string? CheckInDate { get; set; }

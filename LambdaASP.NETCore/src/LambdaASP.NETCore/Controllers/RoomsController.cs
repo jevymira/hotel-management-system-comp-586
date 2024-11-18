@@ -21,12 +21,23 @@ public class RoomsController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("{id}")] // GET api/rooms/0123456789
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ActionName(nameof(GetRoomAsync))] // CreatedAtAction and .NET Async suffixing
     public async Task<IActionResult> GetRoomAsync(string id)
     {
-        return Ok(await _roomService.ReadRoomAsync(id));
+        try
+        {
+            return Ok(await _roomService.ReadRoomAsync(id));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet] // GET api/rooms
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoomsAsync()
     {
         return Ok(await _roomService.ReadRoomsAsync());

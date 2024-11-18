@@ -35,6 +35,8 @@ public class Startup
                            DynamoDBClientFactory>();
         services.AddScoped<IRoomService, RoomService>();
         services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IReservationService, ReservationService>();
+        services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddTransient<IImageService, ImageService>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

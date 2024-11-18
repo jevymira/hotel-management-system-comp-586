@@ -74,17 +74,23 @@ public class ReservationService : IReservationService
             // from the room numbers provided, find the room ids
             foreach (string roomNumber in dto.RoomNumbers)
             {
-                var room = await _roomRepository.QueryByRoomNumberAsync(roomNumber);
-                roomIDs.Add(room.RoomID);
+                try
+                {
+                    var room = await _roomRepository.QueryEmptyByRoomNumberAsync(roomNumber);
+                    roomIDs.Add(room.RoomID);
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new InvalidOperationException("One or more provided room numbers are non-existent or occupied.");
+                }
             }
-            await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
         }
         else if (dto.ReservationStatus.Equals("Checked Out"))
         {
             // from the reservation, find the room IDs
             var reservation = await _reservationRepository.LoadReservationAsync(id);
             roomIDs = reservation.RoomIDs;
-            await _reservationRepository.TransactWriteCheckOutAsync(id, dto, roomIDs);
         }
+        await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
     }
 }

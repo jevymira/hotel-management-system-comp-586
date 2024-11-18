@@ -92,11 +92,20 @@ public class ReservationsController : ControllerBase
     }
     */
     [HttpPatch("by-id/{id}")] // PATCH api/reservations/by-id/0123456789
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchCheckReservation(
         string id, [FromBody] CheckInOutDTO model)
     {
-        await _reservationService.UpdateCheckInOutAsync(id, model);
+        try
+        {
+            await _reservationService.UpdateCheckInOutAsync(id, model);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);
+        }
+
         return NoContent();
     }
 

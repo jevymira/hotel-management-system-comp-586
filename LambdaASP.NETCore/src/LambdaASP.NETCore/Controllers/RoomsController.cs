@@ -30,8 +30,7 @@ public class RoomsController : ControllerBase
         var room = await _roomService.GetRoomAsync(id);
         if (room == null)
             return NotFound($"No room exists with Room ID {id}.");
-        else
-            return Ok(room);
+        return Ok(room);
     }
 
     // use case: Admin Rooms page, Rooms

@@ -88,14 +88,10 @@ public class AdminAccountsController : ControllerBase
     [ActionName(nameof(GetAsync))] // CreatedAtAction and .NET Async suffixing
     public async Task<IActionResult> GetAsync(string id)
     {
-        try
-        {
-            return Ok(await _adminAccountService.GetAsync(id));
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var account = await _adminAccountService.GetAsync(id);
+        if (account == null)
+            return NotFound($"No account exists with ID {id}.");
+        return Ok(account);
     }
 
     // use case: Admin Accounts page, Accounts
@@ -185,4 +181,6 @@ public class AdminAccountsController : ControllerBase
 
         return NoContent();
     }
+
+    // TODO: AccountStatus entity
 }

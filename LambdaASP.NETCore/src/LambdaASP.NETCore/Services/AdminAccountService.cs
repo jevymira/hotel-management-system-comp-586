@@ -41,8 +41,6 @@ public class AdminAccountService : IAdminAccountService
     public async Task<GetAdminAccountDTO> GetAsync(string id)
     {
         var account = await _adminAccountRepository.LoadAsync(id);
-        if (account == null)
-            throw new KeyNotFoundException($"No account exists with ID {id}.");
         return account;
     }
 

@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace LambdaASP.NETCore.Controllers;
 
@@ -41,6 +42,19 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> GetRoomsAsync()
     {
         return Ok(await _roomService.ReadRoomsAsync());
+    }
+
+    // query string: CASE SENSITIVE (Double != double)
+    [HttpGet("empty")] // GET api/rooms/empty?type=Double
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEmptyRoomsAsync([BindRequired][FromQuery] string type)
+    {
+        if (ModelState.IsValid)
+        {
+            return Ok(await _roomService.QueryEmptyRoomsByType(type));
+        }
+        return BadRequest("Room Type required in request query string.");
     }
 
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )

@@ -60,6 +60,11 @@ public class RoomService : IRoomService
         return await _repository.ScanAsync();
     }
 
+    public async Task<List<Room>> QueryEmptyRoomsByType(string type)
+    {
+        return await _repository.QueryEmptyByRoomTypeAsync(type);
+    }
+
     public async Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images)
     {
         if (!(await _repository.RoomIdExistsAsync(id)))

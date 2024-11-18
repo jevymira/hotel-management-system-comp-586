@@ -1,6 +1,7 @@
 ﻿using Abstractions;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
@@ -133,5 +134,19 @@ public class RoomRepository : IRoomRepository
         var cfg = new DynamoDBOperationConfig { IndexName = "RoomNumber-index" };
         var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
         return room.Single();
+    }
+
+    public async Task<List<Room>> QueryEmptyByRoomTypeAsync(string type)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var cfg = new DynamoDBOperationConfig
+        {
+            IndexName = "RoomTypeID-Status-index",
+            QueryFilter = new List<ScanCondition>() {
+                new ScanCondition("Status", ScanOperator.Equal, "Empty")
+            }
+        };
+        var rooms = await context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
+        return rooms;
     }
 }

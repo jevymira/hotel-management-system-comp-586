@@ -2,5 +2,5 @@
 
 public interface IJWTService
 {
-    public string IssueToken();
+    public string IssueToken(string id);
 }

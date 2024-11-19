@@ -48,9 +48,12 @@ public class AdminAccountService : IAdminAccountService
         return await _adminAccountRepository.LoadAllAsync();
     }
 
-    public async Task<bool> CheckIfActiveValidCredentials(string email, string passwordHash)
+    public async Task<string?> GetIDIfActiveValidCredentials(string email, string passwordHash)
     {
-        return await _adminAccountRepository.QueryIfActiveByCredentials(email, passwordHash);
+        var account = await _adminAccountRepository.QueryAccountByCredentialsIfActive(email, passwordHash);
+        if (account == null)
+            return null;
+        return account.AdminID;
     }
 
     public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO)

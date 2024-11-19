@@ -14,8 +14,9 @@ public class AuthenticationService : IAuthenticationService
     }
     public async Task<string?> Login(string email, string passwordHash)
     {
-        if (!(await _accountService.CheckIfActiveValidCredentials(email, passwordHash)))
+        string? id = await _accountService.GetIDIfActiveValidCredentials(email, passwordHash);
+        if (id == null)
             return null;
-        return _jwtService.IssueToken();
+        return _jwtService.IssueToken(id);
     }
 }

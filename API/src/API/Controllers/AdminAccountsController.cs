@@ -24,6 +24,7 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Login page
+    // contains AdminID in "sub" of token returned, see at jwt.io Debugger
     // SHA-256 for password
     /* sample request body:
     {

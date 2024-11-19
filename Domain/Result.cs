@@ -1,4 +1,4 @@
-﻿namespace Common;
+﻿namespace Domain;
 
 public class Result<T>
 {

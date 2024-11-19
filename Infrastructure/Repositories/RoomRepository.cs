@@ -1,13 +1,13 @@
-﻿using Abstractions;
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
+using Infrastructure.Abstractions.Database;
 
-namespace LambdaASP.NETCore.Repositories;
+namespace Infrastructure.Repositories;
 
 public class RoomRepository : IRoomRepository
 {
@@ -46,14 +46,14 @@ public class RoomRepository : IRoomRepository
                 { "RoomID", new AttributeValue(id) }
             },
             UpdateExpression =
-            (
+
                 "SET RoomTypeID = :room_type_id, " +
                     "PricePerNight = :price_per_night, " +
                     "MaxOccupancy = :max_occupancy, " +
                     "RoomNumber = :room_number, " +
                     "ImageUrls = :image_urls, " +
                     "UpdatedBy = :updated_by"
-            ),
+            ,
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
             {
                 { ":room_type_id", new AttributeValue(roomDTO.RoomTypeID) },
@@ -82,7 +82,7 @@ public class RoomRepository : IRoomRepository
         };
         var response = await _client.QueryAsync(request);
 
-        return (response.Count > 0);
+        return response.Count > 0;
     }
 
     public async Task<bool> RoomNumberExistsAsync(string num)
@@ -101,7 +101,7 @@ public class RoomRepository : IRoomRepository
         // query because GetItem cannot be performed on a non-key attribute
         var response = await _client.QueryAsync(request);
 
-        return (response.Count > 0);
+        return response.Count > 0;
     }
 
     public async Task<bool> RoomNumberExistsElsewhereAsync(string num, string id)
@@ -124,7 +124,7 @@ public class RoomRepository : IRoomRepository
         // query because GetItem cannot be performed on a non-key attribute
         var response = await _client.QueryAsync(request);
 
-        return (response.Count > 0);
+        return response.Count > 0;
     }
 
     public async Task<Room?> QueryEmptyByRoomNumberAsync(string num)
@@ -139,7 +139,7 @@ public class RoomRepository : IRoomRepository
         };
         var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
         // null when no room matches number or room is already occupied
-        if (room.Count == 1 )
+        if (room.Count == 1)
             return room.Single(); // InvalidOperationException if null
         return null;
     }

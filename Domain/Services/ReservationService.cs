@@ -1,10 +1,9 @@
-﻿using Common;
-using Domain.Abstractions.Repositories;
+﻿using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
 
-namespace LambdaASP.NETCore.Services;
+namespace Domain.Services;
 
 public class ReservationService : IReservationService
 {

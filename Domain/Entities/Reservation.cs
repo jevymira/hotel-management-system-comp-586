@@ -1,5 +1,4 @@
-﻿using Abstractions;
-using Amazon.DynamoDBv2.DataModel;
+﻿using Amazon.DynamoDBv2.DataModel;
 
 namespace Domain.Entities;
 

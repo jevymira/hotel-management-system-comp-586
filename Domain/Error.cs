@@ -1,3 +1,3 @@
-﻿namespace Common;
+﻿namespace Domain;
 
 public record Error(string Description);

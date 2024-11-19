@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Domain.Models;
 using Domain.Abstractions.Services;
 using System.Security.Authentication;
+using Infrastructure.Abstractions.Database;
 
 namespace LambdaASP.NETCore.Controllers;
 

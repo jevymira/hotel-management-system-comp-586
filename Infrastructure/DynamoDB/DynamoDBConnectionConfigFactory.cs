@@ -1,7 +1,7 @@
-﻿using Abstractions;
+﻿using Infrastructure.Abstractions.Database;
 using Amazon.DynamoDBv2;
 
-namespace DynamoDB;
+namespace Infrastructure.DynamoDB;
 
 public class DynamoDBConnectionConfigFactory :
              IDBConnectionConfigFactory<AmazonDynamoDBConfig>

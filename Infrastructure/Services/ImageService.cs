@@ -1,9 +1,10 @@
-﻿using Abstractions;
+﻿using Infrastructure.Abstractions.Services;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Microsoft.AspNetCore.Http;
 
-namespace LambdaASP.NETCore.Services;
+namespace Infrastructure.Services;
 
 public class ImageService : IImageService
 {

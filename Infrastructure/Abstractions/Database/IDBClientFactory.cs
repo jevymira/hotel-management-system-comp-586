@@ -1,4 +1,4 @@
-﻿namespace Abstractions;
+﻿namespace Infrastructure.Abstractions.Database;
 
 public interface IDBClientFactory<T>
 {

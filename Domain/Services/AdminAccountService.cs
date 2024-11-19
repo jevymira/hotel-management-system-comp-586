@@ -1,11 +1,10 @@
-﻿using Common;
-using Domain.Abstractions.Repositories;
+﻿using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
 using System.Security.Authentication;
 
-namespace LambdaASP.NETCore.Services;
+namespace Domain.Services;
 
 public class AdminAccountService : IAdminAccountService
 {

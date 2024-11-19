@@ -1,15 +1,13 @@
-﻿using Abstractions;
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
-using System.Reflection;
-using System.Xml.Linq;
+using Infrastructure.Abstractions.Database;
 
-namespace LambdaASP.NETCore.Repositories;
+namespace Infrastructure.Repositories;
 
 public class ReservationRepository : IReservationRepository
 {

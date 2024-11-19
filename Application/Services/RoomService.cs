@@ -1,11 +1,14 @@
-﻿using Abstractions;
-using Common;
+﻿using Application.Abstractions.Services;
+using Domain;
 using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
+using Domain.Services;
+using Infrastructure.Abstractions.Services;
+using Microsoft.AspNetCore.Http;
 
-namespace LambdaASP.NETCore.Services;
+
+namespace Application.Services;
 
 public class RoomService : IRoomService
 {
@@ -20,7 +23,7 @@ public class RoomService : IRoomService
 
     public async Task<Room?> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
     {
-        // check if RoomNumber (separate from RoomID) is unique
+        // check if RoomNumber (separate from RoomID) already exists
         if (await _repository.RoomNumberExistsAsync(roomDTO.RoomNumber))
         {
             return null;

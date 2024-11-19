@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Common;
+namespace Domain.Services;
 
 public static class IdGenerator
 {

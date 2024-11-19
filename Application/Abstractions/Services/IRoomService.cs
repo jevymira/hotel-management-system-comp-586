@@ -1,9 +1,9 @@
-﻿using Common;
+﻿using Domain;
 using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace Domain.Abstractions.Services;
+namespace Application.Abstractions.Services;
 
 public interface IRoomService
 {

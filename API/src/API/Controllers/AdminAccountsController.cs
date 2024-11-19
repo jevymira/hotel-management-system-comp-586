@@ -132,15 +132,8 @@ public class AdminAccountsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchPasswordAsync([FromBody] UpdatePasswordDTO dto)
     {
-        try
-        {
-            await _adminAccountService.UpdatePasswordAsync(dto);
-        }
-        catch (InvalidCredentialException ex)
-        {
-            return UnprocessableEntity(ex.Message);
-        }
-
+        if (!(await _adminAccountService.UpdatePasswordAsync(dto)))
+            return UnprocessableEntity("Email or password invalid.");
         return NoContent();
     }
 

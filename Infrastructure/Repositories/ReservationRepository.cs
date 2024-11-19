@@ -151,30 +151,9 @@ public class ReservationRepository : IReservationRepository
             },
         };
 
-        for (int i = 0; i < roomIDs.Count(); i++)
+        foreach (string roomID in roomIDs)
         {
-            writes.Add(new TransactWriteItem()
-            {
-                Update = new Update()
-                {
-                    TableName = "Rooms",
-                    Key = new Dictionary<string, AttributeValue>
-                    {
-                        { "RoomID", new AttributeValue(roomIDs[i]) }
-                    },
-                    UpdateExpression = "SET #s = :status, " +
-                                            "UpdatedBy = :updated_by",
-                    ExpressionAttributeNames = new Dictionary<string, string>
-                    {
-                        { "#s", "Status" }, // alias, status is a reserved word
-                    },
-                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                    {
-                        { ":status", new AttributeValue(dto.RoomStatus) },
-                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
-                    }
-                }
-            });
+            writes.Add(GetRoomStatusUpdateWriteItem(roomID, dto.RoomStatus, dto.UpdatedBy));
         }
 
         var request = new TransactWriteItemsRequest()
@@ -198,38 +177,21 @@ public class ReservationRepository : IReservationRepository
                     {
                         { "ReservationID", new AttributeValue(id) }
                     },
-                    UpdateExpression = "SET BookingStatus = :status " +
+                    UpdateExpression = "SET BookingStatus = :status, " +
+                                            "UpdatedBy = :updated_by " +
                                        "REMOVE RoomIDs",
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
                         { ":status", new AttributeValue(dto.ReservationStatus) },
+                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
                     },
                 }
             },
         };
 
-        for (int i = 0; i < roomIDs.Count(); i++)
+        foreach (string roomID in roomIDs)
         {
-            writes.Add(new TransactWriteItem()
-            {
-                Update = new Update()
-                {
-                    TableName = "Rooms",
-                    Key = new Dictionary<string, AttributeValue>
-                    {
-                        { "RoomID", new AttributeValue(roomIDs[i]) }
-                    },
-                    UpdateExpression = "SET #s = :status",
-                    ExpressionAttributeNames = new Dictionary<string, string>
-                    {
-                        { "#s", "Status" }, // alias, status is a reserved word
-                    },
-                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-                    {
-                        { ":status", new AttributeValue(dto.RoomStatus) },
-                    }
-                }
-            });
+            writes.Add(GetRoomStatusUpdateWriteItem(roomID, dto.RoomStatus, dto.UpdatedBy));
         }
 
         var request = new TransactWriteItemsRequest()
@@ -238,5 +200,31 @@ public class ReservationRepository : IReservationRepository
         };
 
         await _client.TransactWriteItemsAsync(request);
+    }
+
+    private TransactWriteItem GetRoomStatusUpdateWriteItem(string roomID, string roomStatus, string updatedBy)
+    {
+        return new TransactWriteItem()
+        {
+            Update = new Update()
+            {
+                TableName = "Rooms",
+                Key = new Dictionary<string, AttributeValue>
+                {
+                    { "RoomID", new AttributeValue(roomID) }
+                },
+                UpdateExpression = "SET #s = :status, " +
+                                        "UpdatedBy = :updated_by",
+                ExpressionAttributeNames = new Dictionary<string, string>
+                {
+                    { "#s", "Status" }, // alias, status is a reserved word
+                },
+                ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                {
+                    { ":status", new AttributeValue(roomStatus) },
+                    { ":updated_by", new AttributeValue(updatedBy) }
+                }
+            }
+        };
     }
 }

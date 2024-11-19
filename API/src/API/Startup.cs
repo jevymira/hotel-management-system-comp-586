@@ -6,7 +6,6 @@ using Domain.Abstractions.Services;
 using Domain.Abstractions.Repositories;
 using Infrastructure.Abstractions.Database;
 using Infrastructure.DynamoDB;
-using Infrastructure.Abstractions.Services;
 using Application.Abstractions.Services;
 using Infrastructure.Repositories;
 using Application.Services;

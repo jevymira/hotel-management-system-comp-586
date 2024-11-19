@@ -5,36 +5,32 @@ namespace Domain.Entities;
 [DynamoDBTable("Reservations")]
 public class Reservation
 {
-    [DynamoDBHashKey("ReservationID")]
-    // [DynamoDBGlobalSecondaryIndexRangeKey("GuestFullName-ReservationID-index")]
-    public string? ReservationID { get; set; }
+    [DynamoDBHashKey]
+    public required string ReservationID { get; set; }
 
-    public string? RoomType { get; set; }
+    public required string RoomType { get; set; }
 
-    public int? OrderQuantity { get; set; }
+    public int OrderQuantity { get; set; }
 
-    public List<string> RoomIDs { get; set; } = new List<string>();
+    public List<string> RoomIDs { get; set; } = new List<string>(); // can be null
 
-    // [DynamoDBGlobalSecondaryIndexRangeKey("BookingStatus-CheckInDate-index")]
-    public string? CheckInDate { get; set; }
+    public required string CheckInDate { get; set; }
 
-    public string? CheckOutDate { get; set; }
+    public required string CheckOutDate { get; set; }
 
-    public int? NumberOfGuests { get; set; }
+    public int NumberOfGuests { get; set; }
 
-    public decimal? TotalPrice { get; set; }
+    public decimal TotalPrice { get; set; }
 
-    // [DynamoDBGlobalSecondaryIndexHashKey("BookingStatus-CheckInDate-index")]
-    public string? BookingStatus { get; set; }
+    public required string BookingStatus { get; set; }
 
-    // [DynamoDBGlobalSecondaryIndexHashKey("GuestFullName-ReservationID-index")]
-    public string? GuestFullName { get; set; }
+    public required string GuestFullName { get; set; }
 
-    public string? GuestEmail { get; set; }
+    public required string GuestEmail { get; set; }
 
     public string? GuestPhoneNumber { get; set; }
 
-    public string? GuestDateOfBirth { get; set; }
+    public required string GuestDateOfBirth { get; set; }
 
     public string? UpdatedBy { get; set; }
 

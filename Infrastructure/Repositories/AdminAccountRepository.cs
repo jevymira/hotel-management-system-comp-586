@@ -56,23 +56,6 @@ public class AdminAccountRepository : IAdminAccountRepository
 
     public async Task<AdminAccount?> QueryAccountByCredentialsIfActive(string email, string passwordHash)
     {
-        // check for account with matching Email and Password AND which is Active
-        //var request = new QueryRequest
-        //{
-        //    TableName = "AdminAccounts",
-        //    IndexName = "Email-PasswordHash-index",
-        //    KeyConditionExpression = "Email = :email AND PasswordHash = :password_hash",
-        //    FilterExpression = "AccountStatus = :status",
-        //    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-        //    {
-        //        { ":email", new AttributeValue(email) },
-        //        { ":password_hash", new AttributeValue(passwordHash) },
-        //        { ":status", new AttributeValue("Active") }
-        //    },
-        //};
-        //var result = await _client.QueryAsync(request);
-
-        //return (result.Count != 0);
         DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
@@ -84,7 +67,7 @@ public class AdminAccountRepository : IAdminAccountRepository
             }
         };
         var result = await context.QueryAsync<AdminAccount>(email, cfg).GetRemainingAsync();
-        // uniqueness enforced in application, but cannot in DynamoDB
+        // uniqueness enforced by business logic, cannot in DynamoDB
         if (result.Count != 0)
             return result.Single(); // InvalidOperationException if null
         return null;
@@ -95,14 +78,15 @@ public class AdminAccountRepository : IAdminAccountRepository
         DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
+            IndexName = "Email-PasswordHash-index",
             QueryFilter = new List<ScanCondition>() 
             {
                 new ScanCondition("PasswordHash", ScanOperator.Equal, passwordHash)
             }
         };
         var result = await context.QueryAsync<AdminAccount>(email, cfg).GetRemainingAsync();
-        // uniqueness enforced in application, but cannot in DynamoDB
-        if (result.Count == 1)
+        // uniqueness enforced by business logic, cannot in DynamoDB
+        if (result.Count != 0)
             return result.Single(); // InvalidOperationException if null
         return null;
     }

@@ -80,14 +80,16 @@ public class ReservationService : IReservationService
                 if (room == null) { return false; }
                 roomIDs.Add(room.RoomID);
             }
+            await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
         }
-        else if (dto.ReservationStatus.Equals("Checked Out"))
+        else // Checked Out, Cancelled
         {
             // from the reservation, find the room IDs
             var reservation = await _reservationRepository.LoadReservationAsync(id);
             roomIDs = reservation.RoomIDs;
+            // separate from TransactWriteCheckInAsync
+            await _reservationRepository.TransactWriteCheckOutAsync(id, dto, roomIDs);
         }
-        await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
         return true;
     }
 }

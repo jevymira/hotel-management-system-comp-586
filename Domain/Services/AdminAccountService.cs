@@ -2,7 +2,6 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
-using System.Security.Authentication;
 
 namespace Domain.Services;
 
@@ -19,21 +18,24 @@ public class AdminAccountService : IAdminAccountService
     {
         if (await _adminAccountRepository.QueryIfEmailExists(accountDTO.Email))
             throw new ArgumentException($"Email {accountDTO.Email} is already in use.");
-        AdminAccount adminAccount = new AdminAccount
+
+        AdminAccount account = new AdminAccount
         {
             AdminID = IdGenerator.Get6CharBase62(),
             FullName = accountDTO.Name,
             Email = accountDTO.Email,
             PasswordHash = accountDTO.PasswordHash,
-            AccountStatus = "Active"
         };
-        await _adminAccountRepository.SaveAsync(adminAccount);
+        account.Activate();
+
+        await _adminAccountRepository.SaveAsync(account);
+
         return new GetAdminAccountDTO 
         {
-            AdminID = adminAccount.AdminID,
-            FullName = adminAccount.FullName,
-            Email = adminAccount.Email,
-            AccountStatus = "Active"
+            AdminID = account.AdminID,
+            FullName = account.FullName,
+            Email = account.Email,
+            AccountStatus = account.AccountStatus
         };
     }
 
@@ -69,20 +71,14 @@ public class AdminAccountService : IAdminAccountService
     }
 
     // TODO: REFACTOR from exceptions
-    public async Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
+    public async Task<bool> UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
     {
-        AdminAccount? account;
-        try
-        {
-            account = await _adminAccountRepository.QueryAccountByCredentials(
-                credentialsDTO.Email, credentialsDTO.OldPasswordHash);
-        }
-        catch (InvalidOperationException) // sequence contains no elements
-        {
-            throw new InvalidCredentialException("Email or password invalid.");
-        }
+        AdminAccount? account = await _adminAccountRepository.QueryAccountByCredentials(
+                                credentialsDTO.Email, credentialsDTO.OldPasswordHash);
         if (account == null)
-            throw new InvalidCredentialException("Email or password invalid.");
+            return false;
+
         await _adminAccountRepository.UpdatePasswordAsync(account.AdminID, credentialsDTO.NewPasswordHash);
+        return true;
     }
 }

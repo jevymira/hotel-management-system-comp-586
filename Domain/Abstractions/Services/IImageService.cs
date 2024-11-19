@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Abstractions.Services;
+namespace Domain.Abstractions.Services;
 
 public interface IImageService
 {

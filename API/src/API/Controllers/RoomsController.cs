@@ -1,10 +1,6 @@
-﻿using Application;
-using Application.Abstractions.Services;
-using Domain.Abstractions.Services;
+﻿using Application.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
-using Domain.Services;
-using Infrastructure.Abstractions.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

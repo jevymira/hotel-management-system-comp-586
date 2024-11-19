@@ -10,5 +10,5 @@ public interface IAdminAccountService
     public Task<List<GetAdminAccountDTO>> GetAllAsync();
     public Task<string?> GetIDIfActiveValidCredentials(string username, string passwordHash);
     public Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO);
-    public Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO);
+    public Task<bool> UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO);
 }

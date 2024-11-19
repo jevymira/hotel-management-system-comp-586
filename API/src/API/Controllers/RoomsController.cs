@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace LambdaASP.NETCore.Controllers;
+namespace API.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]

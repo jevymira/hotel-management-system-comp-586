@@ -12,7 +12,7 @@ using Domain.Abstractions.Services;
 using System.Security.Authentication;
 using Infrastructure.Abstractions.Database;
 
-namespace LambdaASP.NETCore.Controllers;
+namespace API.Controllers;
 
 [Authorize]
 [Route("api/admin-accounts")]

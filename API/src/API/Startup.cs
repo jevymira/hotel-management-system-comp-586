@@ -13,7 +13,7 @@ using Application.Services;
 using Domain.Services;
 using Infrastructure.Services;
 
-namespace LambdaASP.NETCore;
+namespace API;
 
 public class Startup
 {

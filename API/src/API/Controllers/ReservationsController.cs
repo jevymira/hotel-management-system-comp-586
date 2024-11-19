@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Domain.Models;
 using Domain.Abstractions.Services;
 
-namespace LambdaASP.NETCore.Controllers;
+namespace API.Controllers;
 
 [Authorize]
 [Route("api/[controller]")]

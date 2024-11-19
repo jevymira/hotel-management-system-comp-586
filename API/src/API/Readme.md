@@ -58,12 +58,12 @@ If already installed check if new version is available.
 
 Execute unit tests
 ```
-    cd "LambdaASP.NETCore/test/LambdaASP.NETCore.Tests"
+    cd "API/test/API.Tests"
     dotnet test
 ```
 
 Deploy application
 ```
-    cd "LambdaASP.NETCore/src/LambdaASP.NETCore"
+    cd "API/src/API"
     dotnet lambda deploy-serverless
 ```

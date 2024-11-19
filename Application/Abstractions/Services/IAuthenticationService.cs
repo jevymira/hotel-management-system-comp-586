@@ -2,5 +2,5 @@
 
 public interface IAuthenticationService
 {
-    public Task
+    public Task<string?> Login(string email, string passwordHash);
 }

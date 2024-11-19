@@ -48,6 +48,11 @@ public class AdminAccountService : IAdminAccountService
         return await _adminAccountRepository.LoadAllAsync();
     }
 
+    public async Task<bool> CheckIfActiveValidCredentials(string email, string passwordHash)
+    {
+        return await _adminAccountRepository.QueryIfActiveByCredentials(email, passwordHash);
+    }
+
     public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO)
     {
         if ((await _adminAccountRepository.LoadAsync(id)) == null)
@@ -60,17 +65,21 @@ public class AdminAccountService : IAdminAccountService
         await _adminAccountRepository.UpdateDetailsAsync(id, updateDTO);
     }
 
+    // TODO: REFACTOR from exceptions
     public async Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
     {
-        AdminAccount account;
+        AdminAccount? account;
         try
         {
-            account = await _adminAccountRepository.QueryAccountByCredentials(credentialsDTO);
+            account = await _adminAccountRepository.QueryAccountByCredentials(
+                credentialsDTO.Email, credentialsDTO.OldPasswordHash);
         }
         catch (InvalidOperationException) // sequence contains no elements
         {
             throw new InvalidCredentialException("Email or password invalid.");
         }
+        if (account == null)
+            throw new InvalidCredentialException("Email or password invalid.");
         await _adminAccountRepository.UpdatePasswordAsync(account.AdminID, credentialsDTO.NewPasswordHash);
     }
 }

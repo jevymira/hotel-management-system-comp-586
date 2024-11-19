@@ -8,6 +8,7 @@ public interface IAdminAccountService
     public Task<GetAdminAccountDTO> AddAsync(CreateAccountDTO accountDTO);
     public Task<GetAdminAccountDTO> GetAsync(string id);
     public Task<List<GetAdminAccountDTO>> GetAllAsync();
+    public Task<bool> CheckIfActiveValidCredentials(string username, string passwordHash);
     public Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO);
     public Task UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO);
 }

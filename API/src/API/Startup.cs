@@ -27,20 +27,19 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container
     public void ConfigureServices(IServiceCollection services)
     {
-        var jwtIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>();
-        var jwtKey =  Configuration.GetSection("Jwt:Key").Get<string>();
-
         services.AddCors();
         services.AddControllers();
         services.AddScoped<IDBConnectionConfigFactory<AmazonDynamoDBConfig>,
                           DynamoDBConnectionConfigFactory>();
         services.AddScoped<IDBClientFactory<AmazonDynamoDBClient>,
                            DynamoDBClientFactory>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
+        services.AddScoped<IJWTService, JWTService>();
         services.AddScoped<IRoomService, RoomService>();
-        services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IReservationService, ReservationService>();
-        services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IAdminAccountService, AdminAccountService>();
+        services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IAdminAccountRepository, AdminAccountRepository>();
         services.AddTransient<IImageService, ImageService>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -52,9 +51,10 @@ public class Startup
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtIssuer,
-                    ValidAudience = jwtIssuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                    ValidIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>(),
+                    ValidAudience = Configuration.GetSection("Jwt:Issuer").Get<string>(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                        Configuration.GetSection("Jwt:Key").Get<string>()))
                 };
             });
     }

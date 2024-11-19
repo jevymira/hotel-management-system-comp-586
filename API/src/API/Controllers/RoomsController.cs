@@ -16,11 +16,9 @@ namespace API.Controllers;
 public class RoomsController : ControllerBase
 {
     private readonly IRoomService _roomService;
-    private readonly IImageService _imageService;
-    public RoomsController(IRoomService roomService, IImageService imageService)
+    public RoomsController(IRoomService roomService)
     {
         _roomService = roomService;
-        _imageService = imageService;
     }
 
     [AllowAnonymous]

@@ -19,11 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.0" />
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.403.3" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.406.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Application\Application.csproj" />

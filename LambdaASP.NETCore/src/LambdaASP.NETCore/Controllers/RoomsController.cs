@@ -28,8 +28,7 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> GetRoomAsync(string id)
     {
         var room = await _roomService.GetRoomAsync(id);
-        if (room == null)
-            return NotFound($"No room exists with Room ID {id}.");
+        if (room == null) { return NotFound($"No room exists with Room ID {id}."); }
         return Ok(room);
     }
 
@@ -49,9 +48,7 @@ public class RoomsController : ControllerBase
     public async Task<IActionResult> GetEmptyRoomsAsync([BindRequired][FromQuery] string type)
     {
         if (ModelState.IsValid)
-        {
             return Ok(await _roomService.GetEmptyRoomsByType(type));
-        }
         return BadRequest("Room Type required in request query string.");
     }
 
@@ -69,17 +66,9 @@ public class RoomsController : ControllerBase
         [FromForm] PostRoomDTO roomDTO,
         [FromForm(Name = "images")] List<IFormFile> images)
     {
-        Room room;
-
-        try
-        {
-            room = await _roomService.CreateAsync(roomDTO, images);
-        }
-        catch (ArgumentException ex)
-        {
-            return Conflict(ex.Message);
-        }
-
+        Room? room = await _roomService.CreateAsync(roomDTO, images);
+        if (room == null)
+            return Conflict($"Room Number {roomDTO.RoomNumber} is already in use.");
         return CreatedAtAction(nameof(GetRoomAsync), new { id = room.RoomID }, value: room);
     }
 
@@ -99,17 +88,14 @@ public class RoomsController : ControllerBase
         [FromForm] UpdateRoomDTO roomDTO,
         [FromForm(Name = "images")] List<IFormFile> images)
     {
-        try
+        var result = await _roomService.UpdateAsync(id, roomDTO, images);
+
+        if (!result.IsSuccess)
         {
-             await _roomService.UpdateAsync(id, roomDTO, images);
-        }
-        catch (KeyNotFoundException ex)
-        {
-            return NotFound(ex.Message);
-        }
-        catch (ArgumentException ex)
-        {
-            return Conflict(ex.Message);
+            if (result.Error.Description.Equals("NotFound"))
+                return NotFound($"No room exists with Room ID {id}.");
+            else if (result.Error.Description.Equals("Conflict"))
+                return Conflict($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
         }
 
         return NoContent();

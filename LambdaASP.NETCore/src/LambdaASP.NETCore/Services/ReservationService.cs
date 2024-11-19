@@ -1,4 +1,5 @@
-﻿using Domain.Abstractions.Repositories;
+﻿using Common;
+using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
 using Domain.Entities;
 using Domain.Models;
@@ -68,7 +69,7 @@ public class ReservationService : IReservationService
         return reservations;
     }
 
-    public async Task UpdateCheckInOutAsync(string id, CheckInOutDTO dto)
+    public async Task<bool> UpdateCheckInOutAsync(string id, CheckInOutDTO dto)
     {
         List<string> roomIDs = new List<string>();
         if (dto.ReservationStatus.Equals("Checked In"))
@@ -76,15 +77,9 @@ public class ReservationService : IReservationService
             // from the room numbers provided, find the room ids
             foreach (string roomNumber in dto.RoomNumbers)
             {
-                try
-                {
-                    var room = await _roomRepository.QueryEmptyByRoomNumberAsync(roomNumber);
-                    roomIDs.Add(room.RoomID);
-                }
-                catch (InvalidOperationException)
-                {
-                    throw new InvalidOperationException("One or more provided room numbers are non-existent or occupied.");
-                }
+                var room = await _roomRepository.QueryEmptyByRoomNumberAsync(roomNumber);
+                if (room == null) { return false; }
+                roomIDs.Add(room.RoomID);
             }
         }
         else if (dto.ReservationStatus.Equals("Checked Out"))
@@ -94,5 +89,6 @@ public class ReservationService : IReservationService
             roomIDs = reservation.RoomIDs;
         }
         await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
+        return true;
     }
 }

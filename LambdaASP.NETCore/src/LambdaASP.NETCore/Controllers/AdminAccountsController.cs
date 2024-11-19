@@ -89,8 +89,7 @@ public class AdminAccountsController : ControllerBase
     public async Task<IActionResult> GetAsync(string id)
     {
         var account = await _adminAccountService.GetAsync(id);
-        if (account == null)
-            return NotFound($"No account exists with ID {id}.");
+        if (account == null) { return NotFound($"No account exists with ID {id}."); }
         return Ok(account);
     }
 

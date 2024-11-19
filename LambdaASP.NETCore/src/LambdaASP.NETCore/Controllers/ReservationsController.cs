@@ -24,8 +24,7 @@ public class ReservationsController : ControllerBase
     public async Task<IActionResult> GetReservationAsync(string id)
     {
         var reservation = await _reservationService.GetAsync(id);
-        if (reservation == null)
-            return NotFound($"No reservation exists with Reservation ID {id}.");
+        if (reservation == null) { return NotFound($"No reservation exists with Reservation ID {id}."); }
         return Ok(reservation);
     }
 
@@ -45,7 +44,7 @@ public class ReservationsController : ControllerBase
     // confirmed reservations with a check in date from the current date onward
     [HttpGet] // GET api/reservations
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetByDateAsync()
+    public async Task<IActionResult> GetForDeskAsync()
     {
         return Ok(await _reservationService.GetForDeskAsync());
     }
@@ -77,7 +76,7 @@ public class ReservationsController : ControllerBase
     /* sample request body
     {
         "reservationStatus": "Checked In",
-        "roomNumbers": [ // not room ids
+        "roomNumbers": [ // (not room ids)
             "MO",
             "CK"
         ],
@@ -98,15 +97,8 @@ public class ReservationsController : ControllerBase
     public async Task<IActionResult> PatchCheckInOut(
         string id, [FromBody] CheckInOutDTO model)
     {
-        try
-        {
-            await _reservationService.UpdateCheckInOutAsync(id, model);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return Conflict(ex.Message);
-        }
-
+        if (!(await _reservationService.UpdateCheckInOutAsync(id, model)))
+            return Conflict("One or more provided room numbers are non-existent or occupied.");
         return NoContent();
     }
 

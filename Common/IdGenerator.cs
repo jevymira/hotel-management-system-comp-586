@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace LambdaASP.NETCore;
+namespace Common;
 
 public static class IdGenerator
 {

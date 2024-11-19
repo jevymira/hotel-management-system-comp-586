@@ -127,7 +127,7 @@ public class RoomRepository : IRoomRepository
         return (response.Count > 0);
     }
 
-    public async Task<Room> QueryEmptyByRoomNumberAsync(string num)
+    public async Task<Room?> QueryEmptyByRoomNumberAsync(string num)
     {
         DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
@@ -139,7 +139,9 @@ public class RoomRepository : IRoomRepository
         };
         var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
         // null when no room matches number or room is already occupied
-        return room.Single(); // InvalidOperationException if null
+        if (room.Count == 1 )
+            return room.Single(); // InvalidOperationException if null
+        return null;
     }
 
     public async Task<List<Room>> QueryEmptyByRoomTypeAsync(string type)

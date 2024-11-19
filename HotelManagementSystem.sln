@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LambdaASP.NETCore", "LambdaASP.NETCore\src\LambdaASP.NETCore\LambdaASP.NETCore.csproj", "{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LambdaASP.NETCore", "LambdaASP.NETCore\src\LambdaASP.NETCore\LambdaASP.NETCore.csproj", "{A2EBA1DB-A9C4-4917-8A5D-0258F2153C97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{B3046321-C788-4681-B914-2F49F01C7CDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{B3046321-C788-4681-B914-2F49F01C7CDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abstractions", "Abstractions\Abstractions.csproj", "{FC71BDD3-9883-4D65-AACC-4CE158903135}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abstractions", "Abstractions\Abstractions.csproj", "{FC71BDD3-9883-4D65-AACC-4CE158903135}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoDB", "DynamoDB\DynamoDB.csproj", "{2C83FAA2-ED27-4151-9330-1D6863FBA189}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamoDB", "DynamoDB\DynamoDB.csproj", "{2C83FAA2-ED27-4151-9330-1D6863FBA189}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{87072522-D29D-4610-9579-3ACF54EE0E9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{2C83FAA2-ED27-4151-9330-1D6863FBA189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C83FAA2-ED27-4151-9330-1D6863FBA189}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C83FAA2-ED27-4151-9330-1D6863FBA189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87072522-D29D-4610-9579-3ACF54EE0E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87072522-D29D-4610-9579-3ACF54EE0E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87072522-D29D-4610-9579-3ACF54EE0E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87072522-D29D-4610-9579-3ACF54EE0E9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

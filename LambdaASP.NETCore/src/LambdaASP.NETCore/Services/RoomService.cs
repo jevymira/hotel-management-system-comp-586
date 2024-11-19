@@ -1,4 +1,5 @@
 ﻿using Abstractions;
+using Common;
 using Domain.Abstractions.Repositories;
 using Domain.Abstractions.Services;
 using Domain.Entities;
@@ -17,14 +18,12 @@ public class RoomService : IRoomService
         _imageService = imageService;
     }
 
-    public async Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
+    public async Task<Room?> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
     {
         // check if RoomNumber (separate from RoomID) is unique
         if (await _repository.RoomNumberExistsAsync(roomDTO.RoomNumber))
         {
-            // service-level exception, separate from controller layer,
-            // which catches it and returns an HTTP status code
-            throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use.");
+            return null;
         }
 
         string id = IdGenerator.Get6CharBase62();
@@ -63,16 +62,19 @@ public class RoomService : IRoomService
         return await _repository.QueryEmptyByRoomTypeAsync(type);
     }
 
-    public async Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images)
+    public async Task<Result<string>> UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images)
     {
         if (!(await _repository.RoomIdExistsAsync(id)))
-            throw new KeyNotFoundException($"No room exists with Room ID {id}.");
+            return new Result<string>(new Error("NotFound"));
+            // throw new KeyNotFoundException($"No room exists with Room ID {id}.");
 
         // check if RoomNumber (separate from RoomID) is unique
         if (await _repository.RoomNumberExistsElsewhereAsync(roomDTO.RoomNumber, id))
-            throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
+            return new Result<string>(new Error($"Conflict"));
+            // throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
 
         List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
         await _repository.UpdateAsync(id, roomDTO, urls);
+        return new Result<string>("Updated successfully.");
     }
 }

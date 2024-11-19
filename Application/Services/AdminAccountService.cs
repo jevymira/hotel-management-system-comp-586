@@ -1,9 +1,11 @@
-﻿using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
+﻿using Application.Abstractions.Services;
+using Application.Helpers.Services;
+using Application.Models;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
 
-namespace Domain.Services;
+namespace Application.Services;
 
 public class AdminAccountService : IAdminAccountService
 {
@@ -58,16 +60,16 @@ public class AdminAccountService : IAdminAccountService
         return account.AdminID;
     }
 
-    public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO updateDTO)
+    public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto)
     {
         if ((await _adminAccountRepository.LoadAsync(id)) == null)
             throw new KeyNotFoundException($"No account exists with ID {id}.");
             // otherwise, DynamoDB will create new item
 
-        if (await _adminAccountRepository.QueryIfEmailExists(updateDTO.Email))
-            throw new ArgumentException($"Email {updateDTO.Email} is already in use.");
+        if (await _adminAccountRepository.QueryIfEmailExists(dto.Email))
+            throw new ArgumentException($"Email {dto.Email} is already in use.");
 
-        await _adminAccountRepository.UpdateDetailsAsync(id, updateDTO);
+        await _adminAccountRepository.UpdateDetailsAsync(id, dto.FullName, dto.Email, dto.AccountStatus);
     }
 
     // TODO: REFACTOR from exceptions

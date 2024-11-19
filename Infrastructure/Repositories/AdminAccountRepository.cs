@@ -91,7 +91,7 @@ public class AdminAccountRepository : IAdminAccountRepository
         return null;
     }
 
-    public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto)
+    public async Task UpdateDetailsAsync(string id, string name, string email, string status)
     {
         var request = new UpdateItemRequest
         {
@@ -108,9 +108,9 @@ public class AdminAccountRepository : IAdminAccountRepository
             ),
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
             {
-                { ":full_name", new AttributeValue(dto.FullName) },
-                { ":email", new AttributeValue(dto.Email) },
-                { ":account_status", new AttributeValue(dto.AccountStatus) }
+                { ":full_name", new AttributeValue(name) },
+                { ":email", new AttributeValue(email) },
+                { ":account_status", new AttributeValue(status) }
             }
         };
         await _client.UpdateItemAsync(request);

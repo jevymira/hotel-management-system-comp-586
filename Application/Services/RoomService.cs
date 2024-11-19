@@ -2,10 +2,10 @@
 using Domain;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
-using Domain.Models;
-using Domain.Services;
 using Domain.Abstractions.Services;
 using Microsoft.AspNetCore.Http;
+using Application.Helpers.Services;
+using Application.Models;
 
 
 namespace Application.Services;
@@ -65,19 +65,20 @@ public class RoomService : IRoomService
         return await _repository.QueryEmptyByRoomTypeAsync(type);
     }
 
-    public async Task<Result<string>> UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images)
+    public async Task<Result<string>> UpdateAsync(string id, UpdateRoomDTO dto, List<IFormFile> images)
     {
         if (!(await _repository.RoomIdExistsAsync(id)))
             return new Result<string>(new Error("NotFound"));
             // throw new KeyNotFoundException($"No room exists with Room ID {id}.");
 
         // check if RoomNumber (separate from RoomID) is unique
-        if (await _repository.RoomNumberExistsElsewhereAsync(roomDTO.RoomNumber, id))
+        if (await _repository.RoomNumberExistsElsewhereAsync(dto.RoomNumber, id))
             return new Result<string>(new Error($"Conflict"));
             // throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
 
         List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
-        await _repository.UpdateAsync(id, roomDTO, urls);
+        await _repository.UpdateAsync(id, dto.RoomTypeID, dto.PricePerNight, 
+            dto.MaxOccupancy, dto.RoomNumber, urls, dto.UpdatedBy);
         return new Result<string>("Updated successfully.");
     }
 }

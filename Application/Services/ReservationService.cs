@@ -1,9 +1,10 @@
-﻿using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
+﻿using Application.Abstractions.Services;
+using Application.Helpers.Services;
+using Application.Models;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
-using Domain.Models;
 
-namespace Domain.Services;
+namespace Application.Services;
 
 public class ReservationService : IReservationService
 {
@@ -80,7 +81,7 @@ public class ReservationService : IReservationService
                 if (room == null) { return false; }
                 roomIDs.Add(room.RoomID);
             }
-            await _reservationRepository.TransactWriteCheckInAsync(id, dto, roomIDs);
+            await _reservationRepository.TransactWriteCheckInAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
         }
         else // Checked Out, Cancelled
         {
@@ -88,7 +89,7 @@ public class ReservationService : IReservationService
             var reservation = await _reservationRepository.LoadReservationAsync(id);
             roomIDs = reservation.RoomIDs;
             // separate from TransactWriteCheckInAsync
-            await _reservationRepository.TransactWriteCheckOutAsync(id, dto, roomIDs);
+            await _reservationRepository.TransactWriteCheckOutAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
         }
         return true;
     }

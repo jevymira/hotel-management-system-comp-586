@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Models;
+using Domain;
 using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Http;

@@ -1,7 +1,7 @@
-﻿using Domain.Entities;
+﻿using Application.Models;
 using Domain.Models;
 
-namespace Domain.Abstractions.Services;
+namespace Application.Abstractions.Services;
 
 public interface IAdminAccountService
 {

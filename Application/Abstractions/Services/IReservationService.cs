@@ -1,7 +1,7 @@
-﻿using Domain.Entities;
-using Domain.Models;
+﻿using Application.Models;
+using Domain.Entities;
 
-namespace Domain.Abstractions.Services;
+namespace Application.Abstractions.Services;
 
 public interface IReservationService
 {

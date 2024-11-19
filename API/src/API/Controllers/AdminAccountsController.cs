@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Domain.Models;
-using Domain.Abstractions.Services;
-using System.Security.Authentication;
 using Application.Abstractions.Services;
+using Application.Models;
 
 namespace API.Controllers;
 

@@ -11,6 +11,6 @@ public interface IAdminAccountRepository
     public Task<bool> QueryIfEmailExists(string email);
     public Task<AdminAccount?> QueryAccountByCredentialsIfActive(string email, string passwordHash);
     public Task<AdminAccount?> QueryAccountByCredentials(string email, string passwordHash);
-    public Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto);
+    public Task UpdateDetailsAsync(string id, string name, string email, string status);
     public Task UpdatePasswordAsync(string id, string newPasswordHash);
 }

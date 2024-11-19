@@ -125,7 +125,7 @@ public class ReservationRepository : IReservationRepository
         return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
-    public async Task TransactWriteCheckInAsync(string id, CheckInOutDTO dto, List<string> roomIDs)
+    public async Task TransactWriteCheckInAsync(string id, string status, string by, List<string> roomIDs)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>()
         {
@@ -143,9 +143,9 @@ public class ReservationRepository : IReservationRepository
                                             "UpdatedBy = :updated_by",
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
-                        { ":status", new AttributeValue(dto.ReservationStatus) },
+                        { ":status", new AttributeValue(status) },
                         { ":rooms", new AttributeValue(roomIDs) },
-                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
+                        { ":updated_by", new AttributeValue(by) }
                     },
                 }
             },
@@ -153,7 +153,7 @@ public class ReservationRepository : IReservationRepository
 
         foreach (string roomID in roomIDs)
         {
-            writes.Add(GetRoomStatusUpdateWriteItem(roomID, dto.RoomStatus, dto.UpdatedBy));
+            writes.Add(GetRoomStatusUpdateWriteItem(roomID, status, by));
         }
 
         var request = new TransactWriteItemsRequest()
@@ -164,7 +164,7 @@ public class ReservationRepository : IReservationRepository
         await _client.TransactWriteItemsAsync(request);
     }
 
-    public async Task TransactWriteCheckOutAsync(string id, CheckInOutDTO dto, List<string> roomIDs)
+    public async Task TransactWriteCheckOutAsync(string id, string status, string by, List<string> roomIDs)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>()
         {
@@ -182,8 +182,8 @@ public class ReservationRepository : IReservationRepository
                                        "REMOVE RoomIDs",
                     ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                     {
-                        { ":status", new AttributeValue(dto.ReservationStatus) },
-                        { ":updated_by", new AttributeValue(dto.UpdatedBy) }
+                        { ":status", new AttributeValue(status) },
+                        { ":updated_by", new AttributeValue(by) }
                     },
                 }
             },
@@ -191,7 +191,7 @@ public class ReservationRepository : IReservationRepository
 
         foreach (string roomID in roomIDs)
         {
-            writes.Add(GetRoomStatusUpdateWriteItem(roomID, dto.RoomStatus, dto.UpdatedBy));
+            writes.Add(GetRoomStatusUpdateWriteItem(roomID, status, by));
         }
 
         var request = new TransactWriteItemsRequest()

@@ -9,7 +9,6 @@ using Infrastructure.DynamoDB;
 using Application.Abstractions.Services;
 using Infrastructure.Repositories;
 using Application.Services;
-using Domain.Services;
 using Infrastructure.Services;
 
 namespace API;

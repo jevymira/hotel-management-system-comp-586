@@ -36,7 +36,9 @@ public class RoomRepository : IRoomRepository
         return await context.ScanAsync<Room>(default).GetRemainingAsync();
     }
 
-    public async Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<string> urls)
+    // TODO: REFACTOR
+    public async Task UpdateAsync(string id, string type, decimal price,
+        int occupancy, string number, List<string> urls, string updatedBy)
     {
         var request = new UpdateItemRequest
         {
@@ -56,12 +58,12 @@ public class RoomRepository : IRoomRepository
             ,
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
             {
-                { ":room_type_id", new AttributeValue(roomDTO.RoomTypeID) },
-                { ":price_per_night", new AttributeValue(roomDTO.PricePerNight.ToString()) },
-                { ":max_occupancy", new AttributeValue(roomDTO.MaxOccupancy.ToString()) },
-                { ":room_number", new AttributeValue(roomDTO.RoomNumber) },
+                { ":room_type_id", new AttributeValue(type) },
+                { ":price_per_night", new AttributeValue(price.ToString()) },
+                { ":max_occupancy", new AttributeValue(occupancy.ToString()) },
+                { ":room_number", new AttributeValue(number) },
                 { ":image_urls", new AttributeValue(urls) },
-                { ":updated_by", new AttributeValue(roomDTO.UpdatedBy) }
+                { ":updated_by", new AttributeValue(updatedBy) }
             },
         };
 

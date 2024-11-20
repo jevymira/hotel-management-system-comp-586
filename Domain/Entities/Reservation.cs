@@ -1,4 +1,6 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
+using Domain.Services;
+using System.Globalization;
 
 namespace Domain.Entities;
 
@@ -14,9 +16,9 @@ public class Reservation
 
     public List<string> RoomIDs { get; set; } = new List<string>(); // can be null
 
-    public required string CheckInDate { get; set; }
+    public string CheckInDate { get; private set; }
 
-    public required string CheckOutDate { get; set; }
+    public string CheckOutDate { get; private set; }
 
     public int NumberOfGuests { get; set; }
 
@@ -33,5 +35,38 @@ public class Reservation
     public required string GuestDateOfBirth { get; set; }
 
     public string? UpdatedBy { get; set; }
+
+    // yyyy-MM-dd
+    public void SetCheckInAndCheckOutDate(string checkInDate, string checkOutDate)
+    {
+        if (DateTime.Parse(checkInDate) > DateTime.Parse(checkOutDate))
+            throw new ArgumentException("The check in date is after the check out date.");
+
+        TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        DateTime now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone);
+
+        if (DateTime.Parse(checkInDate) < now || DateTime.Parse(checkOutDate) < now)
+            throw new ArgumentException("A provided date has already passed.");
+
+        CheckInDate = checkInDate;
+        CheckOutDate = checkOutDate;
+    }
+
+    public void CheckIn(List<string> roomIDs) // may only be checked in if roomIDs are provided
+    {
+        if (roomIDs.Count == 0)
+        {
+            throw new ArgumentException("Either no rooms, the wrong room number(s), " +
+                                        "or already occupied rooms were specified.");
+        }
+        RoomIDs = roomIDs;
+        BookingStatus = "Checked In";
+    }
+
+    public void CheckOut()
+    {
+        RoomIDs.Clear();
+        BookingStatus = "Checked Out";
+    }
 
 }

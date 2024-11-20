@@ -66,11 +66,19 @@ public class ReservationsController : ControllerBase
     }  
     */
     [HttpPost] // POST api/reservations
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostAsync([FromBody] PostReservationDTO reservationDTO)
     {
-        var reservation = await _reservationService.AddAsync(reservationDTO);
-        return CreatedAtAction(nameof(GetReservationAsync), new { id = reservation.ReservationID }, value: reservation);
+        try
+        {
+            var reservation = await _reservationService.AddAsync(reservationDTO);
+            return CreatedAtAction(nameof(GetReservationAsync), new { id = reservation.ReservationID }, value: reservation);
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
+        }
     }
 
     // use case: Admin Desk page, Save reservation changes at check in/out

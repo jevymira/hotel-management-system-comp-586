@@ -17,25 +17,26 @@ public class ReservationService : IReservationService
         _roomRepository = roomRepository;
     }
 
-    public async Task<Reservation> AddAsync(PostReservationDTO reservationDTO)
+    public async Task<Reservation> AddAsync(PostReservationDTO dto)
     {
         Reservation reservation = new Reservation
         {
             ReservationID = IdGenerator.Get10CharNumericBase10(),
-            RoomType = reservationDTO.RoomType,
-            OrderQuantity = reservationDTO.OrderQuantity,
+            RoomType = dto.RoomType,
+            OrderQuantity = dto.OrderQuantity,
             RoomIDs = new List<string>(),
-            CheckInDate = reservationDTO.CheckInDate,
-            CheckOutDate = reservationDTO.CheckOutDate,
-            NumberOfGuests = reservationDTO.NumberOfGuests,
-            TotalPrice = reservationDTO.TotalPrice,
+            // CheckInDate = dto.CheckInDate,
+            // CheckOutDate = dto.CheckOutDate,
+            NumberOfGuests = dto.NumberOfGuests,
+            TotalPrice = dto.TotalPrice,
             BookingStatus = "Confirmed",
-            GuestFullName = reservationDTO.GuestFullName,
-            GuestDateOfBirth = reservationDTO.GuestDateOfBirth,
-            GuestEmail = reservationDTO.GuestEmail,
-            GuestPhoneNumber = reservationDTO.GuestPhoneNumber,
+            GuestFullName = dto.GuestFullName,
+            GuestDateOfBirth = dto.GuestDateOfBirth,
+            GuestEmail = dto.GuestEmail,
+            GuestPhoneNumber = dto.GuestPhoneNumber,
             UpdatedBy = String.Empty,
         };
+        reservation.SetCheckInAndCheckOutDate(dto.CheckInDate, dto.CheckOutDate);
         await _reservationRepository.SaveAsync(reservation);
         return reservation;
     }

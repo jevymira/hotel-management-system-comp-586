@@ -14,4 +14,5 @@ public interface IReservationRepository
     public Task<List<Reservation>> QueryConfirmedAsync(string date);
     public Task TransactWriteCheckInAsync(string id, string status, string by, List<string> roomIDs);
     public Task TransactWriteCheckOutAsync(string id, string status, string by, List<string> roomIDs);
+    public Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms);
 }

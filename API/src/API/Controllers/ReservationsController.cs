@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Domain.Models;
 using Application.Abstractions.Services;
 using Application.Models;
+using System.Transactions;
 
 namespace API.Controllers;
 
@@ -66,7 +67,7 @@ public class ReservationsController : ControllerBase
     }  
     */
     [HttpPost] // POST api/reservations
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostAsync([FromBody] PostReservationDTO reservationDTO)
     {
@@ -77,7 +78,7 @@ public class ReservationsController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-            return Conflict(ex.Message);
+            return UnprocessableEntity(ex.Message);
         }
     }
 
@@ -101,13 +102,25 @@ public class ReservationsController : ControllerBase
     }
     */
     [HttpPatch("by-id/{id}")] // PATCH api/reservations/by-id/0123456789
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchCheckInOut(
         string id, [FromBody] CheckInOutDTO model)
     {
-        if (!(await _reservationService.UpdateCheckInOutAsync(id, model)))
-            return Conflict("One or more provided room numbers are non-existent or occupied.");
+        try
+        {
+            await _reservationService.UpdateStatusAndRoomsAsync(id, model);
+        }
+        catch (ArgumentException ex)
+        {
+            return UnprocessableEntity(ex.Message);
+        }
+        catch (TransactionException ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+
         return NoContent();
     }
 

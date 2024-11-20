@@ -42,7 +42,7 @@ public class RoomService : IRoomService
             Status = "Empty",
             RoomSize = "20 m^2 / 215 ft^2",
             ImageUrls = urls,
-            UpdatedBy = String.Empty
+            UpdatedBy = string.Empty
         };
 
         await _repository.SaveAsync(room);

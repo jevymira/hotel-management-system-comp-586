@@ -10,6 +10,8 @@ using Application.Abstractions.Services;
 using Infrastructure.Repositories;
 using Application.Services;
 using Infrastructure.Services;
+using Application.Abstractions.Factories;
+using Application.Factories;
 
 namespace API;
 
@@ -38,6 +40,7 @@ public class Startup
         services.AddScoped<IAdminAccountService, AdminAccountService>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
+        services.AddScoped<IRoomReservationServiceFactory, RoomReservationServiceFactory>();
         services.AddScoped<IAdminAccountRepository, AdminAccountRepository>();
         services.AddTransient<IImageService, ImageService>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

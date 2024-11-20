@@ -22,5 +22,5 @@ public class Room
 
     public required List<string> ImageUrls { get; set; }
 
-    public string? UpdatedBy { get; set; } // nullable
+    public string UpdatedBy { get; set; } = String.Empty; // can be null
 }

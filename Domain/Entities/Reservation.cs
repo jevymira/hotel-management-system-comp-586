@@ -1,6 +1,4 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
-using Domain.Services;
-using System.Globalization;
 
 namespace Domain.Entities;
 
@@ -30,11 +28,11 @@ public class Reservation
 
     public required string GuestEmail { get; set; }
 
-    public string? GuestPhoneNumber { get; set; }
+    public string GuestPhoneNumber { get; set; } = String.Empty; // can be null
 
     public required string GuestDateOfBirth { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public string UpdatedBy { get; set; } = String.Empty; // can be null
 
     // yyyy-MM-dd
     public void SetCheckInAndCheckOutDate(string checkInDate, string checkOutDate)
@@ -52,14 +50,17 @@ public class Reservation
         CheckOutDate = checkOutDate;
     }
 
-    public void CheckIn(List<string> roomIDs) // may only be checked in if roomIDs are provided
+    public void CheckIn(List<Room> rooms) // may only be checked in if roomIDs are provided
     {
-        if (roomIDs.Count == 0)
+        if (rooms.Count == 0)
         {
             throw new ArgumentException("Either no rooms, the wrong room number(s), " +
                                         "or already occupied rooms were specified.");
         }
-        RoomIDs = roomIDs;
+        foreach (Room room in rooms)
+        {
+            RoomIDs.Add(room.RoomID);
+        }
         BookingStatus = "Checked In";
     }
 

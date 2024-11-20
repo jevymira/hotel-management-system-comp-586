@@ -6,6 +6,8 @@ using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Abstractions.Database;
+using System.Data.Common;
+using System.Transactions;
 
 namespace Infrastructure.Repositories;
 
@@ -227,4 +229,82 @@ public class ReservationRepository : IReservationRepository
             }
         };
     }
+
+    public async Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms)
+    {
+        List<TransactWriteItem> writes = new List<TransactWriteItem>()
+        {
+            new TransactWriteItem()
+            {
+                Put = new Put()
+                {
+                    TableName = "Reservations",
+                    Item = new Dictionary<string, AttributeValue>
+                    {
+                        {"ReservationID", new AttributeValue(reservation.ReservationID)},
+                        {"RoomType", new AttributeValue(reservation.RoomType)},
+                        {"OrderQuantity", new AttributeValue(reservation.OrderQuantity.ToString())},
+                        {"CheckInDate", new AttributeValue(reservation.CheckInDate)},
+                        {"CheckOutDate", new AttributeValue(reservation.CheckOutDate)},
+                        {"NumberOfGuests", new AttributeValue(reservation.NumberOfGuests.ToString())},
+                        {"TotalPrice", new AttributeValue(reservation.TotalPrice.ToString())},
+                        {"BookingStatus", new AttributeValue(reservation.BookingStatus)},
+                        {"GuestFullName", new AttributeValue(reservation.GuestFullName)},
+                        {"GuestEmail", new AttributeValue(reservation.GuestEmail)},
+                        {"GuestPhoneNumber", new AttributeValue(reservation.GuestPhoneNumber)},
+                        {"GuestDateOfBirth", new AttributeValue(reservation.GuestDateOfBirth)},
+                        {"UpdatedBy", new AttributeValue(reservation.UpdatedBy)}
+                    }
+                }
+            }
+        };
+
+        if (reservation.RoomIDs.Count > 0) // null sets not allowed
+        {
+            writes.First().Put.Item.Add("RoomIDs", new AttributeValue(reservation.RoomIDs));
+        }
+
+        foreach (Room room in rooms)
+        {
+            writes.Add(GetRoomWriteItem(room));
+        }
+
+        var request = new TransactWriteItemsRequest()
+        {
+            TransactItems = writes
+        };
+
+        try 
+        {
+            var resp = await _client.TransactWriteItemsAsync(request);
+        }
+        catch (TransactionCanceledException) // DynamoDBv2
+        {
+            throw new TransactionException("Update failed, try again.");
+        }
+    }
+
+    private TransactWriteItem GetRoomWriteItem(Room room)
+    {
+        return new TransactWriteItem()
+        {
+            Put = new Put()
+            {
+                TableName = "Rooms",
+                Item = new Dictionary<string, AttributeValue>
+                {
+                    {"RoomID", new AttributeValue(room.RoomID)},
+                    {"RoomTypeID", new AttributeValue(room.RoomTypeID)},
+                    {"RoomNumber", new AttributeValue(room.RoomNumber)},
+                    {"PricePerNight", new AttributeValue(room.PricePerNight.ToString())},
+                    {"MaxOccupancy", new AttributeValue(room.MaxOccupancy.ToString())},
+                    {"Status", new AttributeValue(room.Status)},
+                    {"RoomSize", new AttributeValue(room.RoomSize)},
+                    {"ImageUrls", new AttributeValue(room.ImageUrls)},
+                    {"UpdatedBy", new AttributeValue(room.UpdatedBy)}
+                }
+            }
+        };
+    }
+
 }

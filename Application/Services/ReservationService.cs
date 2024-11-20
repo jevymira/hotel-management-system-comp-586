@@ -1,7 +1,9 @@
-﻿using Application.Abstractions.Services;
+﻿using Application.Abstractions.Factories;
+using Application.Abstractions.Services;
 using Application.Helpers.Services;
 using Application.Models;
 using Domain.Abstractions.Repositories;
+using Domain.Abstractions.Services;
 using Domain.Entities;
 
 namespace Application.Services;
@@ -10,11 +12,17 @@ public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
     private readonly IRoomRepository _roomRepository;
+    private readonly IRoomReservationServiceFactory _roomReservationServiceFactory;
+    private IRoomReservationService? _roomReservationService;
 
-    public ReservationService(IReservationRepository reservationRepository, IRoomRepository roomRepository)
+    public ReservationService(
+        IReservationRepository reservationRepository, 
+        IRoomRepository roomRepository,
+        IRoomReservationServiceFactory roomReservationServiceFactory)
     {
         _reservationRepository = reservationRepository;
         _roomRepository = roomRepository;
+        _roomReservationServiceFactory = roomReservationServiceFactory;
     }
 
     public async Task<Reservation> AddAsync(PostReservationDTO dto)
@@ -70,28 +78,42 @@ public class ReservationService : IReservationService
         return reservations;
     }
 
-    public async Task<bool> UpdateCheckInOutAsync(string id, CheckInOutDTO dto)
+    public async Task UpdateStatusAndRoomsAsync(string id, CheckInOutDTO dto)
     {
-        List<string> roomIDs = new List<string>();
+        var reservation = await _reservationRepository.LoadReservationAsync(id);
+        _roomReservationService = _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus);
+        var rooms = await _roomReservationService.Process(reservation, dto.RoomNumbers, dto.UpdatedBy);
+        await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);
+
+        /*
+        List<Room> rooms = new List<Room>();
         if (dto.ReservationStatus.Equals("Checked In"))
         {
-            // from the room numbers provided, find the room ids
+            // from the room numbers provided, find the rooms
             foreach (string roomNumber in dto.RoomNumbers)
             {
                 var room = await _roomRepository.QueryEmptyByRoomNumberAsync(roomNumber);
                 if (room == null) { return false; }
-                roomIDs.Add(room.RoomID);
+                rooms.Add(room);
             }
+            // TODO: unify with other as pure write
             await _reservationRepository.TransactWriteCheckInAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
         }
         else // Checked Out, Cancelled
         {
-            // from the reservation, find the room IDs
+            // from the reservation, find the rooms
+            // TODO: retain this line for both
             var reservation = await _reservationRepository.LoadReservationAsync(id);
-            roomIDs = reservation.RoomIDs;
+
+            foreach (string roomID in reservation.RoomIDs)
+            {
+                rooms.Add(await _roomRepository.LoadRoomAsync(roomID));
+            }
             // separate from TransactWriteCheckInAsync
+            // TODO: unify with other as pure write
             await _reservationRepository.TransactWriteCheckOutAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
         }
         return true;
+        */
     }
 }

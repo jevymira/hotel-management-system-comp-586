@@ -20,10 +20,11 @@ public class RoomReservationServiceFactory : IRoomReservationServiceFactory
             case "Checked In":
                 return new CheckInService(_roomRepository);
             case "Checked Out":
-            case "Due In":
-            case "Confirmed":
                 return new CheckOutService(_roomRepository);
-            // TODO: ADD DUE IN + CONFIRMED
+            case "Due In":
+                return new RevertToDueInService(_roomRepository);
+            case "Confirmed":
+                return new RevertToConfirmedService(_roomRepository);
             default:
                 throw new ArgumentException("Unrecognized room status type.");
         }

@@ -22,7 +22,7 @@ public class Reservation
 
     public decimal TotalPrice { get; set; }
 
-    public required string BookingStatus { get; set; }
+    public string BookingStatus { get; private set; }
 
     public required string GuestFullName { get; set; }
 
@@ -70,4 +70,15 @@ public class Reservation
         BookingStatus = "Checked Out";
     }
 
+    public void MakeDueIn()
+    {
+        RoomIDs.Clear();
+        BookingStatus = "Due In";
+    }
+
+    public void MakeConfirmed()
+    {
+        RoomIDs.Clear();
+        BookingStatus = "Confirmed";
+    }
 }

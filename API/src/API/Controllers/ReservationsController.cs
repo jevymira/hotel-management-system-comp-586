@@ -90,14 +90,12 @@ public class ReservationsController : ControllerBase
             "MO",
             "CK"
         ],
-        "roomStatus": "Occupied",
         "updatedBy": "TEST"
     }
     // alternative sample body
     {
         "reservationStatus": "Checked Out",
         // omit room numbers
-        "roomStatus": "Empty",
         "updatedBy": "TEST"
     }
     */

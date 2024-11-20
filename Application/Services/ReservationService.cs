@@ -37,15 +37,19 @@ public class ReservationService : IReservationService
             // CheckOutDate = dto.CheckOutDate,
             NumberOfGuests = dto.NumberOfGuests,
             TotalPrice = dto.TotalPrice,
-            BookingStatus = "Confirmed",
+            // BookingStatus = "Confirmed",
             GuestFullName = dto.GuestFullName,
             GuestDateOfBirth = dto.GuestDateOfBirth,
             GuestEmail = dto.GuestEmail,
             GuestPhoneNumber = dto.GuestPhoneNumber,
             UpdatedBy = String.Empty,
         };
+
         reservation.SetCheckInAndCheckOutDate(dto.CheckInDate, dto.CheckOutDate);
+        reservation.MakeConfirmed();
+
         await _reservationRepository.SaveAsync(reservation);
+
         return reservation;
     }
 
@@ -80,40 +84,13 @@ public class ReservationService : IReservationService
 
     public async Task UpdateStatusAndRoomsAsync(string id, CheckInOutDTO dto)
     {
+        // coordinate service to load reservation
         var reservation = await _reservationRepository.LoadReservationAsync(id);
+        // run-time polymorphism: varying service implementation based on new reservation status
         _roomReservationService = _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus);
+        // coordinate the room-reservation service to make changes to the rooms and reservations
         var rooms = await _roomReservationService.Process(reservation, dto.RoomNumbers, dto.UpdatedBy);
+        // coordinate repository to persist changes
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);
-
-        /*
-        List<Room> rooms = new List<Room>();
-        if (dto.ReservationStatus.Equals("Checked In"))
-        {
-            // from the room numbers provided, find the rooms
-            foreach (string roomNumber in dto.RoomNumbers)
-            {
-                var room = await _roomRepository.QueryEmptyByRoomNumberAsync(roomNumber);
-                if (room == null) { return false; }
-                rooms.Add(room);
-            }
-            // TODO: unify with other as pure write
-            await _reservationRepository.TransactWriteCheckInAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
-        }
-        else // Checked Out, Cancelled
-        {
-            // from the reservation, find the rooms
-            // TODO: retain this line for both
-            var reservation = await _reservationRepository.LoadReservationAsync(id);
-
-            foreach (string roomID in reservation.RoomIDs)
-            {
-                rooms.Add(await _roomRepository.LoadRoomAsync(roomID));
-            }
-            // separate from TransactWriteCheckInAsync
-            // TODO: unify with other as pure write
-            await _reservationRepository.TransactWriteCheckOutAsync(id, dto.ReservationStatus, dto.UpdatedBy, roomIDs);
-        }
-        return true;
-        */
     }
 }

@@ -45,7 +45,7 @@ public class ReservationService : IReservationService
             UpdatedBy = String.Empty,
         };
 
-        reservation.SetCheckInAndCheckOutDate(dto.CheckInDate, dto.CheckOutDate);
+        reservation.SetCheckInAndCheckOut(dto.CheckInDate, dto.CheckOutDate);
         reservation.MakeConfirmed();
 
         await _reservationRepository.SaveAsync(reservation);
@@ -82,14 +82,23 @@ public class ReservationService : IReservationService
         return reservations;
     }
 
-    public async Task UpdateStatusAndRoomsAsync(string id, CheckInOutDTO dto)
+    public async Task UpdateStatusAndRoomsAsync(string id, UpdateReservationDTO dto)
     {
         // coordinate service to load reservation
-        var reservation = await _reservationRepository.LoadReservationAsync(id);
-        // run-time polymorphism: varying service implementation based on new reservation status
+        Reservation? reservation = await _reservationRepository.LoadReservationAsync(id)
+                     ?? throw new KeyNotFoundException("Booking number does not match any reservation.");
+
+        // make changes (if any) to reservation entity
+        reservation.GuestFullName = dto.GuestFullName;
+        reservation.GuestDateOfBirth = dto.GuestDateOfBirth;
+        reservation.GuestEmail = dto.GuestEmail;
+        reservation.GuestPhoneNumber = dto.GuestPhoneNumber;
+
+        // run-time polymorphism: vary service implementation based on new reservation status
         _roomReservationService = _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus);
         // coordinate the room-reservation service to make changes to the rooms and reservations
-        var rooms = await _roomReservationService.Process(reservation, dto.RoomNumbers, dto.UpdatedBy);
+        var rooms = await _roomReservationService.Process(reservation, dto.RoomNumbers, dto.CheckInDate, dto.CheckOutDate, dto.UpdatedBy);
+
         // coordinate repository to persist changes
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);
     }

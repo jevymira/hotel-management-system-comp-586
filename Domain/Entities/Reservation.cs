@@ -35,7 +35,7 @@ public class Reservation
     public string UpdatedBy { get; set; } = String.Empty; // can be null
 
     // yyyy-MM-dd
-    public void SetCheckInAndCheckOutDate(string checkInDate, string checkOutDate)
+    public void SetCheckInAndCheckOut(string checkInDate, string checkOutDate)
     {
         if (DateTime.Parse(checkInDate) > DateTime.Parse(checkOutDate))
             throw new ArgumentException("The check in date is after the check out date.");
@@ -45,6 +45,15 @@ public class Reservation
 
         if (DateTime.Parse(checkInDate) < now || DateTime.Parse(checkOutDate) < now)
             throw new ArgumentException("A provided date has already passed.");
+
+        CheckInDate = checkInDate;
+        CheckOutDate = checkOutDate;
+    }
+
+    public void SetDatesForExisting(string checkInDate, string checkOutDate)
+    {
+        if (DateTime.Parse(checkInDate) > DateTime.Parse(checkOutDate))
+            throw new ArgumentException("The check in date is after the check out date.");
 
         CheckInDate = checkInDate;
         CheckOutDate = checkOutDate;

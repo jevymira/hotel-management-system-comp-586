@@ -13,7 +13,7 @@ public class CheckInService : IRoomReservationService
         _roomRepository = roomRepository;
     }
 
-    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers, string updatedBy)
+    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers, string checkIn, string checkOut, string updatedBy)
     {
         List<Room> rooms = new List<Room>();
 
@@ -31,6 +31,7 @@ public class CheckInService : IRoomReservationService
         }
 
         reservation.CheckIn(rooms);
+        reservation.SetDatesForExisting(checkIn, checkOut);
         reservation.UpdatedBy = updatedBy;
 
         return rooms;

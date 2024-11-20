@@ -10,5 +10,5 @@ public interface IReservationService
     public Task<Reservation> GetAsync(string id);
     public Task<List<Reservation>> GetByGuestNameAsync(string name);
     public Task<List<Reservation>> GetForDeskAsync();
-    public Task UpdateStatusAndRoomsAsync(string id, CheckInOutDTO dto);
+    public Task UpdateStatusAndRoomsAsync(string id, UpdateReservationDTO dto);
 }

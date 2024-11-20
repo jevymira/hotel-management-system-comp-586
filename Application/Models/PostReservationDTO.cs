@@ -11,5 +11,5 @@ public class PostReservationDTO
     public required string GuestFullName { get; set; }
     public required string GuestDateOfBirth { get; set; }
     public required string GuestEmail { get; set; }
-    public string? GuestPhoneNumber { get; set; }
+    public string GuestPhoneNumber { get; set; } = String.Empty; // optional
 }

@@ -85,30 +85,53 @@ public class ReservationsController : ControllerBase
     // use case: Admin Desk page, Save reservation changes at check in/out
     /* sample request body
     {
+        "guestFullName": "John Doe",
+        "guestDateOfBirth": "1985-05-05",
+        "guestEmail": "jdoe@email.com",
+        // "GuestPhoneNumber": "", // optional
         "reservationStatus": "Checked In",
         "roomNumbers": [ // (not room ids)
             "MO",
             "CK"
         ],
-        "updatedBy": "TEST"
+        "checkInDate": "2024-11-11",
+        "checkOutDate": "2024-11-12",
+        "updatedBy": "CI#UPDATE#TEST"
     }
     // alternative sample body
     {
+        "guestFullName": "John Doe",
+        "guestDateOfBirth": "1985-05-05",
+        "guestEmail": "jdoe@email.com",
+        // "GuestPhoneNumber": "", // optional
         "reservationStatus": "Checked Out",
-        // omit room numbers
-        "updatedBy": "TEST"
+        // "roomNumbers": // omit
+        "checkInDate": "2024-11-11",
+        "checkOutDate": "2024-11-12",
+        "updatedBy": "CO#UPDATE#TEST"
     }
     */
     [HttpPatch("by-id/{id}")] // PATCH api/reservations/by-id/0123456789
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchCheckInOut(
-        string id, [FromBody] CheckInOutDTO model)
+        string id, [FromBody] UpdateReservationDTO model)
     {
+        if (!(ModelState.IsValid))
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
             await _reservationService.UpdateStatusAndRoomsAsync(id, model);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (ArgumentException ex)
         {

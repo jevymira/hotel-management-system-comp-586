@@ -46,6 +46,9 @@ public class Reservation
         if (DateTime.Parse(checkInDate) < now || DateTime.Parse(checkOutDate) < now)
             throw new ArgumentException("A provided date has already passed.");
 
+        if (DateTime.Parse(checkInDate) > now.AddYears(1) || DateTime.Parse(checkOutDate) > now.AddYears(1))
+            throw new ArgumentException("Cannot book a year or more in advance.");
+
         CheckInDate = checkInDate;
         CheckOutDate = checkOutDate;
     }

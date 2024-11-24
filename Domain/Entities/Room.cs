@@ -16,11 +16,21 @@ public class Room
 
     public required int MaxOccupancy { get; set; }
 
-    public required string Status { get; set; }
+    public string Status { get; private set; }
 
     public required string RoomSize { get; set; }
 
     public required List<string> ImageUrls { get; set; }
 
     public string UpdatedBy { get; set; } = String.Empty; // can be null
+
+    public void MarkEmpty()
+    {
+        Status = "Empty";
+    }
+
+    public void MarkOccupied()
+    {
+        Status = "Occupied";
+    }
 }

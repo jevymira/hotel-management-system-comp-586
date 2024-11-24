@@ -26,7 +26,7 @@ public class CheckInService : IRoomReservationService
                 throw new ArgumentException("One or more provided room numbers are non-existent or occupied");
             }
             rooms.Add(room);
-            rooms.Last().Status = "Occupied";
+            rooms.Last().MarkOccupied();
             rooms.Last().UpdatedBy = updatedBy;
         }
 

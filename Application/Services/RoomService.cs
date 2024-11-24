@@ -39,11 +39,11 @@ public class RoomService : IRoomService
             RoomNumber = roomDTO.RoomNumber,
             PricePerNight = roomDTO.PricePerNight,
             MaxOccupancy = roomDTO.MaxOccupancy,
-            Status = "Empty",
             RoomSize = "20 m^2 / 215 ft^2",
             ImageUrls = urls,
             UpdatedBy = string.Empty
         };
+        room.MarkEmpty();
 
         await _repository.SaveAsync(room);
         return room;

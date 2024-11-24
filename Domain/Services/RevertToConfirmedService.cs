@@ -24,7 +24,7 @@ public class RevertToConfirmedService : IRoomReservationService
             if (room != null)
             {
                 rooms.Add(room);
-                rooms.Last().Status = "Empty";
+                rooms.Last().MarkEmpty();
                 rooms.Last().UpdatedBy = updatedBy;
             }
         }

@@ -25,12 +25,18 @@ public class AdminAccountRepository : IAdminAccountRepository
         await context.SaveAsync(account);
     }
 
-    public async Task<GetAdminAccountDTO> LoadAsync(string id)
+    public async Task<AdminAccount> LoadAsync(string id)
+    {
+        var context = new DynamoDBContext(_client);
+        return await context.LoadAsync<AdminAccount>(id);
+    }
+
+    public async Task<GetAdminAccountDTO> LoadForClientAsync(string id)
     {
         var context = new DynamoDBContext(_client);
         return await context.LoadAsync<GetAdminAccountDTO>(id);
     }
-    public async Task<List<GetAdminAccountDTO>> LoadAllAsync()
+    public async Task<List<GetAdminAccountDTO>> LoadAllForClientAsync()
     {
         var context = new DynamoDBContext(_client);
         return await context.ScanAsync<GetAdminAccountDTO>(default).GetRemainingAsync();
@@ -52,6 +58,29 @@ public class AdminAccountRepository : IAdminAccountRepository
         // query because GetItem cannot be performed on a non-key attribute
         var result = await _client.QueryAsync(request);
         return (result.Count > 0);
+    }
+
+    public async Task<bool> QueryIfEmailExists(string email, string id)
+    {
+        // (DynamoDB cannot enforce uniqueness on non-key attributes)
+        var request = new QueryRequest
+        {
+            TableName = "AdminAccounts",
+            IndexName = "Email-PasswordHash-index",
+            KeyConditionExpression = "Email = :email",
+            FilterExpression = "AdminID <> :admin_id",
+            // disqualifies the Item to-be-updated for the count
+            // (not equals operator not available for KeyConditionExpression)
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":email", new AttributeValue(email) },
+                { ":admin_id", new AttributeValue(id) }
+            },
+        };
+        // query because GetItem cannot be performed on a non-key attribute
+        var response = await _client.QueryAsync(request);
+
+        return response.Count > 0;
     }
 
     public async Task<AdminAccount?> QueryAccountByCredentialsIfActive(string email, string passwordHash)
@@ -91,29 +120,97 @@ public class AdminAccountRepository : IAdminAccountRepository
         return null;
     }
 
-    public async Task UpdateDetailsAsync(string id, string name, string email, string status)
+    public async Task<string?> QueryAuditIDByAccountID(string id)
     {
-        var request = new UpdateItemRequest
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var cfg = new DynamoDBOperationConfig
         {
-            TableName = "AdminAccounts",
-            Key = new Dictionary<string, AttributeValue>()
+            IndexName = "AdminID-index",
+            QueryFilter = new List<ScanCondition>()
             {
-                { "AdminID", new AttributeValue(id) }
-            },
-            UpdateExpression =
-            (
-                "SET FullName = :full_name, " +
-                    "Email = :email, " +
-                    "AccountStatus = :account_status"
-            ),
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
-            {
-                { ":full_name", new AttributeValue(name) },
-                { ":email", new AttributeValue(email) },
-                { ":account_status", new AttributeValue(status) }
+                new ScanCondition("AdminID", ScanOperator.Equal, id)
             }
         };
-        await _client.UpdateItemAsync(request);
+        var result = await context.QueryAsync<AccountStatus>(id, cfg).GetRemainingAsync();
+        if (result.Count != 0)
+            return result.Single().AuditID; // InvalidOperationException if null
+        return null;
+    }
+
+    public async Task UpdateDetailsAsync(AdminAccount account, string auditID, string updatedBy)
+    {
+        TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        DateTime now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone);
+
+        var request = new TransactWriteItemsRequest()
+        {
+            TransactItems = new List<TransactWriteItem>()
+            {
+                new TransactWriteItem()
+                {
+                    Update = new Update()
+                    {
+                        TableName = "AdminAccounts",
+                        Key = new Dictionary<string, AttributeValue>
+                        {
+                            { "AdminID", new AttributeValue(account.AdminID) },
+                        },
+                        UpdateExpression =
+                        (
+                            "SET FullName = :full_name, " +
+                                "Email = :email, " +
+                                "AccountStatus = :account_status"
+                        ),
+                        ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
+                        {
+                            { ":full_name", new AttributeValue(account.FullName) },
+                            { ":email", new AttributeValue(account.Email) },
+                            { ":account_status", new AttributeValue(account.AccountStatus) }
+                        }
+                    }
+                },
+                new TransactWriteItem()
+                {
+                    Put = new Put()
+                    {
+                        TableName = "AccountsStatus",
+                        Item = new Dictionary<string, AttributeValue>
+                        {
+                            {"AuditID", new AttributeValue(auditID)},
+                            {"AdminID", new AttributeValue(account.AdminID)},
+                            {"OldStatus",new AttributeValue(account.IsActive() ? "InActive" : "Active")},
+                            {"NewStatus",new AttributeValue(account.AccountStatus)},
+                            {"UpdatedBy",new AttributeValue(updatedBy)},
+                            {"UpdatedTime",new AttributeValue(now.ToString())}
+                        }
+                    }
+                }
+            },
+        };
+
+        await _client.TransactWriteItemsAsync(request);
+
+        //var req = new UpdateItemRequest
+        //{
+        //    TableName = "AdminAccounts",
+        //    Key = new Dictionary<string, AttributeValue>()
+        //    {
+        //        { "AdminID", new AttributeValue(account.AdminID) }
+        //    },
+        //    UpdateExpression =
+        //    (
+        //        "SET FullName = :full_name, " +
+        //            "Email = :email, " +
+        //            "AccountStatus = :account_status"
+        //    ),
+        //    ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
+        //    {
+        //        { ":full_name", new AttributeValue(account.FullName) },
+        //        { ":email", new AttributeValue(account.Email) },
+        //        { ":account_status", new AttributeValue(account.AccountStatus) }
+        //    }
+        //};
+        //await _client.UpdateItemAsync(req);
     }
 
     public async Task UpdatePasswordAsync(string id, string newPasswordHash)

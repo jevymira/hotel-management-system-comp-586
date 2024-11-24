@@ -4,6 +4,7 @@ using Application.Models;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
+using System.ComponentModel.Design;
 
 namespace Application.Services;
 
@@ -43,13 +44,13 @@ public class AdminAccountService : IAdminAccountService
 
     public async Task<GetAdminAccountDTO> GetAsync(string id)
     {
-        var account = await _adminAccountRepository.LoadAsync(id);
+        var account = await _adminAccountRepository.LoadForClientAsync(id);
         return account;
     }
 
     public async Task<List<GetAdminAccountDTO>> GetAllAsync()
     {
-        return await _adminAccountRepository.LoadAllAsync();
+        return await _adminAccountRepository.LoadAllForClientAsync();
     }
 
     public async Task<string?> GetIDIfActiveValidCredentials(string email, string passwordHash)
@@ -62,14 +63,33 @@ public class AdminAccountService : IAdminAccountService
 
     public async Task UpdateDetailsAsync(string id, UpdateAdminAccountDTO dto)
     {
-        if ((await _adminAccountRepository.LoadAsync(id)) == null)
+        if (await _adminAccountRepository.QueryIfEmailExists(dto.Email, id))
+            throw new ArgumentException($"Email {dto.Email} is already in use.");
+
+        // from id, load id
+        AdminAccount? account = await _adminAccountRepository.LoadAsync(id);
+        if ((await _adminAccountRepository.LoadForClientAsync(id)) == null)
             throw new KeyNotFoundException($"No account exists with ID {id}.");
             // otherwise, DynamoDB will create new item
 
-        if (await _adminAccountRepository.QueryIfEmailExists(dto.Email))
-            throw new ArgumentException($"Email {dto.Email} is already in use.");
+        // set changes to account
+        account.FullName = dto.FullName;
+        account.Email = dto.Email;
 
-        await _adminAccountRepository.UpdateDetailsAsync(id, dto.FullName, dto.Email, dto.AccountStatus);
+        if (dto.AccountStatus.Equals("Active"))
+            account.Activate();
+        else if (dto.AccountStatus.Equals("InActive"))
+            account.Deactivate();
+        else
+            throw new ArgumentException("Status may only be either Active or InActive.");
+
+        // from id, find audit id
+        string? auditID = await _adminAccountRepository.QueryAuditIDByAccountID(id);
+        if (auditID == null)
+            auditID = IdGenerator.Get6CharBase62();
+
+        // persist account (& audit)
+        await _adminAccountRepository.UpdateDetailsAsync(account, auditID, dto.UpdatedBy);
     }
 
     // TODO: REFACTOR from exceptions

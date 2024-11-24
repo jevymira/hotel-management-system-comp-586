@@ -87,16 +87,18 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Admin Accounts page, Edit Account 
+    // sample resource: /api/admin-accounts/0123456789
     /* sample request body
     {
         "fullName": "Aiden Pierce",
-        "email": "apierce@travelersinn.com", // already in use
-        "accountStatus": "Active"
+        "email": "apierce@travelersinn.com",
+        "accountStatus": "Active",
+        "updatedBy": "TEST#ACC"
     }
     */
     [HttpPatch("{id}")] // PATCH /api/admin-accounts/{id}
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use
+    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use in another account
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchAsync([FromRoute] string id, [FromBody] UpdateAdminAccountDTO dto)
     {

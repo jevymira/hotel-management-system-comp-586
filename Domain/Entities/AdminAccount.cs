@@ -21,4 +21,9 @@ public class AdminAccount
     {
         AccountStatus = "InActive";
     }
+
+    public bool IsActive()
+    {
+        return (AccountStatus.Equals("Active"));
+    }
 }

@@ -36,16 +36,14 @@ public class RoomRepository : IRoomRepository
         return await context.ScanAsync<Room>(default).GetRemainingAsync();
     }
 
-    // TODO: REFACTOR
-    public async Task UpdateAsync(string id, string type, decimal price,
-        int occupancy, string number, List<string> urls, string updatedBy)
+    public async Task UpdateAsync(Room room)
     {
         var request = new UpdateItemRequest
         {
             TableName = "Rooms",
             Key = new Dictionary<string, AttributeValue>()
             {
-                { "RoomID", new AttributeValue(id) }
+                { "RoomID", new AttributeValue(room.RoomID) }
             },
             UpdateExpression =
 
@@ -58,12 +56,12 @@ public class RoomRepository : IRoomRepository
             ,
             ExpressionAttributeValues = new Dictionary<string, AttributeValue>()
             {
-                { ":room_type_id", new AttributeValue(type) },
-                { ":price_per_night", new AttributeValue(price.ToString()) },
-                { ":max_occupancy", new AttributeValue(occupancy.ToString()) },
-                { ":room_number", new AttributeValue(number) },
-                { ":image_urls", new AttributeValue(urls) },
-                { ":updated_by", new AttributeValue(updatedBy) }
+                { ":room_type_id", new AttributeValue(room.RoomTypeID) },
+                { ":price_per_night", new AttributeValue(room.PricePerNight.ToString()) },
+                { ":max_occupancy", new AttributeValue(room.MaxOccupancy.ToString()) },
+                { ":room_number", new AttributeValue(room.RoomNumber) },
+                { ":image_urls", new AttributeValue(room.ImageUrls) },
+                { ":updated_by", new AttributeValue(room.UpdatedBy) }
             },
         };
 

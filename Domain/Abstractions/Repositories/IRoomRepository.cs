@@ -7,8 +7,7 @@ public interface IRoomRepository
     public Task<Room> SaveAsync(Room room);
     public Task<Room> LoadRoomAsync(string id);
     public Task<List<Room>> ScanAsync();
-    public Task UpdateAsync(string id, string type, decimal price,
-        int occupancy, string number, List<string> urls, string updatedBy);
+    public Task UpdateAsync(Room room);
     public Task<bool> RoomIdExistsAsync(string id);
     public Task<bool> RoomNumberExistsAsync(string num);
     public Task<bool> RoomNumberExistsElsewhereAsync(string num, string id);

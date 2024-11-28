@@ -65,20 +65,27 @@ public class RoomService : IRoomService
         return await _repository.QueryEmptyByRoomTypeAsync(type);
     }
 
-    public async Task<Result<string>> UpdateAsync(string id, UpdateRoomDTO dto, List<IFormFile> images)
+    public async Task UpdateAsync(string id, UpdateRoomDTO dto, List<IFormFile> images)
     {
-        if (!(await _repository.RoomIdExistsAsync(id)))
-            return new Result<string>(new Error("NotFound"));
-            // throw new KeyNotFoundException($"No room exists with Room ID {id}.");
+        // load in the room to be updated
+        Room? room = await _repository.LoadRoomAsync(id)
+            ?? throw new KeyNotFoundException($"No room exists with Room ID {id}.");
 
-        // check if RoomNumber (separate from RoomID) is unique
+        // check if pending RoomNumber (separate from RoomID) is unique
         if (await _repository.RoomNumberExistsElsewhereAsync(dto.RoomNumber, id))
-            return new Result<string>(new Error($"Conflict"));
-            // throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
+            throw new ArgumentException($"Room Number {dto.RoomNumber} is already in use with another room.");
 
-        List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
-        await _repository.UpdateAsync(id, dto.RoomTypeID, dto.PricePerNight, 
-            dto.MaxOccupancy, dto.RoomNumber, urls, dto.UpdatedBy);
-        return new Result<string>("Updated successfully.");
+        // make changes to room object
+        room.RoomTypeID = dto.RoomTypeID;
+        room.PricePerNight = dto.PricePerNight;
+        room.MaxOccupancy = dto.MaxOccupancy;
+        room.RoomNumber = dto.RoomNumber;
+        room.UpdatedBy = dto.UpdatedBy;
+
+        // coordinate upload of room images
+        room.ImageUrls = await _imageService.UploadRoomImagesAsync(images, id);
+
+        // coordinate the persistence of the room obect
+        await _repository.UpdateAsync(room);
     }
 }

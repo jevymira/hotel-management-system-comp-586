@@ -77,22 +77,26 @@ public class RoomsController : ControllerBase
     //   form-data for content-type: multipart/form-data
     //     images
     [HttpPatch("{id}")] // PATCH api/rooms/0123456789
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)] // when room number already in use
+    [ProducesResponseType(StatusCodes.Status409Conflict)] // when room number already in use by another room
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchRoomAsync(
         [FromRoute] string id,
         [FromForm] UpdateRoomDTO roomDTO,
         [FromForm(Name = "images")] List<IFormFile> images)
     {
-        var result = await _roomService.UpdateAsync(id, roomDTO, images);
-
-        if (!result.IsSuccess)
+        try
         {
-            if (result.Error.Description.Equals("NotFound"))
-                return NotFound($"No room exists with Room ID {id}.");
-            else if (result.Error.Description.Equals("Conflict"))
-                return Conflict($"Room Number {roomDTO.RoomNumber} is already in use with another room.");
+            await _roomService.UpdateAsync(id, roomDTO, images);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
         }
 
         return NoContent();

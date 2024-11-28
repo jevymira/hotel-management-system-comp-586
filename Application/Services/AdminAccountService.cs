@@ -92,7 +92,6 @@ public class AdminAccountService : IAdminAccountService
         await _adminAccountRepository.UpdateDetailsAsync(account, auditID, dto.UpdatedBy);
     }
 
-    // TODO: REFACTOR from exceptions
     public async Task<bool> UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
     {
         AdminAccount? account = await _adminAccountRepository.QueryAccountByCredentials(

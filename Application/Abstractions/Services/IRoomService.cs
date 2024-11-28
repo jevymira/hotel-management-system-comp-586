@@ -12,5 +12,5 @@ public interface IRoomService
     public Task<Room> GetRoomAsync(string id);
     public Task<List<Room>> GetAllAsync();
     public Task<List<Room>> GetEmptyRoomsByType(string type);
-    public Task<Result<string>> UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images);
+    public Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images);
 }

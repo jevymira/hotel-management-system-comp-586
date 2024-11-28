@@ -4,5 +4,5 @@ namespace Domain.Abstractions.Services;
 
 public interface IRoomReservationService
 {
-    public Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers, string updatedBy);
+    public Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers);
 }

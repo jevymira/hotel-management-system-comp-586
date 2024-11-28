@@ -1,6 +1,7 @@
 ﻿using Amazon.S3.Model;
 using Application.Abstractions.Factories;
 using Application.Abstractions.Services;
+using Application.Contexts;
 using Application.Helpers.Services;
 using Application.Models;
 using Domain.Abstractions.Repositories;
@@ -95,11 +96,13 @@ public class ReservationService : IReservationService
         reservation.GuestEmail = dto.GuestEmail;
         reservation.GuestPhoneNumber = dto.GuestPhoneNumber;
         reservation.SetDatesForExisting(dto.CheckInDate, dto.CheckOutDate);
+        reservation.UpdatedBy = dto.UpdatedBy;
 
-        // run-time polymorphism: vary service implementation based on new reservation status
-        _roomReservationService = _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus);
-        // coordinate the room-reservation service to make changes to the rooms and reservations
-        var rooms = await _roomReservationService.Process(reservation, dto.RoomNumbers, dto.UpdatedBy);
+        // strategy pattern: vary service implementation based on new reservation status
+        RoomReservationServiceContext context = new RoomReservationServiceContext(
+            _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus));
+        // coordinate the context service to make changes to the reservation and rooms
+        var rooms = await context.RunAssignmentService(reservation, dto.RoomNumbers);
 
         // coordinate repository to persist changes
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);

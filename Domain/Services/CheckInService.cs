@@ -13,7 +13,7 @@ public class CheckInService : IRoomReservationService
         _roomRepository = roomRepository;
     }
 
-    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers, string updatedBy)
+    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
     {
         List<Room> rooms = new List<Room>();
 
@@ -25,13 +25,12 @@ public class CheckInService : IRoomReservationService
             {
                 throw new ArgumentException("One or more provided room numbers are non-existent or occupied");
             }
+            room.MarkOccupied();
+            room.UpdatedBy = reservation.UpdatedBy;
             rooms.Add(room);
-            rooms.Last().MarkOccupied();
-            rooms.Last().UpdatedBy = updatedBy;
         }
 
         reservation.CheckIn(rooms);
-        reservation.UpdatedBy = updatedBy;
 
         return rooms;
     }

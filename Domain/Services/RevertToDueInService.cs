@@ -13,7 +13,7 @@ public class RevertToDueInService : IRoomReservationService
         _roomRepository = roomRepository;
     }
 
-    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers, string updatedBy)
+    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
     {
         List<Room> rooms = new List<Room>();
 
@@ -23,14 +23,13 @@ public class RevertToDueInService : IRoomReservationService
             Room? room = await _roomRepository.LoadRoomAsync(roomID);
             if (room != null)
             {
+                room.MarkEmpty();
+                room.UpdatedBy = reservation.UpdatedBy;
                 rooms.Add(room);
-                rooms.Last().MarkEmpty();
-                rooms.Last().UpdatedBy = updatedBy;
             }
         }
 
         reservation.MakeDueIn();
-        reservation.UpdatedBy = updatedBy;
 
         return rooms;
     }

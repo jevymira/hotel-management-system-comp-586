@@ -1,11 +1,11 @@
 {
   "resource": "/{proxy+}",
-  "path": "/api/values",
+  "path": "/api/rooms/J8VjJZ",
   "httpMethod": "GET",
   "headers": null,
   "queryStringParameters": null,
   "pathParameters": {
-    "proxy": "api/values"
+    "proxy": "api/rooms/J8VjJZ"
   },
   "stageVariables": null,
   "requestContext": {

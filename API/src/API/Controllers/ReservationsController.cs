@@ -104,7 +104,7 @@ public class ReservationsController : ControllerBase
         "guestDateOfBirth": "1985-05-05",
         "guestEmail": "jdoe@email.com",
         // "GuestPhoneNumber": "", // optional
-        "reservationStatus": "Checked Out",
+        "reservationStatus": "Checked Out", // Due In/Confirmed/Cancelled
         // "roomNumbers": // omit
         "checkInDate": "2024-11-11",
         "checkOutDate": "2024-11-12",

@@ -1,14 +1,13 @@
-﻿using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
+﻿using Domain.Abstractions.Services;
 using Domain.Entities;
 
 namespace Domain.Services;
 
-public class CheckInService : IRoomReservationService
+public class SetCancelledService : IRoomReservationService
 {
     private readonly IRoomsStatusService _roomsStatusService;
 
-    public CheckInService(IRoomsStatusService roomsStatusService)
+    public SetCancelledService(IRoomsStatusService roomsStatusService)
     {
         _roomsStatusService = roomsStatusService;
     }
@@ -17,7 +16,7 @@ public class CheckInService : IRoomReservationService
     {
         List<Room> rooms = await _roomsStatusService.UpdateStatuses(reservation, roomNumbers);
 
-        reservation.CheckIn(rooms); // additionally assigns the rooms passed as parameters
+        reservation.MarkCancelled(); // clears room assignment in reservation
 
         return rooms;
     }

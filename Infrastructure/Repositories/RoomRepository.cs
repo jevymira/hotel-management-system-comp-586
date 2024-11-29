@@ -127,15 +127,12 @@ public class RoomRepository : IRoomRepository
         return response.Count > 0;
     }
 
-    public async Task<Room?> QueryEmptyByRoomNumberAsync(string num)
+    public async Task<Room?> QueryByRoomNumberAsync(string num)
     {
         DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
             IndexName = "RoomNumber-Status-index",
-            QueryFilter = new List<ScanCondition>() {
-                new ScanCondition("Status", ScanOperator.Equal, "Empty")
-            }
         };
         var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
         // null when no room matches number or room is already occupied

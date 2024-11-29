@@ -1,5 +1,4 @@
-﻿using Amazon.S3.Model;
-using Application.Abstractions.Factories;
+﻿using Application.Abstractions.Factories;
 using Application.Abstractions.Services;
 using Application.Contexts;
 using Application.Helpers.Services;
@@ -48,7 +47,7 @@ public class ReservationService : IReservationService
         };
 
         reservation.SetCheckInAndCheckOut(dto.CheckInDate, dto.CheckOutDate);
-        reservation.MakeConfirmed();
+        reservation.MarkConfirmed();
 
         await _reservationRepository.SaveAsync(reservation);
 

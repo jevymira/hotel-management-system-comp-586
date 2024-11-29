@@ -33,4 +33,9 @@ public class Room
     {
         Status = "Occupied";
     }
+
+    public bool IsOccupied()
+    {
+        return Status.Equals("Occupied");
+    }
 }

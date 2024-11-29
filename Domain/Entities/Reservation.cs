@@ -69,10 +69,14 @@ public class Reservation
             throw new ArgumentException("Either no rooms, the wrong room number(s), " +
                                         "or already occupied rooms were specified.");
         }
+
+        List<string> ids = new List<string>();
         foreach (Room room in rooms)
         {
-            RoomIDs.Add(room.RoomID);
+            ids.Add(room.RoomID);
         }
+        RoomIDs = ids;
+
         BookingStatus = "Checked In";
     }
 
@@ -82,15 +86,21 @@ public class Reservation
         BookingStatus = "Checked Out";
     }
 
-    public void MakeDueIn()
+    public void MarkDueIn()
     {
         RoomIDs.Clear();
         BookingStatus = "Due In";
     }
 
-    public void MakeConfirmed()
+    public void MarkConfirmed()
     {
         RoomIDs.Clear();
         BookingStatus = "Confirmed";
+    }
+
+    public void MarkCancelled()
+    {
+        RoomIDs.Clear();
+        BookingStatus = "Cancelled";
     }
 }

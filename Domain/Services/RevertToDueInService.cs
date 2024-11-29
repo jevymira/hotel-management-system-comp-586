@@ -6,30 +6,18 @@ namespace Domain.Services;
 
 public class RevertToDueInService : IRoomReservationService
 {
-    private readonly IRoomRepository _roomRepository;
+    private readonly IRoomsStatusService _roomsStatusService;
 
-    public RevertToDueInService(IRoomRepository roomRepository)
+    public RevertToDueInService(IRoomsStatusService roomsStatusService)
     {
-        _roomRepository = roomRepository;
+        _roomsStatusService = roomsStatusService;
     }
 
     public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
     {
-        List<Room> rooms = new List<Room>();
+        List<Room> rooms = await _roomsStatusService.UpdateStatuses(reservation, roomNumbers);
 
-        // from the reservation, find the rooms (if any) and change their status
-        foreach (string roomID in reservation.RoomIDs)
-        {
-            Room? room = await _roomRepository.LoadRoomAsync(roomID);
-            if (room != null)
-            {
-                room.MarkEmpty();
-                room.UpdatedBy = reservation.UpdatedBy;
-                rooms.Add(room);
-            }
-        }
-
-        reservation.MakeDueIn();
+        reservation.MarkDueIn(); // clears room assignment in reservation
 
         return rooms;
     }

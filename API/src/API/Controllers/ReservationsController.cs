@@ -145,4 +145,15 @@ public class ReservationsController : ControllerBase
         return NoContent();
     }
 
+    // invoked daily at hotel-wide check in time (02:00 PM PST) by EventBridge Rule trigger
+    [AllowAnonymous]
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchScheduledDueIn()
+    {
+        await _reservationService.UpdateConfirmedToDueInAsync();
+
+        return NoContent();
+    }
+
 }

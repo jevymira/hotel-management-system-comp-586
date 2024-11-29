@@ -2,6 +2,7 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime.Internal;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
@@ -127,6 +128,20 @@ public class ReservationRepository : IReservationRepository
         return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
+    public async Task<List<Reservation>> QueryConfirmedTodayAsync(string date)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var cfg = new DynamoDBOperationConfig
+        {
+            IndexName = "BookingStatus-CheckInDate-index",
+            QueryFilter = new List<ScanCondition>() {
+                new ScanCondition("CheckInDate", ScanOperator.Equal, date)
+            }
+        };
+        var reservations = await context.QueryAsync<Reservation>("Confirmed", cfg).GetRemainingAsync();
+        return reservations;
+    }
+
     public async Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>()
@@ -204,4 +219,30 @@ public class ReservationRepository : IReservationRepository
         };
     }
 
+    public async Task TransactWriteDueInReservations(List<Reservation> reservations)
+    {
+        List<TransactWriteItem> writes = new List<TransactWriteItem>();
+
+        foreach (Reservation reservation in reservations)
+        {
+            writes.Add(new TransactWriteItem()
+            {
+                Update = new Update()
+                {
+                    Key = new Dictionary<string, AttributeValue>
+                    {
+                        { "ReservationID", new AttributeValue(reservation.ReservationID) },
+                    },
+                    TableName = "Reservations",
+                    UpdateExpression = "SET BookingStatus = :due_in",
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        { ":due_in", new AttributeValue("Due In") },
+                    }
+                }
+            });
+        }
+
+        await _client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = writes });
+    }
 }

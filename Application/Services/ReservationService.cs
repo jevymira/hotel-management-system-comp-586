@@ -1,4 +1,5 @@
-﻿using Application.Abstractions.Factories;
+﻿using Amazon.DynamoDBv2;
+using Application.Abstractions.Factories;
 using Application.Abstractions.Services;
 using Application.Contexts;
 using Application.Helpers.Services;
@@ -105,5 +106,17 @@ public class ReservationService : IReservationService
 
         // coordinate repository to persist changes
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);
+    }
+
+    public async Task UpdateConfirmedToDueInAsync()
+    {
+        TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+        string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
+
+        List<Reservation>? reservations = await _reservationRepository.QueryConfirmedTodayAsync(date);
+        if (!reservations.Any())
+            return;
+
+        await _reservationRepository.TransactWriteDueInReservations(reservations);
     }
 }

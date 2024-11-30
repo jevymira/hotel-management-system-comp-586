@@ -74,9 +74,19 @@ public class ReservationService : IReservationService
         return await _reservationRepository.LoadReservationAsync(id);
     }
 
-    public async Task<List<Reservation>> GetByGuestNameAsync(string name)
+    public async Task<List<ReservationDTO>> GetByGuestNameAsync(string name)
     {
-        return await _reservationRepository.QueryByNameAsync(name);
+        List<ReservationDTO> dtos = new List<ReservationDTO>();
+
+        List<Reservation> reservations = await _reservationRepository.QueryByNameAsync(name);
+
+        // convert each reservation into proper DTO
+        foreach (Reservation reservation in reservations)
+        {
+            dtos.Add(await convertReservation(reservation));
+        }
+
+        return dtos;
     }
 
     // returns in order of:
@@ -84,7 +94,7 @@ public class ReservationService : IReservationService
     // all checked in reservations
     // checked out reservations of the current date
     // confirmed reservations with a check in date from the current date onward
-    public async Task<List<Reservation>> GetForDeskAsync()
+    public async Task<List<ReservationDTO>> GetForDeskAsync()
     {
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
         string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
@@ -95,7 +105,14 @@ public class ReservationService : IReservationService
         reservations.AddRange(await _reservationRepository.QueryCheckedOutAsync(date));
         reservations.AddRange(await _reservationRepository.QueryConfirmedAsync(date));
 
-        return reservations;
+        List<ReservationDTO> dtos = new List<ReservationDTO>();
+        // convert each reservation into proper DTO
+        foreach (Reservation reservation in reservations)
+        {
+            dtos.Add(await convertReservation(reservation));
+        }
+
+        return dtos;
     }
 
     public async Task UpdateStatusAndRoomsAsync(string id, UpdateReservationDTO dto)
@@ -132,5 +149,36 @@ public class ReservationService : IReservationService
             return;
 
         await _reservationRepository.TransactWriteDueInReservations(reservations);
+    }
+
+    private async Task<ReservationDTO> convertReservation(Reservation reservation)
+    {
+        List<string> roomNumbers = new List<string>();
+        // get room numbers to be displayed
+        foreach (string roomID in reservation.RoomIDs)
+        {
+            Room room = await _roomRepository.LoadRoomAsync(roomID);
+            roomNumbers.Add(room.RoomNumber);
+        }
+
+        ReservationDTO dto = new ReservationDTO
+        {
+            ReservationID = reservation.ReservationID,
+            RoomType = reservation.RoomType,
+            OrderQuantity = reservation.OrderQuantity,
+            RoomNumbers = roomNumbers,
+            CheckInDate = reservation.CheckInDate,
+            CheckOutDate = reservation.CheckOutDate,
+            NumberOfGuests = reservation.NumberOfGuests,
+            TotalPrice = reservation.TotalPrice,
+            BookingStatus = reservation.BookingStatus,
+            GuestFullName = reservation.GuestFullName,
+            GuestEmail = reservation.GuestEmail,
+            GuestPhoneNumber = reservation.GuestPhoneNumber,
+            GuestDateOfBirth = reservation.GuestDateOfBirth,
+            UpdatedBy = reservation.UpdatedBy
+        };
+
+        return dto;
     }
 }

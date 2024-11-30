@@ -74,12 +74,12 @@ public class ReservationsController : ControllerBase
     /// <response code="201">Reservation created successfully; returned with confirmation number.</response>
     /* sample request body
     {
-        "RoomType": "Double",
+        "RoomType": "Single",
         "OrderQuantity": 1,
-        "TotalPrice" : 100.00,
-        "CheckInDate": "2024-12-01",
-        "CheckOutDate": "2024-12-03",
-        "NumberOfGuests": 2,
+        "TotalPrice" : 75.00,
+        "CheckInDate": "2024-12-12",
+        "CheckOutDate": "2024-12-13",
+        "NumberOfGuests": 1,
         "GuestFullName": "John Doe",
         "GuestEmail": "jdoe@email.com",
         "GuestDateOfBirth": "1980-01-01"
@@ -116,28 +116,28 @@ public class ReservationsController : ControllerBase
     /* sample request body
     {
         "guestFullName": "John Doe",
-        "guestDateOfBirth": "1985-05-05",
+        "guestDateOfBirth": "1980-01-01",
         "guestEmail": "jdoe@email.com",
-        // "GuestPhoneNumber": "", // optional
+        // "GuestPhoneNumber": "(555) 555-5555", // optional
         "reservationStatus": "Checked In",
         "roomNumbers": [ // (not room ids)
-            "MO",
-            "CK"
+            "4",
+            "5"
         ],
-        "checkInDate": "2024-11-11",
-        "checkOutDate": "2024-11-12",
+        "checkInDate": "2024-12-12",
+        "checkOutDate": "2024-12-13",
         "updatedBy": "CI#UPDATE#TEST"
     }
     // alternative sample body
     {
         "guestFullName": "John Doe",
-        "guestDateOfBirth": "1985-05-05",
+        "guestDateOfBirth": "1980-01-01",
         "guestEmail": "jdoe@email.com",
-        // "GuestPhoneNumber": "", // optional
+        // "GuestPhoneNumber": "(555) 555-5555", // optional
         "reservationStatus": "Checked Out", // Due In/Confirmed/Cancelled
         // "roomNumbers": // omit
-        "checkInDate": "2024-11-11",
-        "checkOutDate": "2024-11-12",
+        "checkInDate": "2024-12-12",
+        "checkOutDate": "2024-12-13",
         "updatedBy": "CO#UPDATE#TEST"
     }
     */

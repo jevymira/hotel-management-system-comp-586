@@ -24,7 +24,7 @@ public class RoomsController : ControllerBase
     /// <response code="404">No room exists with the supplied ID.</response>
     /// <response code="200">The room is retrieved successfully.</response>
     [AllowAnonymous]
-    [HttpGet("{id}")] // GET api/rooms/0123456789
+    [HttpGet("{id}")] // GET api/rooms/abc123
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ActionName(nameof(GetRoomAsync))] // CreatedAtAction and .NET Async suffixing

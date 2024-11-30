@@ -8,8 +8,8 @@ public interface IReservationService
 {
     public Task<Reservation> AddAsync(PostReservationDTO reservationDTO);
     public Task<Reservation> GetAsync(string id);
-    public Task<List<Reservation>> GetByGuestNameAsync(string name);
-    public Task<List<Reservation>> GetForDeskAsync();
+    public Task<List<ReservationDTO>> GetByGuestNameAsync(string name);
+    public Task<List<ReservationDTO>> GetForDeskAsync();
     public Task UpdateStatusAndRoomsAsync(string id, UpdateReservationDTO dto);
     public Task UpdateConfirmedToDueInAsync();
 }

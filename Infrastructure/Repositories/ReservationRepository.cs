@@ -7,8 +7,10 @@ using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Abstractions.Database;
+using System;
 using System.Data.Common;
 using System.Transactions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infrastructure.Repositories;
 
@@ -142,6 +144,39 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
+    public async Task<int> QueryOverlapCountAsync(Reservation reservation, string bookingStatus)
+    {
+        DynamoDBContext context = new DynamoDBContext(_client);
+        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
+        expressionAttributeValues.Add(":v_room_type", reservation.RoomType);
+        expressionAttributeValues.Add(":v_status", bookingStatus);
+        expressionAttributeValues.Add(":check_in", reservation.CheckInDate);
+        expressionAttributeValues.Add(":check_out", reservation.CheckOutDate);
+
+        var query = new QueryOperationConfig
+        {
+            IndexName = "RoomType-BookingStatus-index",
+            KeyExpression = new Expression
+            {
+                ExpressionStatement = "RoomType = :v_room_type AND BookingStatus = :v_status",
+                ExpressionAttributeValues = expressionAttributeValues
+            },
+            FilterExpression = new Expression
+            {
+                ExpressionStatement = "CheckInDate < :check_out AND CheckOutDate > :check_in",
+            }
+        };
+
+        var reservations = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+
+        int count = 0;
+        foreach (Reservation existing in reservations)
+        {
+            count += existing.OrderQuantity;
+        }
+        return count;
+    }
+
     public async Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>()
@@ -245,4 +280,5 @@ public class ReservationRepository : IReservationRepository
 
         await _client.TransactWriteItemsAsync(new TransactWriteItemsRequest() { TransactItems = writes });
     }
+
 }

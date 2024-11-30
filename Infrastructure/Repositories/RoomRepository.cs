@@ -6,6 +6,7 @@ using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Abstractions.Database;
+using System;
 
 namespace Infrastructure.Repositories;
 
@@ -153,5 +154,23 @@ public class RoomRepository : IRoomRepository
         };
         var rooms = await context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
         return rooms;
+    }
+
+    public async Task<int> QueryCountByRoomType(string type)
+    {
+        var request = new QueryRequest
+        {
+            TableName = "Rooms",
+            IndexName = "RoomTypeID-Status-index",
+            KeyConditionExpression = "RoomTypeID = :room_type",
+            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+            {
+                { ":room_type", new AttributeValue(type) }
+            },
+        };
+ 
+        var response = await _client.QueryAsync(request);
+
+        return response.Count;
     }
 }

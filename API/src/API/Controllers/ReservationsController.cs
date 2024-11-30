@@ -70,7 +70,7 @@ public class ReservationsController : ControllerBase
     /// Create a new reservation.
     /// </summary>
     /// <param name="reservationDTO"></param>
-    /// <response code="422">Reservation violated one or more business rules.</response>
+    /// <response code="422">Reservation violated business rule (including overbooking).</response>
     /// <response code="201">Reservation created successfully; returned with confirmation number.</response>
     /* sample request body
     {
@@ -86,6 +86,7 @@ public class ReservationsController : ControllerBase
         // "GuestPhoneNumber": "(555) 555-5555" // (optional)
     }  
     */
+    [AllowAnonymous]
     [HttpPost] // POST api/reservations
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status201Created)]

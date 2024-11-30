@@ -1,11 +1,9 @@
-﻿using Amazon.DynamoDBv2;
-using Application.Abstractions.Factories;
+﻿using Application.Abstractions.Factories;
 using Application.Abstractions.Services;
 using Application.Contexts;
 using Application.Helpers.Services;
 using Application.Models;
 using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
 using Domain.Entities;
 
 namespace Application.Services;
@@ -17,7 +15,7 @@ public class ReservationService : IReservationService
     private readonly IRoomReservationServiceFactory _roomReservationServiceFactory;
 
     public ReservationService(
-        IReservationRepository reservationRepository, 
+        IReservationRepository reservationRepository,
         IRoomRepository roomRepository,
         IRoomReservationServiceFactory roomReservationServiceFactory)
     {

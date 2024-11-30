@@ -2,15 +2,10 @@
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
-using Amazon.Runtime.Internal;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
-using Domain.Models;
 using Infrastructure.Abstractions.Database;
-using System;
-using System.Data.Common;
 using System.Transactions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Infrastructure.Repositories;
 

@@ -4,7 +4,6 @@ using Application.Models;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Models;
-using System.ComponentModel.Design;
 
 namespace Application.Services;
 
@@ -33,7 +32,7 @@ public class AdminAccountService : IAdminAccountService
 
         await _adminAccountRepository.SaveAsync(account);
 
-        return new GetAdminAccountDTO 
+        return new GetAdminAccountDTO
         {
             AdminID = account.AdminID,
             FullName = account.FullName,
@@ -70,7 +69,7 @@ public class AdminAccountService : IAdminAccountService
         AdminAccount? account = await _adminAccountRepository.LoadAsync(id);
         if ((await _adminAccountRepository.LoadForClientAsync(id)) == null)
             throw new KeyNotFoundException($"No account exists with ID {id}.");
-            // otherwise, DynamoDB will create new item
+        // otherwise, DynamoDB will create new item
 
         // set changes to account
         account.FullName = dto.FullName;

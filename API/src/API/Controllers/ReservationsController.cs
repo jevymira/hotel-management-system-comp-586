@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Domain.Models;
-using Application.Abstractions.Services;
+﻿using Application.Abstractions.Services;
 using Application.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Transactions;
 
 namespace API.Controllers;

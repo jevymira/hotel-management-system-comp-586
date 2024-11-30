@@ -115,7 +115,7 @@ public class RoomsController : ControllerBase
     //     RoomDTO[roomTypeID], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber], RoomDTO[UpdatedBy]
     //   form-data for content-type: multipart/form-data
     //     images
-    [HttpPatch("{id}")] // PATCH api/rooms/0123456789
+    [HttpPatch("{id}")] // PATCH api/rooms/abc123
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

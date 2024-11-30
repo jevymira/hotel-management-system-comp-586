@@ -17,6 +17,12 @@ public class RoomsController : ControllerBase
         _roomService = roomService;
     }
 
+    /// <summary>
+    /// Retrieve a room by its ID.
+    /// </summary>
+    /// <param name="id">The room ID.</param>
+    /// <response code="404">No room exists with the supplied ID.</response>
+    /// <response code="200">The room is retrieved successfully.</response>
     [AllowAnonymous]
     [HttpGet("{id}")] // GET api/rooms/0123456789
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -30,6 +36,10 @@ public class RoomsController : ControllerBase
     }
 
     // use case: Admin Rooms page, Rooms
+    /// <summary>
+    /// Retrieve all rooms.
+    /// </summary>
+    /// <response code="200">Rooms are retrieved successfully.</response>
     [HttpGet] // GET api/rooms
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoomsAsync()
@@ -38,18 +48,35 @@ public class RoomsController : ControllerBase
     }
 
     // use case: Admin Desk page, Assign Room(s) (of selected type, empty)
-    // query string: CASE SENSITIVE (Double != double)
+    /// <summary>
+    /// Retrieve all empty rooms of a specified type.
+    /// </summary>
+    /// <remarks>
+    /// query string: CASE SENSITIVE (Double != double)
+    /// </remarks>
+    /// <param name="type">Room type.</param>
+    /// <response code="400">Room Type absent from the query string.</response>
+    /// <response code="200">Rooms are retrieved successfully.</response>
     [HttpGet("empty")] // GET api/rooms/empty?type=Double
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetEmptyRoomsAsync([BindRequired][FromQuery] string type)
     {
-        if (ModelState.IsValid)
-            return Ok(await _roomService.GetEmptyRoomsByType(type));
-        return BadRequest("Room Type required in request query string.");
+        if (!ModelState.IsValid)
+        {
+            return BadRequest("Room Type required in request query string.");
+        }
+
+        return Ok(await _roomService.GetEmptyRoomsByType(type));
     }
 
     // use case: Admin Rooms page, Add Room
+    /// <summary>
+    /// Add a new room and upload its images.
+    /// </summary>
+    /// <param name="images">Image files.</param>
+    /// <response code="409">Room Number already in use.</response>
+    /// <response code="201">Room added successfully.</response>
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
     // request Body:
     //   form-data for content-type: application/json
@@ -63,13 +90,25 @@ public class RoomsController : ControllerBase
         [FromForm] PostRoomDTO roomDTO,
         [FromForm(Name = "images")] List<IFormFile> images)
     {
-        Room? room = await _roomService.CreateAsync(roomDTO, images);
-        if (room == null)
-            return Conflict($"Room Number {roomDTO.RoomNumber} is already in use.");
-        return CreatedAtAction(nameof(GetRoomAsync), new { id = room.RoomID }, value: room);
+        try
+        {
+            Room room = await _roomService.CreateAsync(roomDTO, images);
+            return CreatedAtAction(nameof(GetRoomAsync), new { id = room.RoomID }, value: room);
+        }
+        catch (ArgumentException ex)
+        {
+            return Conflict(ex.Message);
+        }
     }
 
     // use case: Admin Rooms page, Edit Room
+    /// <summary>
+    /// Edit the details and images of the room with the specified ID.
+    /// </summary>
+    /// <param name="id">The room ID.</param>
+    /// <response code="404">No room exists with the specified Room ID.</response>
+    /// <response code="409">Room number already in use with another room.</response>
+    /// <response code="204">Room edited successfully.</response>
     // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
     // request Body:
     //   form-data for content-type: application/json
@@ -77,9 +116,8 @@ public class RoomsController : ControllerBase
     //   form-data for content-type: multipart/form-data
     //     images
     [HttpPatch("{id}")] // PATCH api/rooms/0123456789
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)] // when room number already in use by another room
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchRoomAsync(
         [FromRoute] string id,

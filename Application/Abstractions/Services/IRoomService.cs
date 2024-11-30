@@ -8,7 +8,7 @@ namespace Application.Abstractions.Services;
 
 public interface IRoomService
 {
-    public Task<Room?> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images);
+    public Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images);
     public Task<Room> GetRoomAsync(string id);
     public Task<List<Room>> GetAllAsync();
     public Task<List<Room>> GetEmptyRoomsByType(string type);

@@ -19,6 +19,12 @@ public class ReservationsController : ControllerBase
     }
 
     // use case: Admin Desk page, search by booking number
+    /// <summary>
+    /// Get reservation by booking/confirmation number.
+    /// </summary>
+    /// <param name="id">The booking/confirmation number.</param>
+    /// <response code="404">No reservation exists for the provided booking/confirmation number.</response>
+    /// <response code="200">The reservation is retrieved successfully.</response>
     [HttpGet("by-id/{id}")] // GET api/reservations/by-id/0123456789
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -31,6 +37,11 @@ public class ReservationsController : ControllerBase
     }
 
     // use case: Admin Desk page, search by Guest
+    /// <summary>
+    /// Retrieve all reservations with the associated full name of a guest.
+    /// </summary>
+    /// <param name="name">Full Name.</param>
+    /// <response code="200">The reservations, if any, are retrieved successfully.</response>
     [HttpGet("by-name/{name}")] // GET api/reservations/by-name/John%20Doe
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetByNameAsync(string name)
@@ -39,11 +50,14 @@ public class ReservationsController : ControllerBase
     }
 
     // use case: Admin Reservations page, Reservations
-    // returns:
-    // all due in reservations
-    // all checked in reservations
-    // checked out reservations of the current date
-    // confirmed reservations with a check in date from the current date onward
+    /// <summary>
+    /// Retrieve:
+    /// all Due In reservations,
+    /// all Checked In reservations,
+    /// only Checked Out reservations of the current date, and
+    /// only Confirmed reservations with a check in date from the current date onward.
+    /// </summary>
+    /// <response code="200">The reservations, if any, are retrieved successfully.</response>
     [HttpGet] // GET api/reservations
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetForDeskAsync()
@@ -52,6 +66,12 @@ public class ReservationsController : ControllerBase
     }
 
     // use case: Booking Page, Booking Confirmation Page
+    /// <summary>
+    /// Create a new reservation.
+    /// </summary>
+    /// <param name="reservationDTO"></param>
+    /// <response code="422">Reservation violated one or more business rules.</response>
+    /// <response code="201">Reservation created successfully; returned with confirmation number.</response>
     /* sample request body
     {
         "RoomType": "Double",
@@ -83,6 +103,15 @@ public class ReservationsController : ControllerBase
     }
 
     // use case: Admin Desk page, Save reservation changes at check in/out
+    /// <summary>
+    /// Edit a reservation's details (including its status) and room assignment(s).
+    /// </summary>
+    /// <param name="id">Reservation ID.</param>
+    /// <response code="400">Missing parameter in request.</response>
+    /// <response code="404">No reservation exists with provided ID.</response>
+    /// <response code="422">Violation of one or more business rules.</response>
+    /// <response code="500">Server unable to carry out update.</response>
+    /// <response code="204">Reservation update is successful.</response>
     /* sample request body
     {
         "guestFullName": "John Doe",
@@ -146,6 +175,11 @@ public class ReservationsController : ControllerBase
     }
 
     // invoked daily at hotel-wide check in time (02:00 PM PST) by EventBridge Rule trigger
+    /// <summary>
+    /// Change the status of Confirmed reservatons to Due In, for 
+    /// those with check in dates that match the current date.
+    /// </summary>
+    /// <response code="204">Reservation(s) updated to Due In.</response>
     [AllowAnonymous]
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

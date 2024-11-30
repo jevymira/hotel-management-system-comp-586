@@ -21,12 +21,12 @@ public class RoomService : IRoomService
         _imageService = imageService;
     }
 
-    public async Task<Room?> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
+    public async Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
     {
         // check if RoomNumber (separate from RoomID) already exists
         if (await _repository.RoomNumberExistsAsync(roomDTO.RoomNumber))
         {
-            return null;
+            throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use.");
         }
 
         string id = IdGenerator.Get6CharBase62();

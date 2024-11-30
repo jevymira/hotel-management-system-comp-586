@@ -21,9 +21,13 @@ public class AdminAccountsController : ControllerBase
         _adminAccountService = adminAccountService;
     }
 
-    // use case: Login page
+    // use case: Login page (SHA-256 for password)
     // contains AdminID in "sub" of token returned, see at jwt.io Debugger
-    // SHA-256 for password
+    /// <summary>
+    /// Log in to an existing admin account.
+    /// </summary>
+    /// <response code="401">Incorrect credentials.</response>
+    /// <response code="200">Authenticated; token returned with AdminID in "sub".</response>
     /* sample request body:
     {
         "email": "apierce@travelersinn.com",
@@ -32,8 +36,8 @@ public class AdminAccountsController : ControllerBase
     */
     [AllowAnonymous]
     [HttpPost("login")] // POST /api/admin-accounts/login
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)] // incorrect credentials
-    [ProducesResponseType(StatusCodes.Status200OK)] // with token in response body
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> PostAsync([FromBody] LoginRequest loginRequest)
     {
         string? token = await _authenticationService.Login(loginRequest.Email, loginRequest.Password);
@@ -43,6 +47,15 @@ public class AdminAccountsController : ControllerBase
             return Ok(token);
     }
 
+    /// <summary>
+    /// Retrieve a single admin account by its unique id.
+    /// </summary>
+    /// <param name="id">Admin account id.</param>
+    /// <response code="404">No account exists with the supplied ID.</response>
+    /// <response code="200">The admin account (without its password) is retrieved successfully.</response>
+    /// <example>
+    /// GET {base-url}/api/admin-accounts/3dkwsQ
+    /// </example>
     [HttpGet("{id}")] // GET /api/admin-accounts/{id}
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,6 +68,10 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Admin Accounts page, Accounts
+    /// <summary>
+    /// Retrieve all admin accounts.
+    /// </summary>
+    /// <response code="200">Admin accounts are retrieved successfully.</response>
     [HttpGet] // GET /api/admin-accounts
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAsync()
@@ -63,6 +80,12 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Admin Accounts page, Create Account 
+    /// <summary>
+    /// Create and store a new admin account.
+    /// </summary>
+    /// <param name="dto">FullName, Email, and PasswordHash.</param>
+    /// <response code="409">Email already in use.</response>
+    /// <response code="201">Admin account created and stored successfully.</response>
     /* sample request body:
     {
         "fullName": "Aiden Pierce",
@@ -71,7 +94,7 @@ public class AdminAccountsController : ControllerBase
     }
     */
     [HttpPost] // POST /api/admin-accounts
-    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostAsync([FromBody] CreateAccountDTO dto)
     {
@@ -87,7 +110,17 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Admin Accounts page, Edit Account 
-    // sample resource: /api/admin-accounts/0123456789
+    /// <summary>
+    /// Edit the personal information and/or status of the existing admin account with the supplied ID.
+    /// </summary>
+    /// <param name="id">Admin account ID.</param>
+    /// <param name="dto">FullName, Email, AccountStatus, and account UpdatedBy.</param>
+    /// <response code="404">Supplied ID matches no existing accounts.</response>
+    /// <response code="409">Email already in use.</response>
+    /// <response code="204">Edit successful and saved.</response>
+    /// <example>
+    /// PATCH {base-url}/api/admin-accounts/3dkwsQ
+    /// </example>
     /* sample request body
     {
         "fullName": "Aiden Pierce",
@@ -98,7 +131,7 @@ public class AdminAccountsController : ControllerBase
     */
     [HttpPatch("{id}")] // PATCH /api/admin-accounts/{id}
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)] // when email already in use in another account
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchAsync([FromRoute] string id, [FromBody] UpdateAdminAccountDTO dto)
     {
@@ -119,6 +152,12 @@ public class AdminAccountsController : ControllerBase
     }
 
     // use case: Change Password page
+    /// <summary>
+    /// Change the password for the admin account with the specified email.
+    /// </summary>
+    /// <param name="dto">Email, OldPasswordHash, NewPasswordHash</param>
+    /// <response code="422">Credentials invalid.</response>
+    /// <response code="204">Password change is successful and saved.</response>
     /* sample request body:
     {
         "email": "apierce@travelersinn.com",
@@ -128,7 +167,7 @@ public class AdminAccountsController : ControllerBase
     */
     [AllowAnonymous]
     [HttpPatch("reset")] // PATCH api/admin-accounts/reset
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)] // not 401, no auth header
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchPasswordAsync([FromBody] UpdatePasswordDTO dto)
     {

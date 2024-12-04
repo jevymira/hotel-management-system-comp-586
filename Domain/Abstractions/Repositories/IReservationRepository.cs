@@ -12,6 +12,7 @@ public interface IReservationRepository
     public Task<List<Reservation>> QueryConfirmedAsync(string date);
     public Task<List<Reservation>> QueryConfirmedTodayAsync(string date);
     public Task<int> QueryOverlapCountAsync(Reservation reservation, string bookingStatus);
+    public Task<int> QueryOverlapCountAsync(string roomType, string checkInDate, string checkOutDate, string bookingStatus);
     public Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms);
     public Task TransactWriteDueInReservations(List<Reservation> reservations);
 }

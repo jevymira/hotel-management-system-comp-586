@@ -24,7 +24,7 @@ public class RoomsController : ControllerBase
     /// <response code="404">No room exists with the supplied ID.</response>
     /// <response code="200">The room is retrieved successfully.</response>
     [AllowAnonymous]
-    [HttpGet("{id}")] // GET api/rooms/abc123
+    [HttpGet("by-id/{id}")] // GET api/rooms/abc123
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ActionName(nameof(GetRoomAsync))] // CreatedAtAction and .NET Async suffixing
@@ -33,6 +33,28 @@ public class RoomsController : ControllerBase
         var room = await _roomService.GetRoomAsync(id);
         if (room == null) { return NotFound($"No room exists with Room ID {id}."); }
         return Ok(room);
+    }
+
+    // use case: Home page
+    /// <summary>
+    /// Retrieve the room type(s) and their quantity that can service the stay date, room count, and guest count.
+    /// </summary>
+    /// <param name="start">CheckInDate</param>
+    /// <param name="end">CheckOutDate</param>
+    /// <param name="guests">Room Count</param>
+    /// <param name="rooms">Guest Count</param>
+    /// <returns></returns>
+    [AllowAnonymous]
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRoomOptionsAsync(
+        [FromQuery] string start,
+        [FromQuery] string end,
+        [FromQuery] int rooms,
+        [FromQuery] int guests)
+    {
+        var options = await _roomService.GetMatchingRoomsAsync(start, end, rooms, guests);
+        return Ok(options);
     }
 
     // use case: Admin Rooms page, Rooms

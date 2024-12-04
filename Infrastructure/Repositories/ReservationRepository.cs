@@ -12,27 +12,26 @@ namespace Infrastructure.Repositories;
 public class ReservationRepository : IReservationRepository
 {
     private readonly AmazonDynamoDBClient _client;
+    private readonly DynamoDBContext _context;
 
     public ReservationRepository(IDBClientFactory<AmazonDynamoDBClient> factory)
     {
         _client = factory.GetClient();
+        _context = new DynamoDBContext(_client);
     }
 
     public async Task SaveAsync(Reservation reservation)
     {
-        var context = new DynamoDBContext(_client);
-        await context.SaveAsync(reservation);
+        await _context.SaveAsync(reservation);
 ;    }
 
     public async Task<Reservation> LoadReservationAsync(string id)
     {
-        var context = new DynamoDBContext(_client);
-        return await context.LoadAsync<Reservation>(id);
+        return await _context.LoadAsync<Reservation>(id);
     }
 
     public async Task<List<Reservation>> QueryByNameAsync(string name)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_name", name);
         var queryOperationConfig = new QueryOperationConfig
@@ -45,12 +44,11 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        return await context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync();
+        return await _context.FromQueryAsync<Reservation>(queryOperationConfig).GetRemainingAsync();
     }
 
     public async Task<List<Reservation>> QueryDueInAsync()
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Due In");
 
@@ -64,11 +62,10 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
     public async Task<List<Reservation>> QueryCheckedInAsync()
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Checked In");
 
@@ -82,12 +79,11 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
     public async Task<List<Reservation>> QueryCheckedOutAsync(string date)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Checked Out");
         expressionAttributeValues.Add(":v_date", date);
@@ -102,12 +98,11 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
     public async Task<List<Reservation>> QueryConfirmedAsync(string date)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_status", "Confirmed");
         expressionAttributeValues.Add(":v_date", date);
@@ -122,12 +117,11 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        return await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
     public async Task<List<Reservation>> QueryConfirmedTodayAsync(string date)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
             IndexName = "BookingStatus-CheckInDate-index",
@@ -135,13 +129,12 @@ public class ReservationRepository : IReservationRepository
                 new ScanCondition("CheckInDate", ScanOperator.Equal, date)
             }
         };
-        var reservations = await context.QueryAsync<Reservation>("Confirmed", cfg).GetRemainingAsync();
+        var reservations = await _context.QueryAsync<Reservation>("Confirmed", cfg).GetRemainingAsync();
         return reservations;
     }
 
     public async Task<int> QueryOverlapCountAsync(Reservation reservation, string bookingStatus)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_room_type", reservation.RoomType);
         expressionAttributeValues.Add(":v_status", bookingStatus);
@@ -162,7 +155,7 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        var reservations = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        var reservations = await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
 
         int count = 0;
         foreach (Reservation existing in reservations)
@@ -174,7 +167,6 @@ public class ReservationRepository : IReservationRepository
 
     public async Task<int> QueryOverlapCountAsync(string roomType, string checkInDate, string checkOutDate, string bookingStatus)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_room_type", roomType);
         expressionAttributeValues.Add(":v_status", bookingStatus);
@@ -195,7 +187,7 @@ public class ReservationRepository : IReservationRepository
             }
         };
 
-        var reservations = await context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
+        var reservations = await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
 
         int count = 0;
         foreach (Reservation existing in reservations)

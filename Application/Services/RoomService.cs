@@ -86,6 +86,11 @@ public class RoomService : IRoomService
         return roomOptions;
     }
 
+    public async Task<List<int>> Test(string checkInDate, string checkOutDate, int numRooms, int numGuests)
+    {
+        List<int> avails = new List<int>();
+    }
+
     public async Task<List<Room>> GetAllAsync()
     {
         return await _roomRepository.ScanAsync();

@@ -2,9 +2,9 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 
-namespace Domain.Services;
+namespace Domain.Services.Status;
 
-public class OccupyRoomsService : IRoomsStatusService
+public class OccupyRoomsService : IRoomStatusService
 {
     private readonly IRoomRepository _roomRepository;
 
@@ -19,7 +19,7 @@ public class OccupyRoomsService : IRoomsStatusService
         // from the room numbers provided, find the rooms
         foreach (string roomNumber in roomNumbers)
         {
-            Room? room = await _roomRepository.QueryByRoomNumberAsync(roomNumber) 
+            Room? room = await _roomRepository.QueryByRoomNumberAsync(roomNumber)
                 ?? throw new ArgumentException("At least one provided room number is non-existent");
 
             if (room.IsOccupied() && !reservation.RoomIDs.Contains(room.RoomID))

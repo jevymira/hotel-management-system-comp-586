@@ -5,7 +5,7 @@ namespace Application.Contexts;
 
 public class RoomReservationServiceContext
 {
-    IRoomReservationService _strategy;
+    private IRoomReservationService _strategy;
 
     public RoomReservationServiceContext(IRoomReservationService strategy)
     {

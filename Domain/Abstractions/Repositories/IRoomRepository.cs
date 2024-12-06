@@ -13,5 +13,5 @@ public interface IRoomRepository
     public Task<bool> RoomNumberExistsElsewhereAsync(string num, string id);
     public Task<Room?> QueryByRoomNumberAsync(string num);
     public Task<List<Room>> QueryEmptyByRoomTypeAsync(string roomType);
-    public Task<int> QueryCountByRoomType(string roomType);
+    public Task<List<Room>> QueryByRoomTypeAsync(string roomType);
 }

@@ -57,19 +57,6 @@ public class RoomsController : ControllerBase
         return Ok(options);
     }
 
-    [AllowAnonymous]
-    [HttpGet("test")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Test(
-        [FromQuery] string start,
-        [FromQuery] string end,
-        [FromQuery] int rooms,
-        [FromQuery] int guests)
-    {
-        var options = await _roomService.Test(start, end, rooms, guests);
-        return Ok(options);
-    }
-
     // use case: Admin Rooms page, Rooms
     /// <summary>
     /// Retrieve all rooms.

@@ -2,13 +2,13 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 
-namespace Domain.Services;
+namespace Domain.Services.Status;
 
 public class CheckInService : IRoomReservationService
 {
-    private readonly IRoomsStatusService _roomsStatusService;
+    private readonly IRoomStatusService _roomsStatusService;
 
-    public CheckInService(IRoomsStatusService roomsStatusService)
+    public CheckInService(IRoomStatusService roomsStatusService)
     {
         _roomsStatusService = roomsStatusService;
     }

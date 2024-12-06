@@ -1,13 +1,13 @@
 ﻿using Domain.Abstractions.Services;
 using Domain.Entities;
 
-namespace Domain.Services;
+namespace Domain.Services.Status;
 
-public class CheckOutService : IRoomReservationService
+public class RevertToDueInService : IRoomReservationService
 {
-    private readonly IRoomsStatusService _roomsStatusService;
+    private readonly IRoomStatusService _roomsStatusService;
 
-    public CheckOutService(IRoomsStatusService roomsStatusService)
+    public RevertToDueInService(IRoomStatusService roomsStatusService)
     {
         _roomsStatusService = roomsStatusService;
     }
@@ -16,7 +16,7 @@ public class CheckOutService : IRoomReservationService
     {
         List<Room> rooms = await _roomsStatusService.UpdateStatuses(reservation, roomNumbers);
 
-        reservation.CheckOut(); // clears room assignment in reservation
+        reservation.MarkDueIn(); // clears room assignment in reservation
 
         return rooms;
     }

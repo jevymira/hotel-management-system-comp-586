@@ -1,7 +1,9 @@
-﻿namespace Application.Models;
+﻿using Domain.Models;
+
+namespace Application.Models;
 
 public class RoomOptionsDTO
 {
-    public RoomOptionDTO? primaryOption { get; set; }
-    public List<RoomOptionDTO> alternativeOptions { get; set; } = new List<RoomOptionDTO>();
+    public List<RoomOptionDTO> PrimaryOption { get; set; } = new List<RoomOptionDTO>();
+    public List<List<RoomOptionDTO>> AlternativeOptions { get; set; } = new List<List<RoomOptionDTO>>();
 }

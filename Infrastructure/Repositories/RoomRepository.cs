@@ -11,28 +11,27 @@ namespace Infrastructure.Repositories;
 public class RoomRepository : IRoomRepository
 {
     private readonly AmazonDynamoDBClient _client;
+    private readonly DynamoDBContext _context;
 
     public RoomRepository(IDBClientFactory<AmazonDynamoDBClient> factory)
     {
         _client = factory.GetClient();
+        _context = new DynamoDBContext(_client);
     }
 
     public async Task<Room> SaveAsync(Room room)
     {
-        var context = new DynamoDBContext(_client);
-        await context.SaveAsync(room);
+        await _context.SaveAsync(room);
         return room;
     }
     public async Task<Room> LoadRoomAsync(string id)
     {
-        var context = new DynamoDBContext(_client);
-        return await context.LoadAsync<Room>(id);
+        return await _context.LoadAsync<Room>(id);
     }
 
     public async Task<List<Room>> ScanAsync()
     {
-        var context = new DynamoDBContext(_client);
-        return await context.ScanAsync<Room>(default).GetRemainingAsync();
+        return await _context.ScanAsync<Room>(default).GetRemainingAsync();
     }
 
     public async Task UpdateAsync(Room room)
@@ -128,12 +127,11 @@ public class RoomRepository : IRoomRepository
 
     public async Task<Room?> QueryByRoomNumberAsync(string num)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
             IndexName = "RoomNumber-Status-index",
         };
-        var room = await context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
+        var room = await _context.QueryAsync<Room>(num, cfg).GetRemainingAsync();
         // null when no room matches number or room is already occupied
         if (room.Count == 1)
             return room.Single(); // InvalidOperationException if null
@@ -142,7 +140,6 @@ public class RoomRepository : IRoomRepository
 
     public async Task<List<Room>> QueryEmptyByRoomTypeAsync(string type)
     {
-        DynamoDBContext context = new DynamoDBContext(_client);
         var cfg = new DynamoDBOperationConfig
         {
             IndexName = "RoomTypeID-Status-index",
@@ -150,25 +147,20 @@ public class RoomRepository : IRoomRepository
                 new ScanCondition("Status", ScanOperator.Equal, "Empty")
             }
         };
-        var rooms = await context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
+        var rooms = await _context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
         return rooms;
     }
 
-    public async Task<int> QueryCountByRoomType(string type)
+    public async Task<List<Room>> QueryByRoomTypeAsync(string type)
     {
-        var request = new QueryRequest
+        var cfg = new DynamoDBOperationConfig
         {
-            TableName = "Rooms",
             IndexName = "RoomTypeID-Status-index",
-            KeyConditionExpression = "RoomTypeID = :room_type",
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                { ":room_type", new AttributeValue(type) }
-            },
+            QueryFilter = new List<ScanCondition>() {
+                new ScanCondition("Status", ScanOperator.Equal, "Empty")
+            }
         };
- 
-        var response = await _client.QueryAsync(request);
-
-        return response.Count;
+        var rooms = await _context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
+        return rooms;
     }
 }

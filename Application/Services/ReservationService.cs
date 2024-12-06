@@ -47,17 +47,14 @@ public class ReservationService : IReservationService
         reservation.SetCheckInAndCheckOut(dto.CheckInDate, dto.CheckOutDate);
         reservation.MarkConfirmed();
 
-        // coordinate repository to query the room count of the selected type
-        int roomOfTypeCount = await _roomRepository.QueryCountByRoomType(reservation.RoomType);
+        // coordinate repository to query the rooms of the selected type
+        List<Room> rooms = await _roomRepository.QueryByRoomTypeAsync(reservation.RoomType);
 
         // coordinate repository to query outstanding reservations which overlap with the pending reservation on date
-        int overlappingCount = 0;
-        overlappingCount += await _reservationRepository.QueryOverlapCountAsync(reservation, "Confirmed");
-        overlappingCount += await _reservationRepository.QueryOverlapCountAsync(reservation, "Checked In");
-        overlappingCount += await _reservationRepository.QueryOverlapCountAsync(reservation, "Due In");
+        int overlappingCount =  await _reservationRepository.QueryOverlapCountAsync(dto.RoomType, dto.CheckInDate, dto.CheckOutDate);
 
         // check if pending reservation would result in an overbooking
-        if ((overlappingCount + reservation.OrderQuantity) > roomOfTypeCount)
+        if ((overlappingCount + reservation.OrderQuantity) > rooms.Count())
         {
             throw new ArgumentException("Selected dates and/or quantity for the selected room type would result in overbooking.");
         }

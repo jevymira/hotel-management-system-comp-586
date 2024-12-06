@@ -1,11 +1,13 @@
 ﻿using Application.Abstractions.Services;
-using Domain;
 using Domain.Abstractions.Repositories;
 using Domain.Entities;
+using Domain.Models;
 using Domain.Abstractions.Services;
 using Microsoft.AspNetCore.Http;
 using Application.Helpers.Services;
 using Application.Models;
+using Application.Contexts;
+using Domain.Services.Recommendation;
 
 
 namespace Application.Services;
@@ -62,33 +64,52 @@ public class RoomService : IRoomService
 
     public async Task<RoomOptionsDTO> GetMatchingRoomsAsync(string checkInDate, string checkOutDate, int numRooms, int numGuests)
     {
+        // coordinate repository to retrieve rooms by type
+        RoomsByType rooms = new RoomsByType
+        {
+            Single = await _roomRepository.QueryByRoomTypeAsync("Single"),
+            Double = await _roomRepository.QueryByRoomTypeAsync("Double"),
+            Triple = await _roomRepository.QueryByRoomTypeAsync("Triple"),
+            Quad = await _roomRepository.QueryByRoomTypeAsync("Quad")
+        };
+
+        // coordinate repository to retrieve availabilities for the specified dates across all room types
+        RoomAvailabilities availabilities = new RoomAvailabilities
+        {
+            Single = rooms.Single.Count - await _reservationRepository.QueryOverlapCountAsync("Single", checkInDate, checkOutDate),
+            Double = rooms.Double.Count - await _reservationRepository.QueryOverlapCountAsync("Double", checkInDate, checkOutDate),
+            Triple = rooms.Triple.Count - await _reservationRepository.QueryOverlapCountAsync("Triple", checkInDate, checkOutDate),
+            Quad = rooms.Quad.Count - await _reservationRepository.QueryOverlapCountAsync("Quad", checkInDate, checkOutDate),
+        };
+
         RoomOptionsDTO roomOptions = new RoomOptionsDTO();
 
-        int perRoom = (int)Math.Ceiling((double)numGuests / (double)numRooms);
+        // coordinate service (through Strategy context) to produce and set primary option
+        RoomRecommendationServiceContext context = new RoomRecommendationServiceContext(new MonoRoomTypeService());
+        var option = context.ExecuteAlgorithm(numGuests, numRooms, availabilities, rooms);
+        if (option.Any())
+            roomOptions.PrimaryOption = option;
 
-        switch (perRoom)
+        // switch services (through Strategy context) to produce and set alternative option(s)
+        context.SetRecommendationStrategy(new MultiRoomTypeService());
+        option = context.ExecuteAlgorithm(numGuests, numRooms, availabilities, rooms);
+        if (option.Any())
+            roomOptions.AlternativeOptions.Add(option);
+
+        // switch services, again, to produce and set another alternative option
+        context.SetRecommendationStrategy(new MonoRoomTypeDecrementService());
+        option = context.ExecuteAlgorithm(numGuests, numRooms, availabilities, rooms);
+        if (option.Any())
+            roomOptions.AlternativeOptions.Add(option);
+
+        // shuffle up the first alternative option if no option was provided for primary
+        if (!roomOptions.PrimaryOption.Any() && roomOptions.AlternativeOptions.Any())
         {
-            case 1: 
-                roomOptions.primaryOption = new RoomOptionDTO { Type = "Single", Quantity = numRooms };
-                break;
-            case 2:
-                roomOptions.primaryOption = new RoomOptionDTO { Type = "Double", Quantity = numRooms };
-                break;
-            case 3:
-                roomOptions.primaryOption = new RoomOptionDTO { Type = "Triple", Quantity = numRooms };
-                break;
-            case 4:
-            default: // TODO: handle other cases for which perRoom is significantly larger than 4
-                roomOptions.primaryOption = new RoomOptionDTO { Type = "Quad", Quantity = numRooms };
-                break;
+            roomOptions.PrimaryOption = roomOptions.AlternativeOptions.First();
+            roomOptions.AlternativeOptions.RemoveAt(0);
         }
 
         return roomOptions;
-    }
-
-    public async Task<List<int>> Test(string checkInDate, string checkOutDate, int numRooms, int numGuests)
-    {
-        List<int> avails = new List<int>();
     }
 
     public async Task<List<Room>> GetAllAsync()

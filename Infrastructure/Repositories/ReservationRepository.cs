@@ -64,6 +64,7 @@ public class ReservationRepository : IReservationRepository
 
         return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
+
     public async Task<List<Reservation>> QueryCheckedInAsync()
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
@@ -133,57 +134,28 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
-    public async Task<int> QueryOverlapCountAsync(Reservation reservation, string bookingStatus)
-    {
-        var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
-        expressionAttributeValues.Add(":v_room_type", reservation.RoomType);
-        expressionAttributeValues.Add(":v_status", bookingStatus);
-        expressionAttributeValues.Add(":check_in", reservation.CheckInDate);
-        expressionAttributeValues.Add(":check_out", reservation.CheckOutDate);
-
-        var query = new QueryOperationConfig
-        {
-            IndexName = "RoomType-BookingStatus-index",
-            KeyExpression = new Expression
-            {
-                ExpressionStatement = "RoomType = :v_room_type AND BookingStatus = :v_status",
-                ExpressionAttributeValues = expressionAttributeValues
-            },
-            FilterExpression = new Expression
-            {
-                ExpressionStatement = "CheckInDate < :check_out AND CheckOutDate > :check_in",
-            }
-        };
-
-        var reservations = await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
-
-        int count = 0;
-        foreach (Reservation existing in reservations)
-        {
-            count += existing.OrderQuantity;
-        }
-        return count;
-    }
-
-    public async Task<int> QueryOverlapCountAsync(string roomType, string checkInDate, string checkOutDate, string bookingStatus)
+    public async Task<int> QueryOverlapCountAsync(string roomType, string checkInDate, string checkOutDate)
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
         expressionAttributeValues.Add(":v_room_type", roomType);
-        expressionAttributeValues.Add(":v_status", bookingStatus);
         expressionAttributeValues.Add(":check_in", checkInDate);
         expressionAttributeValues.Add(":check_out", checkOutDate);
+        expressionAttributeValues.Add(":confirmed", "Confirmed");
+        expressionAttributeValues.Add(":due_in", "Due In");
+        expressionAttributeValues.Add(":checked_in", "Checked In");
 
         var query = new QueryOperationConfig
         {
-            IndexName = "RoomType-BookingStatus-index",
+            IndexName = "RoomType-index",
             KeyExpression = new Expression
             {
-                ExpressionStatement = "RoomType = :v_room_type AND BookingStatus = :v_status",
+                ExpressionStatement = "RoomType = :v_room_type",
                 ExpressionAttributeValues = expressionAttributeValues
             },
             FilterExpression = new Expression
             {
-                ExpressionStatement = "CheckInDate < :check_out AND CheckOutDate > :check_in",
+                ExpressionStatement = "CheckInDate < :check_out AND CheckOutDate > :check_in" +
+                    " AND (BookingStatus = :confirmed OR BookingStatus = :due_in OR BookingStatus = :checked_in)",
             }
         };
 

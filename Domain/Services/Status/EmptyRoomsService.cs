@@ -2,9 +2,9 @@
 using Domain.Abstractions.Services;
 using Domain.Entities;
 
-namespace Domain.Services;
+namespace Domain.Services.Status;
 
-public class EmptyRoomsService : IRoomsStatusService
+public class EmptyRoomsService : IRoomStatusService
 {
     private readonly IRoomRepository _roomRepository;
 

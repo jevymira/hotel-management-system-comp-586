@@ -43,7 +43,7 @@ public class Reservation
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
         DateTime now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone);
 
-        if (DateTime.Parse(checkInDate) < now || DateTime.Parse(checkOutDate) < now)
+        if (DateTime.Parse(checkInDate).Date < now.Date || DateTime.Parse(checkOutDate).Date < now.Date)
             throw new ArgumentException("A provided date has already passed.");
 
         if (DateTime.Parse(checkInDate) > now.AddYears(1) || DateTime.Parse(checkOutDate) > now.AddYears(1))

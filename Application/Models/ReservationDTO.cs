@@ -2,7 +2,7 @@
 
 public class ReservationDTO
 {
-    public required string ReservationID { get; set; }
+    public required string Id { get; set; }
 
     public required string RoomType { get; set; }
 

@@ -158,7 +158,7 @@ public class ReservationService : IReservationService
 
         ReservationDTO dto = new ReservationDTO
         {
-            ReservationID = reservation.ReservationID,
+            Id = reservation.ReservationID,
             RoomType = reservation.RoomType,
             OrderQuantity = reservation.OrderQuantity,
             RoomNumbers = roomNumbers,

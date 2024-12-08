@@ -155,10 +155,7 @@ public class RoomRepository : IRoomRepository
     {
         var cfg = new DynamoDBOperationConfig
         {
-            IndexName = "RoomTypeID-Status-index",
-            QueryFilter = new List<ScanCondition>() {
-                new ScanCondition("Status", ScanOperator.Equal, "Empty")
-            }
+            IndexName = "RoomTypeID-Status-index"
         };
         var rooms = await _context.QueryAsync<Room>(type, cfg).GetRemainingAsync();
         return rooms;

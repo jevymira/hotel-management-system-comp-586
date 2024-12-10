@@ -126,9 +126,9 @@ public class ReservationService : IReservationService
 
         // strategy pattern: vary service implementation based on new reservation status
         RoomReservationServiceContext context = new RoomReservationServiceContext(
-            _roomReservationServiceFactory.GetRoomReservationService(dto.ReservationStatus));
+            _roomReservationServiceFactory.GetRoomReservationStrategy(dto.ReservationStatus));
         // coordinate the context service to make changes to the reservation and rooms
-        var rooms = await context.RunAssignmentService(reservation, dto.RoomNumbers);
+        var rooms = await context.ExecuteStrategy(reservation, dto.RoomNumbers);
 
         // coordinate repository to persist changes
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);

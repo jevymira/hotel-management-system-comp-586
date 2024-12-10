@@ -13,7 +13,7 @@ public class RoomReservationServiceFactory : IRoomReservationServiceFactory
     {
         _roomRepository = roomRepository;
     }
-    public IRoomReservationService GetRoomReservationService(string status)
+    public IRoomReservationService GetRoomReservationStrategy(string status)
     {
         switch (status)
         {

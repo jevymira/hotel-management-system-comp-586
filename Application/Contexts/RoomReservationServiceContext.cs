@@ -12,7 +12,7 @@ public class RoomReservationServiceContext
         _strategy = strategy;
     }
 
-    public async Task<List<Room>> RunAssignmentService(Reservation reservation, List<string> roomNumbers)
+    public async Task<List<Room>> ExecuteStrategy(Reservation reservation, List<string> roomNumbers)
     {
         return await _strategy.Process(reservation, roomNumbers);
     }

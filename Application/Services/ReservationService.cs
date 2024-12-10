@@ -139,7 +139,7 @@ public class ReservationService : IReservationService
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
         string date = TimeZoneInfo.ConvertTime(DateTime.UtcNow, pacificZone).ToString("yyyy-MM-dd");
 
-        List<Reservation>? reservations = await _reservationRepository.QueryConfirmedTodayAsync(date);
+        List<Reservation>? reservations = await _reservationRepository.QueryConfirmedForDateAsync(date);
         if (!reservations.Any())
             return;
 

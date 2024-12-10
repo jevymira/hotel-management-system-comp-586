@@ -121,7 +121,7 @@ public class ReservationRepository : IReservationRepository
         return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
-    public async Task<List<Reservation>> QueryConfirmedTodayAsync(string date)
+    public async Task<List<Reservation>> QueryConfirmedForDateAsync(string date)
     {
         var cfg = new DynamoDBOperationConfig
         {

@@ -3,8 +3,8 @@
 namespace Domain.Abstractions.Services;
 
 /// <summary>
-/// Common interface for services to handle status
-/// updates to a reservation and its assigned rooms.
+/// Common interface for services to handle status updates to 
+/// the assigned rooms of a reservation.
 /// </summary>
 /// <remarks>
 /// The Implementor in a Bridge pattern with Abstraction IRoomReservationService.
@@ -12,11 +12,10 @@ namespace Domain.Abstractions.Services;
 public interface IRoomStatusService
 {
     /// <summary>
-    /// Updates the status of the specified reservations and the statuses of 
-    /// its assigned rooms together to make sure of their consistency.
+    /// Updates the statuses of the rooms corresponding to the provided room numbers.
     /// </summary>
-    /// <param name="reservation">Reservation to be updated.</param>
+    /// <param name="reservation">Reservation with the rooms.</param>
     /// <param name="roomNumbers">Room Numbers of rooms to be updated.</param>
-    /// <returns>Updated rooms.</returns>
+    /// <returns>Updated Room(s).</returns>
     public Task<List<Room>> UpdateStatuses(Reservation reservation, List<string> roomNumbers);
 }

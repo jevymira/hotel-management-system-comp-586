@@ -8,13 +8,13 @@ namespace Application.Contexts;
 /// </summary>
 public class RoomReservationServiceContext
 {
-    private IRoomReservationService _strategy;
+    private RoomReservationService _strategy;
 
     /// <summary>
     /// Method for swapping in another strategy at runtime.
     /// </summary>
     /// <param name="strategy">Strategy to which to swap.</param>
-    public RoomReservationServiceContext(IRoomReservationService strategy)
+    public RoomReservationServiceContext(RoomReservationService strategy)
     {
         _strategy = strategy;
     }

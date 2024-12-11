@@ -4,24 +4,24 @@ using Domain.Entities;
 namespace Domain.Services.Status;
 
 /// <summary>
-/// Concrete Strategy for a service that handles checking in a reservation
-/// and making its room assignments.
+/// Concrete Strategy for a service that handles updating the status of 
+/// a reservation and those of its assigned rooms.
 /// </summary>
 /// <remarks>
 /// The Refined Abstraction in a Bridge pattern with Implementor IRoomStatusService.
 /// </remarks>
-public class CheckInService : RoomReservationService
+public class SetConfirmedService : RoomReservationService
 {
     private readonly IRoomStatusService _roomsStatusService;
 
-    public CheckInService(IRoomStatusService roomsStatusService) : base(roomsStatusService)
+    public SetConfirmedService(IRoomStatusService roomsStatusService) : base(roomsStatusService)
     {
         _roomsStatusService = roomsStatusService;
     }
 
     /// <summary>
-    /// Checks in the reservation and assigns rooms which correspond to
-    /// the provided roomNumbers, together, to ensure their consistency.
+    /// Marks the reservation as "Confirmed" and unassigns rooms (if any),
+    /// doing both together to ensure consistency between statuses.
     /// </summary>
     /// <param name="reservation">Reservation to be updated.</param>
     /// <param name="roomNumbers">Room Numbers of rooms to be updated.</param>
@@ -30,7 +30,7 @@ public class CheckInService : RoomReservationService
     {
         List<Room> rooms = await _roomsStatusService.UpdateStatuses(reservation, roomNumbers);
 
-        reservation.CheckIn(rooms); // assigns the rooms passed as parameters
+        reservation.MarkConfirmed(); // clears room assignment in reservation
 
         return rooms;
     }

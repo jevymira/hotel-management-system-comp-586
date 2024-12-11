@@ -9,14 +9,21 @@ namespace Domain.Abstractions.Services;
 /// <remarks>
 /// The Abstraction in a Bridge pattern with Implementor IRoomStatusService.
 /// </remarks>
-public interface IRoomReservationService
+public abstract class RoomReservationService
 {
+    private readonly IRoomStatusService _roomsStatusService;
+
+    public RoomReservationService(IRoomStatusService roomsStatusService)
+    {
+        _roomsStatusService = roomsStatusService;
+    }
+
     /// <summary>
     /// Processes the reservation and provided roomNumbers together
     /// to ensure their consistency when updating their attributes.
     /// </summary>
     /// <param name="reservation">Reservation to be updated.</param>
     /// <param name="roomNumbers">Room Numbers of rooms to be updated.</param>
-    /// <returns>Updated rooms.</returns>
-    public Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers);
+    /// <returns>Updated Room(s).</returns>
+    public abstract Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers);
 }

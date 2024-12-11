@@ -27,30 +27,6 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container
     public void ConfigureServices(IServiceCollection services)
     {
-        try
-        {
-            SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                        Configuration.GetSection("Jwt:Key").Get<string>()));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>(),
-                    ValidAudience = Configuration.GetSection("Jwt:Issuer").Get<string>(),
-                    IssuerSigningKey = key
-                };
-            });
-        }
-        catch (ArgumentNullException)
-        {
-
-        }
-
         services.AddCors();
         services.AddControllers();
         services.AddScoped<IDBConnectionConfigFactory<AmazonDynamoDBConfig>,
@@ -67,20 +43,21 @@ public class Startup
         services.AddScoped<IRoomReservationServiceFactory, RoomReservationServiceFactory>();
         services.AddScoped<IAdminAccountRepository, AdminAccountRepository>();
         services.AddTransient<IImageService, ImageService>();
-        //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        //    .AddJwtBearer(options =>
-        //    {
-        //        options.TokenValidationParameters = new TokenValidationParameters
-        //        {
-        //            ValidateIssuer = true,
-        //            ValidateAudience = true,
-        //            ValidateLifetime = true,
-        //            ValidateIssuerSigningKey = true,
-        //            ValidIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>(),
-        //            ValidAudience = Configuration.GetSection("Jwt:Issuer").Get<string>(),
-        //            IssuerSigningKey = key
-        //        };
-        //    });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>(),
+                    ValidAudience = Configuration.GetSection("Jwt:Issuer").Get<string>(),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                        Configuration.GetSection("Jwt:Key").Get<string>()))
+                };
+            });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

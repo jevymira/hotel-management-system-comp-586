@@ -6,8 +6,16 @@ using Domain.Abstractions.Services;
 
 namespace Infrastructure.Services;
 
+/// <summary>
+/// Service to upload images to AWS S3, creating a resource in turn.
+/// </summary>
 public class ImageService : IImageService
 {
+    /// <summary>
+    /// Uploads the specified images and creates a resource in the name of the ID.
+    /// </summary>
+    /// <param name="images">Images to be uploaded.</param>
+    /// <param name="id">ID under which a resource is created.</param>
     public async Task<List<string>> UploadRoomImagesAsync(List<IFormFile> images, string id)
     {
         var client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1);

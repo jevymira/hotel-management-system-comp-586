@@ -14,6 +14,11 @@ public class DynamoDBClientFactory :
     {
         _dataConnectionConfigFactory = dataConnectionConfigFactory;
     }
+
+    /// <summary>
+    /// Produces a DynamoDB client with a pre-defined configuration.
+    /// </summary>
+    /// <returns>DynamoDB client, pre-configured.</returns>
     public AmazonDynamoDBClient GetClient()
     {
         AmazonDynamoDBConfig dynamoDBConfig =

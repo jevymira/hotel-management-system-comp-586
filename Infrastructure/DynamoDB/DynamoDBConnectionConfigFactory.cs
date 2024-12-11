@@ -6,6 +6,10 @@ namespace Infrastructure.DynamoDB;
 public class DynamoDBConnectionConfigFactory :
              IDBConnectionConfigFactory<AmazonDynamoDBConfig>
 {
+    /// <summary>
+    /// Produces a configuration for a DynamoDB client.
+    /// </summary>
+    /// <returns>AmazonDynamoDBConfig with pre-defined region.</returns>
     public AmazonDynamoDBConfig GetConfig()
     {
         AmazonDynamoDBConfig amazonDynamoDBConfig = new AmazonDynamoDBConfig();

@@ -2,6 +2,9 @@
 
 namespace Domain.Entities;
 
+/// <summary>
+/// Account Audit to review changes made to its corresponding account.
+/// </summary>
 [DynamoDBTable("AccountsStatus")]
 public class AccountStatus
 {

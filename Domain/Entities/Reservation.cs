@@ -2,14 +2,23 @@
 
 namespace Domain.Entities;
 
+/// <summary>
+/// Reservation spanning two dates for the specified quantity of a type of room.
+/// </summary>
 [DynamoDBTable("Reservations")]
 public class Reservation
 {
     [DynamoDBHashKey]
     public required string ReservationID { get; set; }
 
+    /// <summary>
+    /// RoomType, from the set: Single, Double, Triple, Quad
+    /// </summary>
     public required string RoomType { get; set; }
 
+    /// <summary>
+    /// Quantity of rooms, of the type defined by RoomType
+    /// </summary>
     public int OrderQuantity { get; set; }
 
     public List<string> RoomIDs { get; set; } = new List<string>(); // can be null
@@ -22,6 +31,9 @@ public class Reservation
 
     public decimal TotalPrice { get; set; }
 
+    /// <summary>
+    /// The booking status to be changed once due in, at check in, at check out, etc.
+    /// </summary>
     public string BookingStatus { get; private set; }
 
     public required string GuestFullName { get; set; }
@@ -34,7 +46,12 @@ public class Reservation
 
     public string UpdatedBy { get; set; } = String.Empty; // can be null
 
-    // yyyy-MM-dd
+    /// <summary>
+    /// Sets check in and check out simultaneously for the reservation to ensure
+    /// consistency and adherence to business logic.
+    /// </summary>
+    /// <param name="checkInDate">Date on which reservation is to be checked in.</param>
+    /// <param name="checkOutDate">Date on which reservation is to be checked out.</param>
     public void SetCheckInAndCheckOut(string checkInDate, string checkOutDate)
     {
         if (DateTime.Parse(checkInDate) > DateTime.Parse(checkOutDate))
@@ -53,6 +70,13 @@ public class Reservation
         CheckOutDate = checkOutDate;
     }
 
+    /// <summary>
+    /// Update (or retain) check in and check out dates for an existing reservation,
+    /// with relaxed checks compared to new reservations.
+    /// </summary>
+    /// <param name="checkInDate"></param>
+    /// <param name="checkOutDate"></param>
+    /// <exception cref="ArgumentException"></exception>
     public void SetDatesForExisting(string checkInDate, string checkOutDate)
     {
         if (DateTime.Parse(checkInDate) > DateTime.Parse(checkOutDate))
@@ -62,6 +86,11 @@ public class Reservation
         CheckOutDate = checkOutDate;
     }
 
+    /// <summary>
+    /// Check in the reservation, providing it room assignments (which, 
+    /// if absent, constitutes a violation of business logic).
+    /// </summary>
+    /// <param name="rooms">Rooms to be assigned to the reservation.</param>
     public void CheckIn(List<Room> rooms) // may only be checked in if roomIDs are provided
     {
         if (rooms.Count == 0)
@@ -80,24 +109,40 @@ public class Reservation
         BookingStatus = "Checked In";
     }
 
+    /// <summary>
+    /// Check out the reservation, 
+    /// clearing it of its room assignments in the process.
+    /// </summary>
     public void CheckOut()
     {
         RoomIDs.Clear();
         BookingStatus = "Checked Out";
     }
 
+    /// <summary>
+    /// Mark a reservation Due in, clearing it of its room assignments
+    /// (if any) in the process.
+    /// </summary>
     public void MarkDueIn()
     {
         RoomIDs.Clear();
         BookingStatus = "Due In";
     }
 
+    /// <summary>
+    /// Mark a reservation Confirmed, clearing it of its room assignments 
+    /// (if any) in the process.
+    /// </summary>
     public void MarkConfirmed()
     {
         RoomIDs.Clear();
         BookingStatus = "Confirmed";
     }
 
+    /// <summary>
+    /// Cancel a reservation, clearing it of its room assignments 
+    /// (if any) in the process.
+    /// </summary>
     public void MarkCancelled()
     {
         RoomIDs.Clear();

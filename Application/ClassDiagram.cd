@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Application.Controllers.AdminAccountsController">
-    <Position X="14.5" Y="1.5" Width="2" />
+    <Position X="14.5" Y="1.75" Width="2" />
     <Members>
       <Method Name="AdminAccountsController" Hidden="true" />
     </Members>
@@ -20,7 +20,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Application.Controllers.ReservationsController">
-    <Position X="6.25" Y="1.5" Width="2" />
+    <Position X="6.25" Y="1.75" Width="2" />
     <Members>
       <Method Name="ReservationsController" Hidden="true" />
     </Members>
@@ -33,7 +33,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Application.Controllers.RoomsController">
-    <Position X="9.75" Y="1.5" Width="2.25" />
+    <Position X="9.75" Y="1.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAABAAAAAAAAAEAQAAAEEAAIAA=</HashCode>
       <FileName>Controllers\RoomsController.cs</FileName>
@@ -43,7 +43,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Application.Services.AdminAccountService" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="14.5" Y="6.5" Width="2" />
+    <Position X="14.5" Y="6.75" Width="2" />
     <AssociationLine Name="_adminAccountRepository" Type="Application.Abstractions.Repositories.IAdminAccountRepository">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.955" Y="0.087" />
@@ -60,7 +60,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Services.AuthenticationService" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="17.25" Y="3" Width="2" />
+    <Position X="17.25" Y="4.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAAA=</HashCode>
       <FileName>Services\AuthenticationService.cs</FileName>
@@ -69,35 +69,9 @@
   </Class>
   <Class Name="Application.Services.ReservationService" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="6" Y="7" Width="2.25" />
-    <AssociationLine Name="_roomReservationServiceFactory" Type="Application.Abstractions.Factories.IRoomReservationServiceFactory">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.635" Y="0.202" />
-      </MemberNameLabel>
-    </AssociationLine>
     <AssociationLine Name="_reservationRepository" Type="Application.Abstractions.Repositories.IReservationRepository">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.084" Y="0.123" />
-      </MemberNameLabel>
-    </AssociationLine>
-    <AssociationLine Name="strategyContext" Type="Application.Contexts.RoomReservationServiceContext" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="6" Y="7.394" />
-        <Point X="5.484" Y="7.394" />
-        <Point X="5.484" Y="11.375" />
-        <Point X="4.25" Y="11.375" />
-      </Path>
-    </AssociationLine>
-    <AssociationLine Name="reservation" Type="Application.Entities.Reservation" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="8.25" Y="7.375" />
-        <Point X="8.625" Y="7.375" />
-        <Point X="8.625" Y="17.938" />
-        <Point X="8.099" Y="17.938" Type="JumpStart" />
-        <Point X="7.932" Y="17.938" Type="JumpEnd" />
-        <Point X="7.75" Y="17.938" />
-      </Path>
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.021" Y="-0.271" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="_roomRepository" Type="Application.Abstractions.Repositories.IRoomRepository" FixedFromPoint="true" FixedToPoint="true">
@@ -110,14 +84,41 @@
         <Position X="0.093" Y="0.121" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="_roomReservationServiceFactory" Type="Application.Abstractions.Factories.IRoomReservationServiceFactory">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.635" Y="0.202" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="strategyContext" Type="Application.Contexts.RoomReservationServiceContext" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="6" Y="7.394" />
+        <Point X="5.485" Y="7.394" />
+        <Point X="5.485" Y="11.375" />
+        <Point X="4.25" Y="11.375" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.034" Y="0.074" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="reservation" Type="Application.Entities.Reservation" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.25" Y="7.375" />
+        <Point X="8.625" Y="7.375" />
+        <Point X="8.625" Y="17.938" />
+        <Point X="7.75" Y="17.938" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.021" Y="-0.271" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAEAAIAAAAAEAAAAAhCABUAAAAAAAAAAAAAIAAAQIA=</HashCode>
       <FileName>Services\ReservationService.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="_reservationRepository" />
-      <Field Name="_roomReservationServiceFactory" />
       <Field Name="_roomRepository" />
+      <Field Name="_roomReservationServiceFactory" />
       <Property Name="strategyContext" />
       <Property Name="reservation" />
     </ShowAsAssociation>
@@ -125,6 +126,11 @@
   </Class>
   <Class Name="Application.Services.RoomService" BaseTypeListCollapsed="true">
     <Position X="10" Y="5.5" Width="2" />
+    <AssociationLine Name="_roomRepository" Type="Application.Abstractions.Repositories.IRoomRepository">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.338" Y="0.103" />
+      </MemberNameLabel>
+    </AssociationLine>
     <AssociationLine Name="_imageService" Type="Application.Abstractions.Services.IImageService" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="12" Y="6.63" />
@@ -135,16 +141,7 @@
         <Position X="0.039" Y="1.756" />
       </MemberNameLabel>
     </AssociationLine>
-    <AssociationLine Name="_reservationRepository" Type="Application.Abstractions.Repositories.IReservationRepository" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="11.75" Y="7.767" />
-        <Point X="11.75" Y="10.575" />
-        <Point X="11.302" Y="10.575" Type="JumpStart" />
-        <Point X="11.135" Y="10.575" Type="JumpEnd" />
-        <Point X="8.708" Y="10.575" Type="JumpStart" />
-        <Point X="8.542" Y="10.575" Type="JumpEnd" />
-        <Point X="8.25" Y="10.575" />
-      </Path>
+    <AssociationLine Name="_reservationRepository" Type="Application.Abstractions.Repositories.IReservationRepository">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.014" Y="0.132" />
       </MemberNameLabel>
@@ -164,19 +161,14 @@
         <Position X="0.082" Y="-0.298" />
       </MemberNameLabel>
     </AssociationLine>
-    <AssociationLine Name="_roomRepository" Type="Application.Abstractions.Repositories.IRoomRepository">
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-1.338" Y="0.103" />
-      </MemberNameLabel>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAEAAAYACAAEEAAAAAAAAAAQAAAAAAgAAAAAEIAAAIA=</HashCode>
       <FileName>Services\RoomService.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
+      <Field Name="_roomRepository" />
       <Field Name="_imageService" />
       <Field Name="_reservationRepository" />
-      <Field Name="_roomRepository" />
       <Property Name="strategyContext" />
       <Property Name="room" />
     </ShowAsAssociation>
@@ -202,7 +194,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Services.Status.CheckInService">
-    <Position X="1.75" Y="13.5" Width="1.5" />
+    <Position X="1.75" Y="13.75" Width="1.5" />
     <AssociationLine Name="_statusService" Type="Application.Abstractions.Services.IRoomStatusService">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.048" Y="0.342" />
@@ -215,10 +207,9 @@
     <ShowAsAssociation>
       <Field Name="_statusService" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Services.Status.CheckOutService">
-    <Position X="3.75" Y="13.5" Width="1.5" />
+    <Position X="3.75" Y="13.75" Width="1.5" />
     <AssociationLine Name="_roomsStatusService" Type="Application.Abstractions.Services.IRoomStatusService">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.614" Y="0.086" />
@@ -231,7 +222,6 @@
     <ShowAsAssociation>
       <Field Name="_roomsStatusService" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Factories.RoomReservationServiceFactory">
     <Position X="1.75" Y="8.5" Width="3" />
@@ -242,7 +232,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Services.Status.EmptyRoomsService">
-    <Position X="4" Y="17" Width="1.75" />
+    <Position X="4" Y="17.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Status\EmptyRoomsService.cs</FileName>
@@ -250,7 +240,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Application.Services.Status.OccupyRoomsService">
-    <Position X="2" Y="17" Width="1.75" />
+    <Position X="2" Y="17.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Services\Status\OccupyRoomsService.cs</FileName>
@@ -266,7 +256,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Microsoft.AspNetCore.Mvc.ControllerBase" Collapsed="true">
-    <Position X="10.25" Y="0.5" Width="1.5" />
+    <Position X="10" Y="0.5" Width="1.75" />
     <TypeIdentifier />
   </Class>
   <Class Name="Application.Contexts.RoomReservationServiceContext">
@@ -331,13 +321,10 @@
     <Members>
       <Method Name="ReservationRepository" Hidden="true" />
     </Members>
-    <AssociationLine Name="clientFactory" Type="Application.Abstractions.Database.IDBClientFactory&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="8" Y="15.373" />
-        <Point X="8.015" Y="15.373" />
-        <Point X="8.015" Y="19.875" />
-        <Point X="9.75" Y="19.875" />
-      </Path>
+    <AssociationLine Name="clientFactory" Type="Application.Abstractions.Database.IDBClientFactory&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.088" Y="0.072" />
+      </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="reservation" Type="Application.Entities.Reservation">
       <MemberNameLabel ManuallyPlaced="true">
@@ -371,11 +358,11 @@
       <Path>
         <Point X="9.25" Y="13.079" />
         <Point X="8.875" Y="13.079" />
-        <Point X="8.875" Y="19.438" />
-        <Point X="9.75" Y="19.438" />
+        <Point X="8.875" Y="19.312" />
+        <Point X="9.75" Y="19.312" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.381" Y="0.516" />
+        <Position X="0.085" Y="0.069" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -404,15 +391,32 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="API.Startup">
+    <Position X="13.25" Y="20.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAABAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Startup.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="database" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Application.Abstractions.Services.RoomReservationService" Collapsed="true">
+    <Position X="2.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Abstractions\Services\RoomReservationService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Application.Abstractions.Services.IAuthenticationService">
-    <Position X="17.25" Y="1.5" Width="2" />
+    <Position X="17.25" Y="2.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Abstractions\Services\IAuthenticationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Application.Abstractions.Services.IAdminAccountService">
-    <Position X="14.5" Y="4" Width="2" />
+    <Position X="14.5" Y="4.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAEACAAAAAAAAAAAAAAAAAUAAAAAAAAAAAEAIAAAAAA=</HashCode>
       <FileName>Abstractions\Services\IAdminAccountService.cs</FileName>
@@ -468,7 +472,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Application.Abstractions.Services.IRoomStatusService">
-    <Position X="2.5" Y="15.5" Width="2" />
+    <Position X="2.5" Y="15.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Abstractions\Services\IRoomStatusService.cs</FileName>
@@ -479,13 +483,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
       <FileName>Abstractions\Database\IDBClientFactory.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Application.Abstractions.Services.IRoomReservationService" Collapsed="true">
-    <Position X="2.25" Y="12.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Abstractions\Services\IRoomReservationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Application.Abstractions.Services.IRoomRecommendationService">

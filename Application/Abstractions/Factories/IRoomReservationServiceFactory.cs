@@ -5,5 +5,5 @@ namespace Application.Abstractions.Factories;
 
 public interface IRoomReservationServiceFactory
 {
-    public IRoomReservationService GetRoomReservationService(string status);
+    public RoomReservationService GetRoomReservationService(string status);
 }

@@ -13,7 +13,7 @@ public class RoomReservationServiceFactory : IRoomReservationServiceFactory
     {
         _roomRepository = roomRepository;
     }
-    public IRoomReservationService GetRoomReservationService(string status)
+    public RoomReservationService GetRoomReservationService(string status)
     {
         switch (status)
         {
@@ -22,9 +22,9 @@ public class RoomReservationServiceFactory : IRoomReservationServiceFactory
             case "Checked Out":
                 return new CheckOutService(new EmptyRoomsService(_roomRepository));
             case "Due In":
-                return new RevertToDueInService(new EmptyRoomsService(_roomRepository));
+                return new SetDueInService(new EmptyRoomsService(_roomRepository));
             case "Confirmed":
-                return new RevertToConfirmedService(new EmptyRoomsService(_roomRepository));
+                return new SetConfirmedService(new EmptyRoomsService(_roomRepository));
             case "Cancelled":
                 return new SetCancelledService(new EmptyRoomsService(_roomRepository));
             default:

@@ -3,20 +3,20 @@ using Application.Entities;
 
 namespace Application.Services.Status;
 
-public class RevertToConfirmedService : IRoomReservationService
+public class SetDueInService : RoomReservationService
 {
     private readonly IRoomStatusService _roomsStatusService;
 
-    public RevertToConfirmedService(IRoomStatusService roomsStatusService)
+    public SetDueInService(IRoomStatusService roomsStatusService) : base(roomsStatusService)
     {
         _roomsStatusService = roomsStatusService;
     }
 
-    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
+    public override async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
     {
         List<Room> rooms = await _roomsStatusService.UpdateStatuses(reservation, roomNumbers);
 
-        reservation.MarkConfirmed(); // clears room assignment in reservation
+        reservation.MarkDueIn(); // clears room assignment in reservation
 
         return rooms;
     }

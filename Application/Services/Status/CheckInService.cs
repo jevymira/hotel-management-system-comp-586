@@ -3,16 +3,16 @@ using Application.Entities;
 
 namespace Application.Services.Status;
 
-public class CheckInService : IRoomReservationService
+public class CheckInService : RoomReservationService
 {
     private readonly IRoomStatusService _statusService;
 
-    public CheckInService(IRoomStatusService roomsStatusService)
+    public CheckInService(IRoomStatusService roomsStatusService) : base(roomsStatusService)
     {
         _statusService = roomsStatusService;
     }
 
-    public async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
+    public override async Task<List<Room>> Process(Reservation reservation, List<string> roomNumbers)
     {
         List<Room> rooms = await _statusService.UpdateStatuses(reservation, roomNumbers);
 

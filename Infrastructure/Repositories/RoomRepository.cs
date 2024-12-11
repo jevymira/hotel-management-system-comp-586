@@ -8,6 +8,9 @@ using Infrastructure.Abstractions.Database;
 
 namespace Infrastructure.Repositories;
 
+/// <summary>
+/// Encapsulates the logic for the retrieval/persistence of hotel rooms.
+/// </summary>
 public class RoomRepository : IRoomRepository
 {
     private readonly AmazonDynamoDBClient _client;
@@ -29,6 +32,10 @@ public class RoomRepository : IRoomRepository
         return await _context.LoadAsync<Room>(id);
     }
 
+    /// <summary>
+    /// Scan, instead of query, the table. Possible because the Rooms
+    /// table consist of a single entity type.
+    /// </summary>
     public async Task<List<Room>> ScanAsync()
     {
         return await _context.ScanAsync<Room>(default).GetRemainingAsync();
@@ -102,6 +109,12 @@ public class RoomRepository : IRoomRepository
         return response.Count > 0;
     }
 
+    /// <summary>
+    /// Query whether room number already taken outside a given room entity,
+    /// specified by its ID.
+    /// </summary>
+    /// <param name="num">Room Number</param>
+    /// <param name="id">Room ID, for room to ignore</param>
     public async Task<bool> RoomNumberExistsElsewhereAsync(string num, string id)
     {
         // (DynamoDB cannot enforce uniqueness on non-key attributes)
@@ -138,6 +151,10 @@ public class RoomRepository : IRoomRepository
         return null;
     }
 
+    /// <summary>
+    /// Query all empty rooms of a specified type.
+    /// </summary>
+    /// <param name="roomType">Room Type to be queried for.</param>
     public async Task<List<Room>> QueryEmptyByRoomTypeAsync(string type)
     {
         var cfg = new DynamoDBOperationConfig

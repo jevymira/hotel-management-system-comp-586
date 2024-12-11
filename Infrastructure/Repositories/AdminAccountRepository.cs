@@ -9,6 +9,9 @@ using Infrastructure.Abstractions.Database;
 
 namespace Infrastructure.Repositories;
 
+/// <summary>
+/// Encapsulates the logic for the retrieval/persistence of admin accounts.
+/// </summary>
 public class AdminAccountRepository : IAdminAccountRepository
 {
     AmazonDynamoDBClient _client;
@@ -30,6 +33,10 @@ public class AdminAccountRepository : IAdminAccountRepository
         return await context.LoadAsync<AdminAccount>(id);
     }
 
+    /// <summary>
+    /// Retrieve the account, specified by its ID, but with its password hash omitted.
+    /// </summary>
+    /// <param name="id">ID of account to retrieve.</param>
     public async Task<GetAdminAccountDTO> LoadForClientAsync(string id)
     {
         var context = new DynamoDBContext(_client);
@@ -59,6 +66,12 @@ public class AdminAccountRepository : IAdminAccountRepository
         return (result.Count > 0);
     }
 
+    /// <summary>
+    /// Query whether an email exists, excluding the specified account (by ID).
+    /// </summary>
+    /// <param name="email">Email to query on.</param>
+    /// <param name="id">ID of account to ignore.</param>
+    /// <returns>True if email exists outside of ignored account.</returns>
     public async Task<bool> QueryIfEmailExists(string email, string id)
     {
         // (DynamoDB cannot enforce uniqueness on non-key attributes)
@@ -82,6 +95,11 @@ public class AdminAccountRepository : IAdminAccountRepository
         return response.Count > 0;
     }
 
+    /// <summary>
+    /// Query account with email/password combination and which additionaly is Active.
+    /// </summary>
+    /// <param name="email">Admin account email.</param>
+    /// <param name="passwordHash">Admin account password hash.</param>
     public async Task<AdminAccount?> QueryAccountByCredentialsIfActive(string email, string passwordHash)
     {
         DynamoDBContext context = new DynamoDBContext(_client);

@@ -9,6 +9,9 @@ using System.Transactions;
 
 namespace Infrastructure.Repositories;
 
+/// <summary>
+/// Encapsulates the logic for the retrieval/persistence of guest reservations.
+/// </summary>
 public class ReservationRepository : IReservationRepository
 {
     private readonly AmazonDynamoDBClient _client;
@@ -30,6 +33,10 @@ public class ReservationRepository : IReservationRepository
         return await _context.LoadAsync<Reservation>(id);
     }
 
+    /// <summary>
+    /// Retrieves all reservations with a full name matching the guest's.
+    /// </summary>
+    /// <param name="name">Guest full name.</param>
     public async Task<List<Reservation>> QueryByNameAsync(string name)
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
@@ -134,6 +141,14 @@ public class ReservationRepository : IReservationRepository
         return reservations;
     }
 
+    /// <summary>
+    /// Query the number of rooms of a given type that will be occupied between two dates,
+    /// drawing on the quantity specified by each reservation of a type.
+    /// </summary>
+    /// <param name="roomType">Room type.</param>
+    /// <param name="checkInDate">Date of guest check in.</param>
+    /// <param name="checkOutDate">Date of guest check out.</param>
+    /// <returns>Number of that will be occupied.</returns>
     public async Task<int> QueryOverlapCountAsync(string roomType, string checkInDate, string checkOutDate)
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
@@ -169,6 +184,11 @@ public class ReservationRepository : IReservationRepository
         return count;
     }
 
+    /// <summary>
+    /// Overwrite the reservation and its corresponding rooms.
+    /// </summary>
+    /// <param name="reservation">Reservations to be overwritten.</param>
+    /// <param name="rooms">Rooms to be overwritten.</param>
     public async Task TransactWriteRoomReservationAsync(Reservation reservation, List<Room> rooms)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>()
@@ -246,6 +266,10 @@ public class ReservationRepository : IReservationRepository
         };
     }
 
+    /// <summary>
+    /// Change the status of Confirmed reservatons to Due In, for 
+    /// those with check in dates that match the current date.
+    /// </summary>
     public async Task TransactWriteDueInReservations(List<Reservation> reservations)
     {
         List<TransactWriteItem> writes = new List<TransactWriteItem>();

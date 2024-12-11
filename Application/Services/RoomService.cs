@@ -12,6 +12,9 @@ using Domain.Services.Recommendation;
 
 namespace Application.Services;
 
+/// <summary>
+/// High-level interface for operations relating to rooms.
+/// </summary>
 public class RoomService : IRoomService
 {
     private readonly IRoomRepository _roomRepository;
@@ -37,8 +40,10 @@ public class RoomService : IRoomService
         }
 
         string id = IdGenerator.Get6CharBase62();
+        // coordinate image upload service
         List<string> urls = await _imageService.UploadRoomImagesAsync(images, id);
 
+        // assemble Room object
         Room room = new Room
         {
             RoomID = id,
@@ -52,6 +57,7 @@ public class RoomService : IRoomService
         };
         room.MarkEmpty();
 
+        // coordinate Room object persistence through repository
         await _roomRepository.SaveAsync(room);
         return room;
     }
@@ -62,6 +68,9 @@ public class RoomService : IRoomService
         return room;
     }
 
+    /// <summary>
+    /// Get combination(s) of rooms that satisfy the given criteria, taking into account room availabilities.
+    /// </summary>
     public async Task<RoomOptionsDTO> GetMatchingRoomsAsync(string checkInDate, string checkOutDate, int numRooms, int numGuests)
     {
         // coordinate repository to retrieve rooms by type
@@ -122,6 +131,9 @@ public class RoomService : IRoomService
         return await _roomRepository.QueryEmptyByRoomTypeAsync(type);
     }
 
+    /// <summary>
+    /// Update details and overwrite images for the given room.
+    /// </summary>
     public async Task UpdateAsync(string id, UpdateRoomDTO dto, List<IFormFile> images)
     {
         // load in the room to be updated

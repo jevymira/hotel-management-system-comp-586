@@ -2,6 +2,9 @@
 
 namespace Application.Helpers.Services;
 
+/// <summary>
+/// Static helper class to generate user-readable unique IDs.
+/// </summary>
 public static class IdGenerator
 {
     private static Random _random = new Random();

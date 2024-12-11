@@ -69,6 +69,11 @@ public class ReservationService : IReservationService
         return await _reservationRepository.LoadReservationAsync(id);
     }
 
+    /// <summary>
+    /// Retrieves all reservations with a full name matching the guest's.
+    /// </summary>
+    /// <param name="name">Guest full name.</param>
+    /// <returns></returns>
     public async Task<List<ReservationDTO>> GetByGuestNameAsync(string name)
     {
         List<ReservationDTO> dtos = new List<ReservationDTO>();
@@ -84,11 +89,16 @@ public class ReservationService : IReservationService
         return dtos;
     }
 
-    // returns in order of:
-    // all due in reservations
-    // all checked in reservations
-    // checked out reservations of the current date
-    // confirmed reservations with a check in date from the current date onward
+    /// <summary>
+    /// Returns reservations to be displayed by default at desk.
+    /// </summary>
+    /// <returns>
+    /// Returns reservations in order of:
+    /// all due in reservations,
+    /// all checked in reservations,
+    /// checked out reservations of the current date,
+    /// and confirmed reservations with a check in date from the current date onward.
+    /// </returns>
     public async Task<List<ReservationDTO>> GetForDeskAsync()
     {
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
@@ -134,6 +144,10 @@ public class ReservationService : IReservationService
         await _reservationRepository.TransactWriteRoomReservationAsync(reservation, rooms);
     }
 
+    /// <summary>
+    /// Change the status of Confirmed reservatons to Due In, for 
+    /// those with check in dates that match the current date.
+    /// </summary>
     public async Task UpdateConfirmedToDueInAsync()
     {
         TimeZoneInfo pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");

@@ -7,6 +7,10 @@ using Domain.Models;
 
 namespace Application.Services;
 
+/// <summary>
+/// Application-layer service that provides a high-level interface for
+/// admin account operations.
+/// </summary>
 public class AdminAccountService : IAdminAccountService
 {
     IAdminAccountRepository _adminAccountRepository;
@@ -47,6 +51,11 @@ public class AdminAccountService : IAdminAccountService
         return account;
     }
 
+    /// <summary>
+    /// Retrieve the admin account ID corresponding to the email/password combination.
+    /// </summary>
+    /// <param name="email">Admin account email</param>
+    /// <param name="passwordHash">SHA-256 UPPER hash</param>
     public async Task<List<GetAdminAccountDTO>> GetAllAsync()
     {
         return await _adminAccountRepository.LoadAllForClientAsync();
@@ -91,6 +100,10 @@ public class AdminAccountService : IAdminAccountService
         await _adminAccountRepository.UpdateDetailsAsync(account, auditID, dto.UpdatedBy);
     }
 
+    /// <summary>
+    /// Update admin account password, provided valid credentials.
+    /// </summary>
+    /// <param name="credentialsDTO">admin email, old password, new password</param>
     public async Task<bool> UpdatePasswordAsync(UpdatePasswordDTO credentialsDTO)
     {
         AdminAccount? account = await _adminAccountRepository.QueryAccountByCredentials(

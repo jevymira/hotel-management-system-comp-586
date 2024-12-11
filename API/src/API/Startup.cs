@@ -2,16 +2,15 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Domain.Abstractions.Services;
-using Domain.Abstractions.Repositories;
-using Infrastructure.Abstractions.Database;
-using Infrastructure.DynamoDB;
 using Application.Abstractions.Services;
-using Infrastructure.Repositories;
 using Application.Services;
-using Infrastructure.Services;
 using Application.Abstractions.Factories;
 using Application.Factories;
+using Application.Abstractions.Repositories;
+using Application.Services.Repository;
+using Application.DynamoDB;
+using Application.Repositories;
+using Application.Abstractions.Database;
 
 namespace API;
 

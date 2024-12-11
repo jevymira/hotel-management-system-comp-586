@@ -1,7 +1,7 @@
 ﻿using Application.Abstractions.Factories;
-using Domain.Abstractions.Repositories;
-using Domain.Abstractions.Services;
-using Domain.Services.Status;
+using Application.Abstractions.Repositories;
+using Application.Abstractions.Services;
+using Application.Services.Status;
 
 namespace Application.Factories;
 

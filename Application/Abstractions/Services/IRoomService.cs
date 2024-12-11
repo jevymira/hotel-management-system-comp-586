@@ -1,7 +1,5 @@
-﻿using Application.Models;
-using Domain;
-using Domain.Entities;
-using Domain.Models;
+﻿using Application.Entities;
+using Application.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Abstractions.Services;

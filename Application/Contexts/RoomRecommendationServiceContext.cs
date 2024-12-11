@@ -1,5 +1,5 @@
-﻿using Domain.Abstractions.Services;
-using Domain.Models;
+﻿using Application.Abstractions.Services;
+using Application.Models;
 
 namespace Application.Contexts;
 

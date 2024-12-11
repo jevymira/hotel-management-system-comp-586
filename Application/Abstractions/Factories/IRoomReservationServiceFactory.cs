@@ -1,5 +1,5 @@
-﻿using Application.Models;
-using Domain.Abstractions.Services;
+﻿using Application.Abstractions.Services;
+using Application.Models;
 
 namespace Application.Abstractions.Factories;
 

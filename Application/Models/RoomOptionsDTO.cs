@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-
-namespace Application.Models;
+﻿namespace Application.Models;
 
 public class RoomOptionsDTO
 {

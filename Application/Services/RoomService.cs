@@ -1,13 +1,11 @@
 ﻿using Application.Abstractions.Services;
-using Domain.Abstractions.Repositories;
-using Domain.Entities;
-using Domain.Models;
-using Domain.Abstractions.Services;
 using Microsoft.AspNetCore.Http;
 using Application.Helpers.Services;
 using Application.Models;
 using Application.Contexts;
-using Domain.Services.Recommendation;
+using Application.Abstractions.Repositories;
+using Application.Entities;
+using Application.Services.Recommendation;
 
 
 namespace Application.Services;
@@ -26,6 +24,22 @@ public class RoomService : IRoomService
         _roomRepository = repository;
         _imageService = imageService;
         _reservationRepository = reservationRepository;
+    }
+
+    public RoomRecommendationServiceContext strategyContext
+    {
+        get => default;
+        set
+        {
+        }
+    }
+
+    public Room room
+    {
+        get => default;
+        set
+        {
+        }
     }
 
     public async Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)

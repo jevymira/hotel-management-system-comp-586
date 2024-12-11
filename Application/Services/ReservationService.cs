@@ -1,10 +1,10 @@
 ﻿using Application.Abstractions.Factories;
+using Application.Abstractions.Repositories;
 using Application.Abstractions.Services;
 using Application.Contexts;
+using Application.Entities;
 using Application.Helpers.Services;
 using Application.Models;
-using Domain.Abstractions.Repositories;
-using Domain.Entities;
 
 namespace Application.Services;
 
@@ -22,6 +22,22 @@ public class ReservationService : IReservationService
         _reservationRepository = reservationRepository;
         _roomRepository = roomRepository;
         _roomReservationServiceFactory = roomReservationServiceFactory;
+    }
+
+    public RoomReservationServiceContext strategyContext
+    {
+        get => default;
+        set
+        {
+        }
+    }
+
+    public Reservation reservation
+    {
+        get => default;
+        set
+        {
+        }
     }
 
     public async Task<Reservation> AddAsync(PostReservationDTO dto)
@@ -51,7 +67,7 @@ public class ReservationService : IReservationService
         List<Room> rooms = await _roomRepository.QueryByRoomTypeAsync(reservation.RoomType);
 
         // coordinate repository to query outstanding reservations which overlap with the pending reservation on date
-        int overlappingCount =  await _reservationRepository.QueryOverlapCountAsync(dto.RoomType, dto.CheckInDate, dto.CheckOutDate);
+        int overlappingCount = await _reservationRepository.QueryOverlapCountAsync(dto.RoomType, dto.CheckInDate, dto.CheckOutDate);
 
         // check if pending reservation would result in an overbooking
         if ((overlappingCount + reservation.OrderQuantity) > rooms.Count())

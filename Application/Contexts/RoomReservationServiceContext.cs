@@ -1,5 +1,5 @@
-﻿using Domain.Abstractions.Services;
-using Domain.Entities;
+﻿using Application.Abstractions.Services;
+using Application.Entities;
 
 namespace Application.Contexts;
 

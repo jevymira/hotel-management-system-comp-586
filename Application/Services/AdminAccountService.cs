@@ -1,9 +1,8 @@
-﻿using Application.Abstractions.Services;
+﻿using Application.Abstractions.Repositories;
+using Application.Abstractions.Services;
+using Application.Entities;
 using Application.Helpers.Services;
 using Application.Models;
-using Domain.Abstractions.Repositories;
-using Domain.Entities;
-using Domain.Models;
 
 namespace Application.Services;
 
@@ -14,6 +13,14 @@ public class AdminAccountService : IAdminAccountService
     public AdminAccountService(IAdminAccountRepository adminAccountRepository)
     {
         _adminAccountRepository = adminAccountRepository;
+    }
+
+    public AdminAccount account
+    {
+        get => default;
+        set
+        {
+        }
     }
 
     public async Task<GetAdminAccountDTO> AddAsync(CreateAccountDTO accountDTO)

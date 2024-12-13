@@ -12,5 +12,5 @@ public interface IRoomReservationServiceFactory
     /// </summary>
     /// <param name="status">Reservation status: Checked In, Checked Out, etc.</param>
     /// <returns></returns>
-    public RoomReservationService GetRoomReservationStrategy(string status);
+    public RoomReservationService CreateRoomReservationStrategy(string status);
 }

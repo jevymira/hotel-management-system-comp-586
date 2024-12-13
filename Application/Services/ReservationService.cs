@@ -122,7 +122,7 @@ public class ReservationService : IReservationService
 
     public async Task UpdateStatusAndRoomsAsync(string id, UpdateReservationDTO dto)
     {
-        // coordinate service to load reservation
+        // coordinate repository to load reservation
         Reservation? reservation = await _reservationRepository.LoadReservationAsync(id)
                      ?? throw new KeyNotFoundException("Booking number does not match any reservation.");
 
@@ -136,7 +136,7 @@ public class ReservationService : IReservationService
 
         // strategy pattern: vary service implementation based on new reservation status
         RoomReservationServiceContext context = new RoomReservationServiceContext(
-            _roomReservationServiceFactory.GetRoomReservationStrategy(dto.ReservationStatus));
+            _roomReservationServiceFactory.CreateRoomReservationStrategy(dto.ReservationStatus));
         // coordinate the context service to make changes to the reservation and rooms
         var rooms = await context.ExecuteStrategy(reservation, dto.RoomNumbers);
 

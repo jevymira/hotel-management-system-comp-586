@@ -47,17 +47,7 @@ public class MonoRoomTypeDecrementService : IRoomRecommendationService
                     Price = rooms.Triple.First().PricePerNight,
                     ImageUrls = rooms.Triple.First().ImageUrls }
                 };
-            // sidelined b/c of double quad for 5 guests/1 room
-            /*
-            case 4 when availabilities.Quad >= numGuests / 4:
-            case 5 when availabilities.Quad >= numGuests / 5:
-                return new List<RoomOptionDTO> { new RoomOptionDTO {
-                    Type = "Quad",
-                    Quantity = DivideAndRoundUp(numGuests, 4),
-                    Price = rooms.Quad.First().PricePerNight,
-                    ImageUrls = rooms.Quad.First().ImageUrls }
-                };
-            */
+            // sidelined case 4 b/c of double quad for 5 guests/1 room
             default: // case 0 and e.g., option of 3 Quads for 9 guests/2 rooms
                 return new List<RoomOptionDTO>(); // empty list
         }

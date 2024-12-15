@@ -45,7 +45,7 @@ public class RoomsController : ControllerBase
     /// <param name="rooms">Guest Count</param>
     /// <returns></returns>
     [AllowAnonymous]
-    [HttpGet("search")]
+    [HttpGet("search")] // GET api/rooms/search?start=2024-12-10&end=2024-12-12&rooms=2&guests=5
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRoomOptionsAsync(
         [FromQuery] string start,

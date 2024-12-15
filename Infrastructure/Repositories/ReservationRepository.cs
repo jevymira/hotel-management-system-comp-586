@@ -90,6 +90,11 @@ public class ReservationRepository : IReservationRepository
         return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
+    /// <summary>
+    /// Retrieve reservations checked out on the provided date.
+    /// </summary>
+    /// <param name="date">Check Out Date</param>
+    /// <returns></returns>
     public async Task<List<Reservation>> QueryCheckedOutAsync(string date)
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();
@@ -109,6 +114,11 @@ public class ReservationRepository : IReservationRepository
         return await _context.FromQueryAsync<Reservation>(query).GetRemainingAsync();
     }
 
+    /// <summary>
+    /// Retrieve reservations confirmed for a check in date on or after the provided date.
+    /// </summary>
+    /// <param name="date">Check In Date</param>
+    /// <returns></returns>
     public async Task<List<Reservation>> QueryConfirmedAsync(string date)
     {
         var expressionAttributeValues = new Dictionary<string, DynamoDBEntry>();

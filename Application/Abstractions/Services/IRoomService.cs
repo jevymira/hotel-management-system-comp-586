@@ -9,7 +9,7 @@ namespace Application.Abstractions.Services;
 /// </summary>
 public interface IRoomService
 {
-    public Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images);
+    public Task<Room> CreateAsync(PostRoomDTO roomDTO);
     public Task<Room> GetRoomAsync(string id);
 
     /// <summary>
@@ -25,5 +25,5 @@ public interface IRoomService
     /// <summary>
     /// Update details and overwrite images for the given room.
     /// </summary>
-    public Task UpdateAsync(string id, UpdateRoomDTO roomDTO, List<IFormFile> images);
+    public Task UpdateAsync(string id, UpdateRoomDTO roomDTO);
 }

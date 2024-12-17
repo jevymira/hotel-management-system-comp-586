@@ -10,6 +10,7 @@ using Application.Contexts;
 using Domain.Services.Recommendation;
 
 
+
 namespace Application.Services;
 
 /// <summary>
@@ -31,12 +32,20 @@ public class RoomService : IRoomService
         _reservationRepository = reservationRepository;
     }
 
-    public async Task<Room> CreateAsync(PostRoomDTO roomDTO, List<IFormFile> images)
+    public async Task<Room> CreateAsync(PostRoomDTO roomDTO)
     {
         // check if RoomNumber (separate from RoomID) already exists
         if (await _roomRepository.RoomNumberExistsAsync(roomDTO.RoomNumber))
         {
             throw new ArgumentException($"Room Number {roomDTO.RoomNumber} is already in use.");
+        }
+
+        // convert images from encoding
+        List<IFormFile> images = new List<IFormFile>();
+        foreach (string encoded in roomDTO.ImagesBase64)
+        {
+            var file = Base64toFormFile(encoded);
+            images.Add(file);
         }
 
         string id = IdGenerator.Get6CharBase62();
@@ -134,7 +143,7 @@ public class RoomService : IRoomService
     /// <summary>
     /// Update details and overwrite images for the given room.
     /// </summary>
-    public async Task UpdateAsync(string id, UpdateRoomDTO dto, List<IFormFile> images)
+    public async Task UpdateAsync(string id, UpdateRoomDTO dto)
     {
         // load in the room to be updated
         Room? room = await _roomRepository.LoadRoomAsync(id)
@@ -151,10 +160,28 @@ public class RoomService : IRoomService
         room.RoomNumber = dto.RoomNumber;
         room.UpdatedBy = dto.UpdatedBy;
 
+        List<IFormFile> images = new List<IFormFile>();
+        foreach (string encoded in dto.ImagesBase64)
+        {
+            var file = Base64toFormFile(encoded);
+            images.Add(file);
+        }
+
         // coordinate upload of room images
         room.ImageUrls = await _imageService.UploadRoomImagesAsync(images, id);
 
         // coordinate the persistence of the room obect
         await _roomRepository.UpdateAsync(room);
+    }
+
+    private FormFile Base64toFormFile(string encoded)
+    {
+        var stream = new MemoryStream();
+        var bytes = Convert.FromBase64String(encoded);
+
+        stream.Write(bytes);
+        stream.Position = 0;
+
+        return new FormFile(stream, 0, stream.Length, "f", "fname");
     }
 }

@@ -88,7 +88,7 @@ public class AdminAccountsController : ControllerBase
     /// <response code="201">Admin account created and stored successfully.</response>
     /* sample request body:
     {
-        "fullName": "Aiden Pierce",
+        "name": "Aiden Pierce",
         "email": "apierce@travelersinn.com",
         "passwordHash": "{SHA-256}"
     }

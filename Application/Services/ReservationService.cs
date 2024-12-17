@@ -59,6 +59,7 @@ public class ReservationService : IReservationService
             throw new ArgumentException("Selected dates and/or quantity for the selected room type would result in overbooking.");
         }
 
+        // coordinate repository to persist reservation
         await _reservationRepository.SaveAsync(reservation);
 
         return reservation;

@@ -41,9 +41,9 @@ public class ImageService : IImageService
             Prefix = $"rooms/{id}/"
         };
         var response = await client.ListObjectsAsync(req);
-        foreach (S3Object items in response.S3Objects)
+        for (int i = 0; i < images.Count; i++)
         {
-            urls.Add("https://travelers-inn-images.s3.us-east-1.amazonaws.com/" + items.Key);
+            urls.Add("https://travelers-inn-images.s3.us-east-1.amazonaws.com/" + response.S3Objects[i].Key);
         }
 
         return urls;

@@ -51,16 +51,16 @@ public class AdminAccountService : IAdminAccountService
         return account;
     }
 
-    /// <summary>
-    /// Retrieve the admin account ID corresponding to the email/password combination.
-    /// </summary>
-    /// <param name="email">Admin account email</param>
-    /// <param name="passwordHash">SHA-256 UPPER hash</param>
     public async Task<List<GetAdminAccountDTO>> GetAllAsync()
     {
         return await _adminAccountRepository.LoadAllForClientAsync();
     }
 
+    /// <summary>
+    /// Retrieve the admin account ID corresponding to the email/password combination.
+    /// </summary>
+    /// <param name="email">Admin account email</param>
+    /// <param name="passwordHash">SHA-256 UPPER hash</param>
     public async Task<string?> GetIDIfActiveValidCredentials(string email, string passwordHash)
     {
         var account = await _adminAccountRepository.QueryAccountByCredentialsIfActive(email, passwordHash);

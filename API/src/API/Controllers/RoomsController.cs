@@ -96,25 +96,20 @@ public class RoomsController : ControllerBase
     /// <summary>
     /// Add a new room and upload its images.
     /// </summary>
-    /// <param name="images">Image files.</param>
+    /// <param name="dto">Image files.</param>
     /// <response code="409">Room Number already in use.</response>
     /// <response code="201">Room added successfully.</response>
-    // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
-    // request Body:
-    //   form-data for content-type: application/json
-    //     RoomDTO[roomTypeID], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber]
-    //   form-data for content-type: multipart/form-data
-    //     images
     [HttpPost] // POST api/rooms
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<IActionResult> PostRoomAsync(
-        [FromForm] PostRoomDTO roomDTO,
-        [FromForm(Name = "images")] List<IFormFile> images)
+        // [FromForm] PostRoomDTO roomDTO,
+        // [FromForm(Name = "images")] string images
+        [FromBody] PostRoomDTO dto)
     {
         try
         {
-            Room room = await _roomService.CreateAsync(roomDTO, images);
+            Room room = await _roomService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetRoomAsync), new { id = room.RoomID }, value: room);
         }
         catch (ArgumentException ex)
@@ -131,24 +126,19 @@ public class RoomsController : ControllerBase
     /// <response code="404">No room exists with the specified Room ID.</response>
     /// <response code="409">Room number already in use with another room.</response>
     /// <response code="204">Room edited successfully.</response>
-    // request Header: ( Key: Content-Type, Value: multipart/form-data; boundary=<parameter> )
-    // request Body:
-    //   form-data for content-type: application/json
-    //     RoomDTO[roomTypeID], RoomDTO[maxOccupancy], RoomDTO[pricePerNight], RoomDTO[roomNumber], RoomDTO[UpdatedBy]
-    //   form-data for content-type: multipart/form-data
-    //     images
     [HttpPatch("{id}")] // PATCH api/rooms/abc123
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchRoomAsync(
         [FromRoute] string id,
-        [FromForm] UpdateRoomDTO roomDTO,
-        [FromForm(Name = "images")] List<IFormFile> images)
+        // [FromForm] UpdateRoomDTO roomDTO,
+        // [FromForm(Name = "images")] List<IFormFile> images
+        [FromBody] UpdateRoomDTO dto)
     {
         try
         {
-            await _roomService.UpdateAsync(id, roomDTO, images);
+            await _roomService.UpdateAsync(id, dto);
         }
         catch (KeyNotFoundException ex)
         {
@@ -161,5 +151,4 @@ public class RoomsController : ControllerBase
 
         return NoContent();
     }
-
 }

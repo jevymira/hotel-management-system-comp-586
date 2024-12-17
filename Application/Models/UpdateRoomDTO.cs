@@ -11,4 +11,5 @@ public class UpdateRoomDTO
     // public List<string>? ImageUrls { get; set; } = new List<string>();
 
     public required string UpdatedBy { get; set; }
+    public List<string> ImagesBase64 { get; set; } = new List<string>();
 }

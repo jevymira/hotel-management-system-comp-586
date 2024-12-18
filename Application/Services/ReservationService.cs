@@ -65,9 +65,10 @@ public class ReservationService : IReservationService
         return reservation;
     }
 
-    public async Task<Reservation> GetAsync(string id)
+    public async Task<ReservationDTO> GetAsync(string id)
     {
-        return await _reservationRepository.LoadReservationAsync(id);
+        var reservation =  await _reservationRepository.LoadReservationAsync(id);
+        return await convertReservation(reservation);
     }
 
     /// <summary>

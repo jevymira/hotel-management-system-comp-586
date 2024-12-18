@@ -9,7 +9,7 @@ namespace Application.Abstractions.Services;
 public interface IReservationService
 {
     public Task<Reservation> AddAsync(PostReservationDTO reservationDTO);
-    public Task<Reservation> GetAsync(string id);
+    public Task<ReservationDTO> GetAsync(string id);
 
     /// <summary>
     /// Retrieves all reservations with a full name matching the guest's.

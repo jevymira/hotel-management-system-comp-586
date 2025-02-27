@@ -12,6 +12,11 @@ using Application.Services;
 using Infrastructure.Services;
 using Application.Abstractions.Factories;
 using Application.Factories;
+using Amazon;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using Application.Models;
+using Microsoft.Extensions.Options;
 
 namespace API;
 
@@ -43,6 +48,7 @@ public class Startup
         services.AddScoped<IRoomReservationServiceFactory, RoomReservationServiceFactory>();
         services.AddScoped<IAdminAccountRepository, AdminAccountRepository>();
         services.AddTransient<IImageService, ImageService>();
+        services.Configure<JWTCredentials>(Configuration);
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -52,10 +58,10 @@ public class Startup
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration.GetSection("Jwt:Issuer").Get<string>(),
-                    ValidAudience = Configuration.GetSection("Jwt:Issuer").Get<string>(),
+                    ValidIssuer = Configuration.GetValue<string>("Issuer"),
+                    ValidAudience = Configuration.GetValue<string>("Issuer"),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                        Configuration.GetSection("Jwt:Key").Get<string>()))
+                        Configuration.GetValue<string>("Key")))
                 };
             });
     }

@@ -1,3 +1,5 @@
+using Infrastructure.Services;
+
 namespace API
 {
     /// <summary>
@@ -28,6 +30,10 @@ namespace API
         /// <param name="builder">The IWebHostBuilder to configure.</param>
         protected override void Init(IWebHostBuilder builder)
         {
+            builder.ConfigureAppConfiguration(((_, configurationBuilder) =>
+            {
+                configurationBuilder.AddAmazonSecretsManager("us-east-1", "prod/HotelManagementSystem/jwt");
+            }));
             builder
                 .UseStartup<Startup>();
         }

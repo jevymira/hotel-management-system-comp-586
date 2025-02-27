@@ -27,12 +27,12 @@ public class JWTService : IJWTService
     /// <returns>Encoded Token</returns>
     public string IssueToken(string id)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Key"]));
         var claims = new[] { new Claim(JwtRegisteredClaimNames.Sub, id) };
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-          _config["Jwt:Issuer"],
+        var token = new JwtSecurityToken(_config["Issuer"],
+          _config["Issuer"],
           claims: claims,
           expires: DateTime.Now.AddMinutes(120),
           signingCredentials: credentials);

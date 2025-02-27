@@ -10,6 +10,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!-- Generate ready to run images during publishing to improve cold start time. -->
     <PublishReadyToRun>true</PublishReadyToRun>
+    <UserSecretsId>7b24c48b-2504-4444-b975-b36d337832e0</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Auth\**" />
@@ -19,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="9.0.0" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.7.400.102" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.11" />
   </ItemGroup>
   <ItemGroup>
